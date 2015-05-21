@@ -46,7 +46,7 @@ public class IMServer extends Thread {
 			Socket MainClientSocket = serverSocket.accept();
 
 			//Passes the clientSocket to the thread to begin response
-			IMServer runner = new IMServer(portNumber, MainClientSocket);
+			ServerRunner runner = new ServerRunner(portNumber, MainClientSocket);
 
 			//Checks if client has connected, cleans up list
 			//runner.ping(MainClientSocket);
@@ -60,11 +60,11 @@ public class IMServer extends Thread {
 				openConnections.put
 				(connectedIP, MainClientSocket);
 			}
-			runner.start();
+			
+			new Thread(runner).start();
 
 			System.out.println("Started runner on: " 
 					+ MainClientSocket.getInetAddress());
-
 		}
 	}
 
@@ -100,7 +100,6 @@ public class IMServer extends Thread {
 			e.printStackTrace();
 		}
 	}
-
 
 	/* Receives message from a client. Is the first method that runs, always
 	 * before send().*/
@@ -233,6 +232,7 @@ public class IMServer extends Thread {
 		}
 	}
 
+	
 	/* class Ping implements Runnable {
 
 		public void ping(Socket in) {
