@@ -46,7 +46,7 @@ public class IMServer extends Thread {
 			Socket MainClientSocket = serverSocket.accept();
 
 			//Passes the clientSocket to the thread to begin response
-			ServerRunner runner = new ServerRunner(portNumber, MainClientSocket);
+			IMServer runner = new IMServer(portNumber, MainClientSocket);
 
 			//Checks if client has connected, cleans up list
 			//runner.ping(MainClientSocket);
@@ -61,7 +61,7 @@ public class IMServer extends Thread {
 				(connectedIP, MainClientSocket);
 			}
 			
-			new Thread(runner).start();
+			runner.start();
 
 			System.out.println("Started runner on: " 
 					+ MainClientSocket.getInetAddress());
