@@ -65,7 +65,10 @@ public class IMServer extends Thread {
 
 			System.out.println("Started runner on: " 
 					+ MainClientSocket.getInetAddress());
+
+			MainClientSocket = null;
 		}
+
 	}
 
 	public boolean ping(Socket in) {
@@ -159,17 +162,17 @@ public class IMServer extends Thread {
 				if (message.equals("$connected$")) {
 					connectedIPs.add(clientSocket.getInetAddress().toString());
 					System.out.println("Client " +
-					clientSocket.getInetAddress().toString() + " connected.");
+							clientSocket.getInetAddress().toString() + " connected.");
 					return true;
 				}
 
 				if (message.equals("$logout$")) {
 					connectedIPs.remove(clientSocket.getInetAddress().toString());
-					
+
 					System.out.println("Client " +
 							clientSocket.getInetAddress().toString() + " disconnected.");
 				}
-				
+
 				//Saves identifier and InetAddress to a file
 				String identifier = rawInput.get(1);
 				BufferedWriter fileWriter = new 
