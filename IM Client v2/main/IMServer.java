@@ -42,7 +42,7 @@ public class IMServer extends Thread {
 		 */
 
 		while (true) {  // loop forever <3 <3
-			System.out.print("... ");
+			System.out.println("... ");
 			//Waits for connection, saves the socket
 			MainClientSocket = serverSocket.accept();
 
@@ -219,6 +219,12 @@ public class IMServer extends Thread {
 		// flush the stream, and close the socket
 		writer.flush();
 
+		try {
+			clientSocket.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		if (message.length() != 0) {
 			return true;
 		} else {
