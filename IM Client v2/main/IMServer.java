@@ -25,7 +25,7 @@ public class IMServer extends Thread {
 		this.portNumber = portNumber; 
 		this.clientSocket = clientSocket;
 	}
- 
+
 	public static void main(String args[]) throws Exception {
 		int portNumber= 6969;    // the same arbitrary unused port the clients use
 		@SuppressWarnings("resource")
@@ -144,9 +144,9 @@ public class IMServer extends Thread {
 					break;
 				}
 			}
-			
+
 			fileReader.close();
-			
+
 			//recipientIP = rawInput.get(0); backup
 			//TODO fix this
 			if(openConnections.containsKey(recipientIP)) {
