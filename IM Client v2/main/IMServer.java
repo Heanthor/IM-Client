@@ -148,7 +148,7 @@ public class IMServer extends Thread {
 
 			fileReader.close();
 			 */
-			//recipientIP = rawInput.get(0); backup
+			recipientIP = rawInput.get(0);
 
 			if(true) {
 
