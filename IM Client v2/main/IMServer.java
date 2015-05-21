@@ -160,6 +160,7 @@ public class IMServer extends Thread {
 					connectedIPs.add(clientSocket.getInetAddress().toString());
 					System.out.println("Client " +
 					clientSocket.getInetAddress().toString() + " connected.");
+					return true;
 				}
 
 				if (message.equals("$logout$")) {
@@ -168,6 +169,7 @@ public class IMServer extends Thread {
 					System.out.println("Client " +
 							clientSocket.getInetAddress().toString() + " disconnected.");
 				}
+				
 				//Saves identifier and InetAddress to a file
 				String identifier = rawInput.get(1);
 				BufferedWriter fileWriter = new 
