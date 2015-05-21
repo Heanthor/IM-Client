@@ -93,7 +93,7 @@ public class IMServer extends Thread {
 				if (send()) {
 					System.out.println("Sent message");
 				} else {
-					System.out.println("Failed sending step.");
+					System.out.println("Did not send message.");
 				}
 			} else {
 				System.out.println("Failed receiving step");
@@ -163,7 +163,7 @@ public class IMServer extends Thread {
 					connectedIPs.add(clientSocket.getInetAddress().toString());
 					System.out.println("Client " +
 							clientSocket.getInetAddress().toString() + " connected.");
-					return true;
+					return false; // Don't send message
 				}
 
 				if (message.equals("$logout$")) {
@@ -224,6 +224,7 @@ public class IMServer extends Thread {
 
 		try {
 			clientSocket.close();
+			recipientSocket.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
