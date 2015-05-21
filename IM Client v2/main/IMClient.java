@@ -54,10 +54,12 @@ public class IMClient extends Thread {
 		//Starts incoming message scanner
 		client.start();
 
+		new Thread(new Sender(client, "$connected$")).start(); //Lets server know client is "connected"
+		
 		while (true) {
 			try {
 				synchronized(o) {
-					o.wait();
+					o.wait(); // main thread waits
 					String message = m.getMessage();
 
 					//Starts send message thread
@@ -85,7 +87,6 @@ public class IMClient extends Thread {
 	//Incoming messages to the client
 	public void incoming() throws Exception {
 		while (true) {
-			System.out.println("Incoming...");
 			reader = new BufferedReader(new InputStreamReader(
 					serverSocket.getInputStream()));
 

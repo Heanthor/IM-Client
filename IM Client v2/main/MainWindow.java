@@ -1,13 +1,18 @@
 package main;
 
 import javax.swing.JFrame;
+
 import java.awt.GridLayout;
+
 import javax.swing.JPanel;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JTextArea;
+
 import java.awt.CardLayout;
+
 import javax.swing.JTextField;
+
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -15,6 +20,8 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 public class MainWindow {
 
@@ -65,6 +72,52 @@ public class MainWindow {
 		JPanel panel_2 = new JPanel();
 		frmReedreadV.getContentPane().add(panel_2);
 		panel_2.setLayout(new GridLayout(0, 1, 0, 0));
+		
+		frmReedreadV.addWindowListener(new WindowListener() {
+
+			@Override
+			public void windowActivated(WindowEvent arg0) {
+				
+			}
+
+			@Override
+			public void windowClosed(WindowEvent arg0) {
+				
+			}
+
+			@Override
+			public void windowClosing(WindowEvent arg0) {
+				//Notifies the server that this client is logging out.
+				message = "$logout$";
+				synchronized(o) {
+					o.notifyAll();
+				}
+				
+				System.out.println("Window closing");
+			}
+
+			@Override
+			public void windowDeactivated(WindowEvent arg0) {
+				
+			}
+
+			@Override
+			public void windowDeiconified(WindowEvent arg0) {
+				
+			}
+
+			@Override
+			public void windowIconified(WindowEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void windowOpened(WindowEvent arg0) {
+				
+			}
+			
+		});
 
 		txtEnterMessage = new JTextField();
 		txtEnterMessage.addFocusListener(new FocusAdapter() {
@@ -127,6 +180,12 @@ public class MainWindow {
 		btnNewButton_1.addActionListener(new ActionListener() {
 			//Logout
 			public void actionPerformed(ActionEvent e) {
+				//Notifies the server that this client is logging out.
+				message = "$logout$";
+				synchronized(o) {
+					o.notifyAll();
+				}
+				
 				System.exit(0);
 			}
 		});
