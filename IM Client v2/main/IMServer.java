@@ -149,8 +149,8 @@ public class IMServer extends Thread {
 			fileReader.close();
 			 */
 			//recipientIP = rawInput.get(0); backup
-			//TODO fix this
-			if(openConnections.containsKey(recipientIP)) {
+
+			if(true) {
 
 				message = rawInput.get(2);
 				message.substring(1);
