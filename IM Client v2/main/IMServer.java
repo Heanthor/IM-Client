@@ -40,7 +40,7 @@ public class IMServer extends Thread {
 		t.start(); //Starts infinite ping
 		 */
 
-		while (true) {  // loop forever
+		while (true) {  // loop forever <3 <3 <3
 			System.out.print("... ");
 			//Waits for connection, saves the socket
 			MainClientSocket = serverSocket.accept();
