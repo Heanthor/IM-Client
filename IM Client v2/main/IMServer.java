@@ -19,6 +19,7 @@ public class IMServer extends Thread {
 	Socket clientSocket;
 	Socket recipientSocket;
 	public static TreeMap<String, Socket> openConnections= new TreeMap<String, Socket>();
+	public static ArrayList<String> connectedIPs = new ArrayList<String>();
 	static Object o = new Object(); // Synchronizing
 
 	public IMServer (int portNumber, Socket clientSocket) {
@@ -155,6 +156,18 @@ public class IMServer extends Thread {
 				message = rawInput.get(2);
 				message.substring(1);
 
+				if (message.equals("$connected$")) {
+					connectedIPs.add(clientSocket.getInetAddress().toString());
+					System.out.println("Client " +
+					clientSocket.getInetAddress().toString() + " connected.");
+				}
+
+				if (message.equals("$logout$")) {
+					connectedIPs.remove(clientSocket.getInetAddress().toString());
+					
+					System.out.println("Client " +
+							clientSocket.getInetAddress().toString() + " disconnected.");
+				}
 				//Saves identifier and InetAddress to a file
 				String identifier = rawInput.get(1);
 				BufferedWriter fileWriter = new 
