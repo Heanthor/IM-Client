@@ -131,7 +131,8 @@ public class IMServer extends Thread {
 
 		//Handle message
 		if (rawInput.size() > 0) { //Handles broken messages being sent
-			BufferedReader fileReader = new BufferedReader
+			/* Temporarily commented out
+			 BufferedReader fileReader = new BufferedReader
 					(new FileReader("identifiers.txt"));
 
 			String line;
@@ -146,7 +147,7 @@ public class IMServer extends Thread {
 			}
 
 			fileReader.close();
-
+			 */
 			//recipientIP = rawInput.get(0); backup
 			//TODO fix this
 			if(openConnections.containsKey(recipientIP)) {
