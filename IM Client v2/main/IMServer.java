@@ -31,7 +31,6 @@ public class IMServer extends Thread {
 		int portNumber= 6969;    // the same arbitrary unused port the clients use
 		@SuppressWarnings("resource")
 		ServerSocket serverSocket = new ServerSocket(portNumber);
-		Socket MainClientSocket;
 		System.out.println("IM server is running.");
 		/* //What a joke
 		IMServer s = new IMServer();
@@ -44,7 +43,7 @@ public class IMServer extends Thread {
 		while (true) {  // loop forever <3 <3
 			System.out.println("... ");
 			//Waits for connection, saves the socket
-			MainClientSocket = serverSocket.accept();
+			Socket MainClientSocket = serverSocket.accept();
 
 			//Passes the clientSocket to the thread to begin response
 			IMServer runner = new IMServer(portNumber, MainClientSocket);
@@ -66,9 +65,7 @@ public class IMServer extends Thread {
 			System.out.println("Started runner on: " 
 					+ MainClientSocket.getInetAddress());
 
-			MainClientSocket = null;
 		}
-
 	}
 
 	public boolean ping(Socket in) {
@@ -96,7 +93,7 @@ public class IMServer extends Thread {
 					System.out.println("Did not send message.");
 				}
 			} else {
-				System.out.println("Failed receiving step");
+				System.out.println("Not proceeding to send.");
 			}
 		} catch (Exception e) {
 			System.out.println("Exception in run method");
