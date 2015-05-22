@@ -1,10 +1,12 @@
-package main;
+package tests;
 
 import java.util.HashMap;
 
-
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+
+import main.IMClient;
+import main.LoginWindow;
 
 @Deprecated
 public class Driver {
