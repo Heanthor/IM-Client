@@ -167,13 +167,10 @@ public class IMServer extends Thread {
 				}
 
 				if (message.equals("$logout$")) {
-					String toRemove = clientSocket.getInetAddress().toString().
-							substring(clientSocket.getInetAddress().toString().
-									indexOf("/") + 1);
-
 					int index = -1;
 					for (int i = 0; i < connectedIPs.size(); i++) {
-						if (connectedIPs.get(i).equals(toRemove)) {
+						if (connectedIPs.get(i).equals
+								(clientSocket.getInetAddress().toString())) {
 							index = i;
 							break;
 						}
