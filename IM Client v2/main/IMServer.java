@@ -21,6 +21,7 @@ public class IMServer extends Thread {
 	public static TreeMap<String, Socket> openConnections= new TreeMap<String, Socket>();
 	public static ArrayList<String> connectedIPs = new ArrayList<String>();
 	static Object o = new Object(); // Synchronizing
+	private boolean loopInput = true;
 
 	public IMServer (int portNumber, Socket clientSocket) {
 		this.portNumber = portNumber; 
@@ -40,7 +41,7 @@ public class IMServer extends Thread {
 		t.start(); //Starts infinite ping
 		 */
 
-		while (true) {  // loop forever <3 <3
+		while (true) {  // loop forever
 			System.out.println("... ");
 			//Waits for connection, saves the socket
 			Socket MainClientSocket = serverSocket.accept();
@@ -60,7 +61,7 @@ public class IMServer extends Thread {
 				openConnections.put
 				(connectedIP, MainClientSocket);
 			}
-			
+
 			runner.start();
 
 			System.out.println("Started runner on: " 
@@ -83,21 +84,23 @@ public class IMServer extends Thread {
 	}
 
 	public void run() {
-		try {
-			//Receive message
-			if (receive()) {
-				//Send message
-				if (send()) {
-					System.out.println("Sent message");
+		while(loopInput) {
+			try {
+				//Receive message
+				if (receive()) {
+					//Send message
+					if (send()) {
+						System.out.println("Sent message");
+					} else {
+						System.out.println("Did not send message.");
+					}
 				} else {
-					System.out.println("Did not send message.");
+					System.out.println("Not proceeding to send.");
 				}
-			} else {
-				System.out.println("Not proceeding to send.");
+			} catch (Exception e) {
+				System.out.println("Exception in run method");
+				e.printStackTrace();
 			}
-		} catch (Exception e) {
-			System.out.println("Exception in run method");
-			e.printStackTrace();
 		}
 	}
 
@@ -110,6 +113,7 @@ public class IMServer extends Thread {
 
 		//Opens input stream to read message
 		try {
+			//TODO this errors upon closing the client with logout
 			reader = new ObjectInputStream(
 					new ObjectInputStream(clientSocket.getInputStream()));
 		} catch (IOException e) {
@@ -167,6 +171,9 @@ public class IMServer extends Thread {
 
 					System.out.println("Client " +
 							clientSocket.getInetAddress().toString() + " disconnected.");
+					
+					loopInput = false;
+					return false;
 				}
 
 				//Saves identifier and InetAddress to a file
@@ -232,7 +239,7 @@ public class IMServer extends Thread {
 		}
 	}
 
-	
+
 	/* class Ping implements Runnable {
 
 		public void ping(Socket in) {

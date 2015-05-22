@@ -19,14 +19,11 @@ public class IMClient extends Thread {
 	String host = "162.203.101.47";  // refers to the server IP
 	String identifier; //Your unique identifier
 	int portNumber = 6969;	//Port the program runs on
-	List<String> message = new ArrayList<String>();  //Data to be sent
 	String response; // reads the server's response
-	ObjectOutputStream writer;  // stream used to send request to the server
+	//ObjectOutputStream writer;  // stream used to send request to the server
 	BufferedReader reader;  // stream used to read the server's response
 	Socket serverSocket; 
 	InetAddress serverIP;
-
-	public String messageFromWindow;
 
 	public IMClient(String username) {
 		identifier = username;
@@ -73,9 +70,10 @@ public class IMClient extends Thread {
 
 	//Client sending messages
 	public void outgoing(String messageOut) throws Exception {
-		writer= new ObjectOutputStream(new ObjectOutputStream(
+		ObjectOutputStream writer = new ObjectOutputStream(new ObjectOutputStream(
 				serverSocket.getOutputStream()));
-
+		List<String> message = new ArrayList<String>();  //Data to be sent
+		
 		message.add("72.45.15.42"); //Recipient IP -- outdated
 		message.add(identifier); //Recipient unique identifier
 		message.add(messageOut); //Message
@@ -87,6 +85,7 @@ public class IMClient extends Thread {
 	//Incoming messages to the client
 	public void incoming() throws Exception {
 		while (true) {
+			
 			reader = new BufferedReader(new InputStreamReader(
 					serverSocket.getInputStream()));
 

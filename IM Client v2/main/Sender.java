@@ -13,7 +13,7 @@ public class Sender implements Runnable {
 	public void run() {
 		try {
 			//Send to outgoing thread
-			System.out.println("Message sending in run(): " + messageOut);
+			System.out.println("Message sending in Sender run(): " + messageOut);
 			client.outgoing(messageOut);
 		} catch (Exception e) {
 
