@@ -28,6 +28,7 @@ import java.awt.event.WindowListener;
 
 import javax.swing.JScrollPane;
 
+import java.awt.EventQueue;
 import java.awt.Insets;
 import java.awt.Cursor;
 
@@ -39,15 +40,15 @@ public class MainWindow {
 	private JTextArea textArea;
 	private JScrollPane scrollPane;
 	private String username;
-	/*
-	 *//**
+
+	/**
 	 * Launch the application.
-	 *//*
-		public static void main(String[] args) {
+	 */
+	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					MainWindow window = new MainWindow();
+					MainWindow window = new MainWindow(new Object(), "test");
 					window.frmReedreadV.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -55,7 +56,6 @@ public class MainWindow {
 			}
 		});
 	}
-	  */
 
 	public MainWindow(Object o, String username) {
 		MainWindow.o = o;
@@ -70,7 +70,7 @@ public class MainWindow {
 				| IllegalAccessException | UnsupportedLookAndFeelException e) {
 			e.printStackTrace();
 		}
-		
+
 		frmReedreadV = new JFrame();
 		frmReedreadV.setTitle("ReedRead v2");
 		frmReedreadV.setBounds(100, 100, 454, 558);
@@ -219,7 +219,7 @@ public class MainWindow {
 			}
 		});
 		panel_1.add(btnNewButton_1);
-		
+
 		frmReedreadV.revalidate();
 	}
 

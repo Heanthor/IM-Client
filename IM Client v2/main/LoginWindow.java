@@ -28,6 +28,7 @@ public class LoginWindow {
 	private final JPanel contentPanel = new JPanel();
 	private JTextField txtEnterUsername;
 	private String username;
+	private String password;
 	private JDialog d = new JDialog(); // Main dialog window
 	@SuppressWarnings("unused")
 	private static Object o; //Synchronization
@@ -128,7 +129,6 @@ public class LoginWindow {
 			//On focus
 			@Override
 			public void focusGained(FocusEvent arg0) {
-				System.out.println(txtEnterPassword.getPassword());
 					txtEnterPassword.setForeground(Color.BLACK);
 					txtEnterPassword.selectAll();
 			}
@@ -167,7 +167,9 @@ public class LoginWindow {
 					public void actionPerformed(ActionEvent arg0) {
 						if (!txtEnterUsername.getText().equals("Enter Username") && 
 								!txtEnterUsername.getText().equals("")) {
+							
 							username = txtEnterUsername.getText();
+							password = new String(txtEnterPassword.getPassword());
 							//Close the window
 							close();
 
@@ -212,10 +214,17 @@ public class LoginWindow {
 	}
 
 	/** 
-	 * Returns the username
+	 * @return the username.
 	 */
 	public String getUsername() {
 		return username;
+	}
+	
+	/**
+	 * @return the password.
+	 */
+	protected String getPassword() {
+		return password;
 	}
 
 	//Closes the window
