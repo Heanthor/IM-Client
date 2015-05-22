@@ -29,6 +29,8 @@ public class MainWindow {
 	private JTextField txtEnterMessage;
 	private String message;
 	private static Object o;
+	private JTextArea textArea;
+	private String username;
 	/*
 	 *//**
 	 * Launch the application.
@@ -47,8 +49,9 @@ public class MainWindow {
 	}
 	  */
 
-	public MainWindow(Object o) {
+	public MainWindow(Object o, String username) {
 		MainWindow.o = o;
+		this.username = username;
 		initialize();
 	}
 
@@ -64,7 +67,7 @@ public class MainWindow {
 		frmReedreadV.getContentPane().add(panel);
 		panel.setLayout(new CardLayout(0, 0));
 
-		JTextArea textArea = new JTextArea();
+		textArea = new JTextArea();
 		textArea.setLineWrap(true);
 		textArea.setEditable(false);
 		panel.add(textArea, "name_49774492601421");
@@ -72,17 +75,17 @@ public class MainWindow {
 		JPanel panel_2 = new JPanel();
 		frmReedreadV.getContentPane().add(panel_2);
 		panel_2.setLayout(new GridLayout(0, 1, 0, 0));
-		
+
 		frmReedreadV.addWindowListener(new WindowListener() {
 
 			@Override
 			public void windowActivated(WindowEvent arg0) {
-				
+
 			}
 
 			@Override
 			public void windowClosed(WindowEvent arg0) {
-				
+
 			}
 
 			@Override
@@ -92,31 +95,31 @@ public class MainWindow {
 				synchronized(o) {
 					o.notifyAll();
 				}
-				
+
 				System.out.println("Window closing");
 			}
 
 			@Override
 			public void windowDeactivated(WindowEvent arg0) {
-				
+
 			}
 
 			@Override
 			public void windowDeiconified(WindowEvent arg0) {
-				
+
 			}
 
 			@Override
 			public void windowIconified(WindowEvent arg0) {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			@Override
 			public void windowOpened(WindowEvent arg0) {
-				
+
 			}
-			
+
 		});
 
 		txtEnterMessage = new JTextField();
@@ -165,6 +168,7 @@ public class MainWindow {
 						!txtEnterMessage.getText().equals("Enter Message...")) {
 					//Sets message
 					message = txtEnterMessage.getText();
+					textArea.append(username + ": " + message + "\n");
 
 					if (message != null) {
 						synchronized(o) {
@@ -185,7 +189,7 @@ public class MainWindow {
 				synchronized(o) {
 					o.notifyAll();
 				}
-				
+
 				System.exit(0);
 			}
 		});
@@ -198,5 +202,9 @@ public class MainWindow {
 	 */
 	public String getMessage() {
 		return message;
+	}
+
+	public JTextArea getTextArea() {
+		return textArea;
 	}
 }

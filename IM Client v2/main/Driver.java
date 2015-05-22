@@ -6,6 +6,7 @@ import java.util.HashMap;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+@Deprecated
 public class Driver {
 	/**
 	 * Message starts in MainWindow, on the send button action event.
@@ -34,7 +35,7 @@ public class Driver {
 	
 	/*Why didn't I make this yet.. */
 	private void execute() {
-		LoginWindow w = new LoginWindow();
+		LoginWindow w = new LoginWindow(new Object());
 		//If the IM server is not running, client will not be initialized
 		
 		client = new IMClient(w.getUsername());

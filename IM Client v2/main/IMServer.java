@@ -155,7 +155,6 @@ public class IMServer extends Thread {
 			recipientIP = rawInput.get(0); //backup
 
 			if(true) {
-
 				message = rawInput.get(2);
 				message.substring(1);
 

@@ -45,7 +45,7 @@ public class IMClient extends Thread {
 		//LoginWindow blocks until the "OK" button is pressed with a correct username
 		Object o = new Object();
 		LoginWindow w = new LoginWindow(o);
-		MainWindow m = new MainWindow(o);
+		MainWindow m = new MainWindow(o, w.getUsername());
 		IMClient client = new IMClient(w.getUsername());
 
 		//Starts incoming message scanner
