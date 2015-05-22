@@ -15,27 +15,29 @@ import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-public class IMClient extends Thread {
-	String host = "162.203.101.47";  // refers to the server IP
-	String identifier; //Your unique identifier
-	int portNumber = 6969;	//Port the program runs on
-	String response; // reads the server's response
-	//ObjectOutputStream writer;  // stream used to send request to the server
-	BufferedReader reader;  // stream used to read the server's response
-	Socket serverSocket; 
-	InetAddress serverIP;
+public class IMClient implements Runnable {
+	private String host = "162.203.101.47";  // refers to the server IP
+	private String identifier; //Your unique identifier
+	private int portNumber = 6969;	//Port the program runs on
+	private String response; // reads the server's response
+	private BufferedReader reader;  // stream used to read the server's response
+	private Socket serverSocket; 
+	private InetAddress serverIP;
+	private static Object o = new Object(); //Synchronization
+	private MainWindow mainWindow;
 
 	public IMClient(String username) {
 		identifier = username;
 
 		//Opens connection to server
 		try {
-			serverIP= InetAddress.getByName(host);
+			serverIP = InetAddress.getByName(host);
 			serverSocket = new Socket(serverIP, portNumber);
 		} catch (IOException e) {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(new JFrame(), e.toString(),
 					"IM Server not running", JOptionPane.ERROR_MESSAGE);
+
 			//Quit program since it is useless if server is not running
 			System.exit(1);
 		}
@@ -43,24 +45,28 @@ public class IMClient extends Thread {
 
 	public static void main(String args[])  {
 		//LoginWindow blocks until the "OK" button is pressed with a correct username
-		Object o = new Object();
 		LoginWindow w = new LoginWindow(o);
-		MainWindow m = new MainWindow(o, w.getUsername());
+
 		IMClient client = new IMClient(w.getUsername());
+		client.init();
+	}
+
+	private void init() {
+		mainWindow = new MainWindow(o, identifier);
 
 		//Starts incoming message scanner
-		client.start();
+		new Thread(this).start();
+		//Lets server know client is "connected"
+		new Thread(new Sender(this, "$connected$")).start();
 
-		new Thread(new Sender(client, "$connected$")).start(); //Lets server know client is "connected"
-		
 		while (true) {
 			try {
 				synchronized(o) {
 					o.wait(); // main thread waits
-					String message = m.getMessage();
+					String message = mainWindow.getMessage();
 
 					//Starts send message thread
-					new Thread(new Sender(client, message)).start();
+					new Thread(new Sender(this, message)).start();
 				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -73,7 +79,7 @@ public class IMClient extends Thread {
 		ObjectOutputStream writer = new ObjectOutputStream(new ObjectOutputStream(
 				serverSocket.getOutputStream()));
 		List<String> message = new ArrayList<String>();  //Data to be sent
-		
+
 		message.add("72.45.15.42"); //Recipient IP -- outdated
 		message.add(identifier); //Recipient unique identifier
 		message.add(messageOut); //Message
@@ -85,7 +91,7 @@ public class IMClient extends Thread {
 	//Incoming messages to the client
 	public void incoming() throws Exception {
 		while (true) {
-			
+
 			reader = new BufferedReader(new InputStreamReader(
 					serverSocket.getInputStream()));
 
@@ -98,6 +104,8 @@ public class IMClient extends Thread {
 				} else {
 					response = temp;
 					System.out.println("Received message: " + response);
+					//TODO temp name, have client fill in who you're talking to
+					mainWindow.getTextArea().append("temp: " + response + "\n");
 				}
 			}
 		}

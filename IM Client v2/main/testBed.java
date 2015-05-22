@@ -32,7 +32,7 @@ public class testBed {
 	public void outputStreamTest() {
 		Object o = new Object();
 		new LoginWindow(o);
-		MainWindow m = new MainWindow(o);
+		MainWindow m = new MainWindow(o, "");
 
 		while (true) {
 			try {

@@ -51,7 +51,7 @@ public class Driver {
 		message = messageFromMainWindow;
 		if (message != null) {
 			//Starts send message thread
-			client.start();
+			new Thread(client).start();
 		}
 		
 		//Starts incoming message scanner
