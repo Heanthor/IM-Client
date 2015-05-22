@@ -15,17 +15,28 @@ import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+/**
+ * The IMClient is the client portion of the chat program.
+ * An IMServer must be running at the correct IP, otherwise an error will occur
+ * when the program is launched. This class contains a main method that launches
+ * the UI elements, and then handles communications with the server.
+ * @author Reed
+ */
 public class IMClient implements Runnable {
 	private String host = "162.203.101.47";  // refers to the server IP
 	private String identifier; //Your unique identifier
 	private int portNumber = 6969;	//Port the program runs on
 	private String response; // reads the server's response
 	private BufferedReader reader;  // stream used to read the server's response
-	private Socket serverSocket; 
-	private InetAddress serverIP;
-	private static Object o = new Object(); //Synchronization
-	private MainWindow mainWindow;
+	private Socket serverSocket; // connection to the server
+	private InetAddress serverIP; // get IP
+	private static Object o = new Object(); // synchronization
+	private MainWindow mainWindow; // associated MainWindow, for printing
 
+	/**
+	 * @param username - What user is using this IMClient. Used for printing 
+	 * namestamp in chat, and for identification.
+	 */
 	public IMClient(String username) {
 		identifier = username;
 
@@ -35,6 +46,7 @@ public class IMClient implements Runnable {
 			serverSocket = new Socket(serverIP, portNumber);
 		} catch (IOException e) {
 			e.printStackTrace();
+
 			JOptionPane.showMessageDialog(new JFrame(), e.toString(),
 					"IM Server not running", JOptionPane.ERROR_MESSAGE);
 
@@ -43,6 +55,11 @@ public class IMClient implements Runnable {
 		}
 	}
 
+	/**
+	 * Launches the login window, which saves the username given, and then calls
+	 * init().
+	 * @param args
+	 */
 	public static void main(String args[])  {
 		//LoginWindow blocks until the "OK" button is pressed with a correct username
 		LoginWindow w = new LoginWindow(o);
@@ -51,11 +68,15 @@ public class IMClient implements Runnable {
 		client.init();
 	}
 
+	/**
+	 * Launches the main threads for the client.
+	 */
 	private void init() {
 		mainWindow = new MainWindow(o, identifier);
 
 		//Starts incoming message scanner
 		new Thread(this).start();
+
 		//Lets server know client is "connected"
 		new Thread(new Sender(this, "$connected$")).start();
 
@@ -74,8 +95,13 @@ public class IMClient implements Runnable {
 		}
 	}
 
-	//Client sending messages
-	public void outgoing(String messageOut) throws Exception {
+	/**
+	 * Method responsible for sending messages. Connects to the server and sends
+	 * the message, including destination IP information.
+	 * @param messageOut - The message to be sent
+	 * @throws IOException If a problem in the ObjectOutputStream occurs.
+	 */
+	public void outgoing(String messageOut) throws IOException {
 		ObjectOutputStream writer = new ObjectOutputStream(new ObjectOutputStream(
 				serverSocket.getOutputStream()));
 		List<String> message = new ArrayList<String>();  //Data to be sent
@@ -86,10 +112,15 @@ public class IMClient implements Runnable {
 
 		writer.writeObject(message);
 		writer.flush();
+		//Don't close the ObjectOutputStream, it closes the socket in use!
 	}
 
-	//Incoming messages to the client
-	public void incoming() throws Exception {
+	/**
+	 * Method responsible for handling incoming messages to the client.
+	 * Reads the message, and prints it to the console and UI.
+	 * @throws IOException if a problem in the InputStreamReader occurs.
+	 */
+	public void incoming() throws IOException {
 		while (true) {
 			reader = new BufferedReader(new InputStreamReader(
 					serverSocket.getInputStream()));
@@ -98,49 +129,25 @@ public class IMClient implements Runnable {
 			String temp = reader.readLine();
 
 			if (temp != null) {
-				if (temp.equals("$ping")) {
-					//handled
-				} else {
-					response = temp;
-					System.out.println("Received message: " + response);
-					//TODO temp name, have client fill in who you're talking to
-					mainWindow.getTextArea().append("temp: " + response + "\n");
-					
-					//Scroll to bottom
-					mainWindow.getScrollPane().getVerticalScrollBar().
-						setValue(mainWindow.getScrollPane().
-								getVerticalScrollBar().getMaximum());
-				}
+				response = temp;
+				System.out.println("Received message: " + response);
+				//TODO temp name, have client fill in who you're talking to
+				mainWindow.getTextArea().append("temp: " + response + "\n");
+
+				//Scroll to bottom
+				mainWindow.getScrollPane().getVerticalScrollBar().
+				setValue(mainWindow.getScrollPane().
+						getVerticalScrollBar().getMaximum());
 			}
 		}
 	}
-
+	
+	//this thread is the incoming message scanner.
 	public void run() {
 		try {
 			incoming();
-		} catch (Exception e) {
-			System.out.println("%%%%%%%%%%%%Server not running.%%%%%%%%%%%");
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	/*
-	//Accepts message from user, calls outgoing().
-	//Driver.start is called in LoginWindow
-	public void run() {
-		String messageOut = messageFromWindow;
-
-		try {
-			//Send to outgoing thread
-			System.out.println("Message sending in run(): " + messageOut);
-			outgoing(messageOut);
-		} catch (Exception e) {
-
-			System.out.println("Exception in run()");
-			e.printStackTrace();
-
-			System.out.println("Exception " + e + " caught in run()");
-			e.printStackTrace();
-		}
-	}
-	 */
 }

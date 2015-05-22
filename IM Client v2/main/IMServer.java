@@ -12,53 +12,61 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
-public class IMServer extends Thread {
-	//private int portNumber;
+/**
+ * The IMServer is the server portion of the chat program.
+ * The port in use is defined in the main method, and must match the client's 
+ * port. The server can handle multiple connections with multiple users, and
+ * will keep a list of login information and associated IP addresses for easy
+ * connection.
+ * 
+ * @author Reed
+ */
+public class IMServer implements Runnable {
 	private String recipientIP;
-	String message;
-	Socket clientSocket;
-	Socket recipientSocket;
-	public static TreeMap<String, Socket> openConnections= new TreeMap<String, Socket>();
-	public static ArrayList<String> connectedIPs = new ArrayList<String>();
-	static Object o = new Object(); // Synchronizing
-	private boolean loopInput = true;
-
-	public IMServer (int portNumber, Socket clientSocket) {
-		//this.portNumber = portNumber; 
+	private String message;
+	private Socket clientSocket;
+	private Socket recipientSocket;
+	private ArrayList<String> connectedIPs = new ArrayList<String>();
+	private static Object o = new Object(); // Synchronizing
+	private boolean loopInput = true; // Controls looping IO for one connection
+	
+	public static TreeMap<String, Socket> openConnections = new TreeMap<String, Socket>();
+	
+	/**
+	 * @param clientSocket - The sender's socket connection.
+	 */
+	public IMServer(Socket clientSocket) {
 		this.clientSocket = clientSocket;
 	}
 
 	public static void main(String args[]) throws Exception {
-		int portNumber= 6969;    // the same arbitrary unused port the clients use
+		int portNumber = 6969;    // the same arbitrary unused port the clients use
 		@SuppressWarnings("resource")
 		ServerSocket serverSocket = new ServerSocket(portNumber);
 		System.out.println("IM server is running.");
 
 		while (true) {  // loop forever
-			System.out.println("... ");
+			System.out.println("...");
 			//Waits for connection, saves the socket
-			Socket MainClientSocket = serverSocket.accept();
+			Socket mainClientSocket = serverSocket.accept();
 
 			//Passes the clientSocket to the thread to begin response
-			IMServer runner = new IMServer(portNumber, MainClientSocket);
-
-			//Checks if client has connected, cleans up list
-			//runner.ping(MainClientSocket);
+			IMServer runner = new IMServer(mainClientSocket);
 
 			//Save open connection in collection
-			String connectedIP = MainClientSocket.getInetAddress().toString()
-					.substring(MainClientSocket.getInetAddress().toString()
+			String connectedIP = mainClientSocket.getInetAddress().toString()
+					.substring(mainClientSocket.getInetAddress().toString()
 							.indexOf("/") + 1);
 
 			synchronized(o) {
 				openConnections.put
-				(connectedIP, MainClientSocket);
+				(connectedIP, mainClientSocket);
 			}
 
-			runner.start();
+			new Thread(runner).start();
 
 			System.out.println("Started runner on: " 
-					+ MainClientSocket.getInetAddress());
+					+ mainClientSocket.getInetAddress());
 		}
 	}
 
@@ -84,8 +92,13 @@ public class IMServer extends Thread {
 		//TODO when the connection is done, close the open socket?
 	}
 
-	/* Receives message from a client. Is the first method that runs, always
-	 * before send().*/
+	/**
+	 * Receives message from a client. Is the first method that runs, always
+	 * before send().
+	 * @return true if message is meant to be passed on, false otherwise.
+	 * @throws IOException if the input is corrupted.
+	 * 
+	 */
 	@SuppressWarnings("unchecked")
 	public boolean receive() throws IOException {
 		ObjectInputStream reader = null;
@@ -185,7 +198,10 @@ public class IMServer extends Thread {
 		}
 	}
 
-	/* Sends message to the intended client, after it received by receive()*/
+	/**
+	 *  Sends message to the intended client, after it received by receive().
+	 *  @return true if message is sent, false otherwise.
+	 */
 	public boolean send() {
 		PrintWriter writer = null;
 

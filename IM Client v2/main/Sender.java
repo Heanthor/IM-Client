@@ -1,5 +1,10 @@
 package main;
 
+/**
+ * Runnable class that calls the associated IMClient's outgoing method, to send
+ * the given message.
+ * @author Reed
+ */
 public class Sender implements Runnable {
 	private IMClient client;
 	private String messageOut;
@@ -19,10 +24,6 @@ public class Sender implements Runnable {
 
 			System.out.println("Exception in run()");
 			e.printStackTrace();
-
-			System.out.println("Exception " + e + " caught in run()");
-			e.printStackTrace();
-
 		}
 	}
 }
