@@ -152,7 +152,7 @@ public class IMServer extends Thread {
 
 			fileReader.close();
 			 */
-			recipientIP = rawInput.get(0);
+			recipientIP = rawInput.get(0); //backup
 
 			if(true) {
 
@@ -225,13 +225,6 @@ public class IMServer extends Thread {
 		// flush the stream, and close the socket
 		writer.flush();
 
-		try {
-			clientSocket.close();
-			recipientSocket.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		if (message.length() != 0) {
 			return true;
 		} else {
