@@ -7,7 +7,10 @@ import java.awt.GridLayout;
 import javax.swing.JPanel;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JScrollBar;
 import javax.swing.JTextArea;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 import java.awt.CardLayout;
 
@@ -23,13 +26,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
-public class MainWindow {
+import javax.swing.JScrollPane;
 
+import java.awt.Insets;
+import java.awt.Cursor;
+
+public class MainWindow {
 	private JFrame frmReedreadV;
 	private JTextField txtEnterMessage;
 	private String message;
 	private static Object o;
 	private JTextArea textArea;
+	private JScrollPane scrollPane;
 	private String username;
 	/*
 	 *//**
@@ -56,6 +64,13 @@ public class MainWindow {
 	}
 
 	private void initialize() {
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException | InstantiationException
+				| IllegalAccessException | UnsupportedLookAndFeelException e) {
+			e.printStackTrace();
+		}
+		
 		frmReedreadV = new JFrame();
 		frmReedreadV.setTitle("ReedRead v2");
 		frmReedreadV.setBounds(100, 100, 454, 558);
@@ -64,13 +79,18 @@ public class MainWindow {
 		frmReedreadV.setVisible(true);
 
 		JPanel panel = new JPanel();
+		panel.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
 		frmReedreadV.getContentPane().add(panel);
 		panel.setLayout(new CardLayout(0, 0));
 
 		textArea = new JTextArea();
+		textArea.setMargin(new Insets(2, 5, 5, 2));
 		textArea.setLineWrap(true);
 		textArea.setEditable(false);
-		panel.add(textArea, "name_49774492601421");
+		//panel.add(textArea, "name_49774492601421");
+
+		scrollPane = new JScrollPane(textArea);
+		panel.add(scrollPane, "name_43068028454051");
 
 		JPanel panel_2 = new JPanel();
 		frmReedreadV.getContentPane().add(panel_2);
@@ -166,9 +186,14 @@ public class MainWindow {
 			public void actionPerformed(ActionEvent e) {
 				if (!txtEnterMessage.getText().equals("") &&
 						!txtEnterMessage.getText().equals("Enter Message...")) {
+
 					//Sets message
 					message = txtEnterMessage.getText();
 					textArea.append(username + ": " + message + "\n");
+
+					//Scrolls to bottom
+					JScrollBar vertical = scrollPane.getVerticalScrollBar();
+					vertical.setValue(vertical.getMaximum());
 
 					if (message != null) {
 						synchronized(o) {
@@ -194,6 +219,8 @@ public class MainWindow {
 			}
 		});
 		panel_1.add(btnNewButton_1);
+		
+		frmReedreadV.revalidate();
 	}
 
 	/**
@@ -206,5 +233,8 @@ public class MainWindow {
 
 	public JTextArea getTextArea() {
 		return textArea;
+	}
+	public JScrollPane getScrollPane() {
+		return scrollPane;
 	}
 }

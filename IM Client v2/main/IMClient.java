@@ -91,7 +91,6 @@ public class IMClient implements Runnable {
 	//Incoming messages to the client
 	public void incoming() throws Exception {
 		while (true) {
-
 			reader = new BufferedReader(new InputStreamReader(
 					serverSocket.getInputStream()));
 
@@ -106,6 +105,11 @@ public class IMClient implements Runnable {
 					System.out.println("Received message: " + response);
 					//TODO temp name, have client fill in who you're talking to
 					mainWindow.getTextArea().append("temp: " + response + "\n");
+					
+					//Scroll to bottom
+					mainWindow.getScrollPane().getVerticalScrollBar().
+						setValue(mainWindow.getScrollPane().
+								getVerticalScrollBar().getMaximum());
 				}
 			}
 		}

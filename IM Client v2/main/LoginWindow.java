@@ -7,6 +7,8 @@ import java.awt.FlowLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -44,6 +46,13 @@ public class LoginWindow {
 	 * Create the dialog.
 	 */
 	public LoginWindow(final Object o) {
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException | InstantiationException
+				| IllegalAccessException | UnsupportedLookAndFeelException e) {
+			e.printStackTrace();
+		}
+		
 		LoginWindow.o = o;
 		d.setBounds(100, 100, 333, 127);
 		d.getContentPane().setLayout(new BorderLayout());
