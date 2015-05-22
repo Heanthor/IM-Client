@@ -102,6 +102,7 @@ public class IMServer extends Thread {
 				e.printStackTrace();
 			}
 		}
+		//TODO when the connection is done, close the open socket?
 	}
 
 	/* Receives message from a client. Is the first method that runs, always
