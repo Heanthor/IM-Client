@@ -167,19 +167,10 @@ public class IMServer extends Thread {
 				}
 
 				if (message.equals("$logout$")) {
-					int index = -1;
-					for (int i = 0; i < connectedIPs.size(); i++) {
-						if (connectedIPs.get(i).equals
-								(clientSocket.getInetAddress().toString())) {
-							index = i;
-							break;
-						}
-					}
+					connectedIPs.remove(clientSocket.getInetAddress().toString());
+					System.out.println("Client " +
+							clientSocket.getInetAddress().toString() + " disconnected.");
 
-						connectedIPs.remove(clientSocket.getInetAddress().toString());
-						System.out.println("Client " +
-								clientSocket.getInetAddress().toString() + " disconnected.");
-					
 					loopInput = false;
 					return false;
 				}
