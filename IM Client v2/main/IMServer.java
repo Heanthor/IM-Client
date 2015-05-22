@@ -176,12 +176,9 @@ public class IMServer extends Thread {
 						}
 					}
 
-					if (index > 0) {
-						connectedIPs.remove(index); //If not found, will throw array out of bounds exception
+						connectedIPs.remove(clientSocket.getInetAddress().toString());
 						System.out.println("Client " +
 								clientSocket.getInetAddress().toString() + " disconnected.");
-
-					}
 					
 					loopInput = false;
 					return false;
