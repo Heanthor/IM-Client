@@ -170,12 +170,19 @@ public class IMServer extends Thread {
 					String toRemove = clientSocket.getInetAddress().toString().
 							substring(clientSocket.getInetAddress().toString().
 									indexOf("/") + 1);
-					
-					if (connectedIPs.remove(toRemove)) {
-						System.out.println("Client " +
-								clientSocket.getInetAddress().toString() + " disconnected.");
+
+					int index = -1;
+					for (int i = 0; i < connectedIPs.size(); i++) {
+						if (connectedIPs.get(i).equals(toRemove)) {
+							index = i;
+							break;
+						}
 					}
-					
+
+					connectedIPs.remove(index); //If not found, will throw array out of bounds exception
+					System.out.println("Client " +
+							clientSocket.getInetAddress().toString() + " disconnected.");
+
 					loopInput = false;
 					return false;
 				}
