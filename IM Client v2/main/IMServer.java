@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.TreeMap;
 
 public class IMServer extends Thread {
-	int portNumber= 6969; 
-	String recipientIP;
+	//private int portNumber;
+	private String recipientIP;
 	String message;
 	Socket clientSocket;
 	Socket recipientSocket;
@@ -24,7 +24,7 @@ public class IMServer extends Thread {
 	private boolean loopInput = true;
 
 	public IMServer (int portNumber, Socket clientSocket) {
-		this.portNumber = portNumber; 
+		//this.portNumber = portNumber; 
 		this.clientSocket = clientSocket;
 	}
 
@@ -33,13 +33,6 @@ public class IMServer extends Thread {
 		@SuppressWarnings("resource")
 		ServerSocket serverSocket = new ServerSocket(portNumber);
 		System.out.println("IM server is running.");
-		/* //What a joke
-		IMServer s = new IMServer();
-		Ping p = s.new Ping();
-		Thread t = new Thread(p);
-
-		t.start(); //Starts infinite ping
-		 */
 
 		while (true) {  // loop forever
 			System.out.println("... ");
@@ -67,20 +60,6 @@ public class IMServer extends Thread {
 			System.out.println("Started runner on: " 
 					+ MainClientSocket.getInetAddress());
 		}
-	}
-
-	public boolean ping(Socket in) {
-		try {
-			PrintWriter writer = new PrintWriter(in.getOutputStream());
-			writer.write("$ping");
-		} catch (IOException e) {
-			System.out.println("Failed ping on " +
-					in.getInetAddress().toString());
-			openConnections.remove(in.getInetAddress().toString().substring
-					(in.getInetAddress().toString().indexOf("/") + 1));
-		}
-
-		return false;
 	}
 
 	public void run() {
@@ -133,7 +112,10 @@ public class IMServer extends Thread {
 		//Connection to the client is done
 
 		System.out.println("Received raw input: " + rawInput);
-
+		
+		/*TODO the server stores list of logins, and their associated IPs,
+		 * and updates them when a new user is created. This is what this commented
+		 * out stuff is trying to do. */
 		//Handle message
 		if (rawInput.size() > 0) { //Handles broken messages being sent
 			/* Temporarily commented out
@@ -230,46 +212,4 @@ public class IMServer extends Thread {
 			return false;
 		}
 	}
-
-
-	/* class Ping implements Runnable {
-
-		public void ping(Socket in) {
-			try {
-				PrintWriter writer = new PrintWriter(in.getOutputStream());
-				writer.write("$ping");
-			} catch (IOException e) {
-				System.out.println("Failed ping on " +
-						in.getInetAddress().toString());
-				e.printStackTrace();
-
-				//Removes connection from tree if it is inactive
-				synchronized(o) {
-					openConnections.remove(in.getInetAddress().toString().substring
-							(in.getInetAddress().toString().indexOf("/") + 1));
-				}
-			}
-			//Ping is successful, still connected
-			System.out.println("Successful ping");
-		}
-
-		@Override
-		public void run() {
-			while (true) {
-				//Delay 5 seconds
-				try {
-					Thread.sleep(5000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-
-				Collection<Socket> val = openConnections.values();
-				Iterator<Socket> iter = val.iterator();
-				while (iter.hasNext()) {
-					Socket temp = iter.next();
-					ping(temp);
-				}
-			}
-		}
-	} */
 }
