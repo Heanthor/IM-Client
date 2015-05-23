@@ -166,7 +166,9 @@ public class LoginWindow {
 					//Button pressed
 					public void actionPerformed(ActionEvent arg0) {
 						if (!txtEnterUsername.getText().equals("Enter Username") && 
-								!txtEnterUsername.getText().equals("")) {
+								!txtEnterUsername.getText().equals("") &&
+								!new String(txtEnterPassword.getPassword()).equals("Enter Password") &&
+								!new String(txtEnterPassword.getPassword()).equals("")) {
 
 							username = txtEnterUsername.getText();
 							password = new String(txtEnterPassword.getPassword());

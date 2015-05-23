@@ -269,6 +269,7 @@ public class IMServer implements Runnable {
 		return null;
 	}
 	
+	//TODO when authenticating, use the sender User object in the InternalMessage to get his Credentials
 	private AuthenticateResponse authenticate(User u) {
 		LoginServer s = new LoginServer("/users/users.ser");
 
