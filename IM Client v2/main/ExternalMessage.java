@@ -22,5 +22,4 @@ public class ExternalMessage extends Message {
 	public String getMessage() {
 		return message;
 	}
-
 }
