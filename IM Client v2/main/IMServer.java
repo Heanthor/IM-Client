@@ -1,6 +1,7 @@
 package main;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -31,9 +32,9 @@ public class IMServer implements Runnable {
 	private ArrayList<String> connectedIPs = new ArrayList<String>();
 	private static Object o = new Object(); // Synchronizing
 	private boolean loopInput = true; // Controls looping IO for one connection
-	
+
 	public static TreeMap<String, Socket> openConnections = new TreeMap<String, Socket>();
-	
+
 	/**
 	 * @param clientSocket - The sender's socket connection.
 	 */
@@ -127,13 +128,13 @@ public class IMServer implements Runnable {
 		//Connection to the client is done
 
 		System.out.println("Received raw input: " + rawInput);
-		
+
 		/*TODO the server stores list of logins, and their associated IPs,
 		 * and updates them when a new user is created. This is what this commented
 		 * out stuff is trying to do. */
 		//Handle message
 		if (rawInput.size() > 0) { //Handles broken messages being sent
-			 BufferedReader fileReader = new BufferedReader
+			BufferedReader fileReader = new BufferedReader
 					(new FileReader("users/identifiers.txt"));
 
 			String line;
@@ -148,7 +149,7 @@ public class IMServer implements Runnable {
 			}
 
 			fileReader.close();
-			 
+
 			recipientIP = rawInput.get(0); //backup
 
 			if(true) { //TODO if ip is in connectedIPs
@@ -159,7 +160,7 @@ public class IMServer implements Runnable {
 					connectedIPs.add(clientSocket.getInetAddress().toString());
 					System.out.println("Client " +
 							clientSocket.getInetAddress().toString() + " connected.");
-					
+
 					//AuthenticateResponse r = authenticate();
 					return false; // Don't send message
 				}
@@ -173,10 +174,11 @@ public class IMServer implements Runnable {
 					return false;
 				}
 
-				//Saves identifier and InetAddress to a file
+				/* Saves identifier and InetAddress to a file in form
+				/* <identifier> /<ip address> */
 				String identifier = rawInput.get(1);
 				BufferedWriter fileWriter = new 
-						BufferedWriter(new PrintWriter("identifiers.txt"));
+						BufferedWriter(new PrintWriter("users/identifiers.txt"));
 				fileWriter.write(identifier + " " + 
 						clientSocket.getInetAddress());
 
@@ -231,10 +233,40 @@ public class IMServer implements Runnable {
 			return false;
 		}
 	}
+
+	/**
+	 * Helper method for reading identifiers.txt file.
+	 * @param name The username being searched for
+	 * @return True if the username is found in the list, false otherwise.
+	 * @throws IOException
+	 */
+	public boolean contains(String name) throws IOException {
+		BufferedReader fileReader = null;
+		
+		try {
+			fileReader = new BufferedReader
+					(new FileReader("users/identifiers.txt"));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		String line;
+		//Finds the first instance of the identifier in list, saves IP
+		while ((line = fileReader.readLine()) != null) {
+			if (line.substring(0, line.indexOf(" ")).
+					equals(name)) {
+				fileReader.close();
+				return true;
+			}
+		}
+
+		fileReader.close();
+		return false;
+	}
 	
 	private AuthenticateResponse authenticate(User u) {
 		LoginServer s = new LoginServer("/users/users.ser");
-		
+
 		return s.authenticate(u.getCredentials());
 	}
 }
