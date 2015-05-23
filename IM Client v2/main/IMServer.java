@@ -149,12 +149,12 @@ public class IMServer implements Runnable {
 			}
 
 			fileReader.close(); */
-			String line;
+			/*String line;
 			if ((line = contains(rawInput.get(1))) != null) {
 				recipientIP = line.substring
 						(line.indexOf(" ") + 1); //Saves IP
 			}
-
+			*/
 			recipientIP = rawInput.get(0); //backup
 
 			if(true) { //TODO if ip is in connectedIPs
