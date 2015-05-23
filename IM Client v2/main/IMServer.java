@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
+import login.*;
+
 /**
  * The IMServer is the server portion of the chat program.
  * The port in use is defined in the main method, and must match the client's 
@@ -150,7 +152,7 @@ public class IMServer implements Runnable {
 			 */
 			recipientIP = rawInput.get(0); //backup
 
-			if(true) {
+			if(true) { //TODO if ip is in connectedIPs
 				message = rawInput.get(2);
 				message.substring(1);
 
@@ -158,6 +160,8 @@ public class IMServer implements Runnable {
 					connectedIPs.add(clientSocket.getInetAddress().toString());
 					System.out.println("Client " +
 							clientSocket.getInetAddress().toString() + " connected.");
+					
+					//AuthenticateResponse r = authenticate();
 					return false; // Don't send message
 				}
 
@@ -227,5 +231,11 @@ public class IMServer implements Runnable {
 		} else {
 			return false;
 		}
+	}
+	
+	private AuthenticateResponse authenticate(User u) {
+		LoginServer s = new LoginServer("/users/users.ser");
+		
+		return s.authenticate(u.getCredentials());
 	}
 }

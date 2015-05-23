@@ -15,6 +15,8 @@ import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import login.*;
+
 /**
  * The IMClient is the client portion of the chat program.
  * An IMServer must be running at the correct IP, otherwise an error will occur
@@ -63,6 +65,10 @@ public class IMClient implements Runnable {
 	public static void main(String args[])  {
 		//LoginWindow blocks until the "OK" button is pressed with a correct username
 		LoginWindow w = new LoginWindow(o);
+
+		//Create authentication bit
+		User u = new User(PermissionLevel.USER,
+				new Credentials(w.getUsername(), w.getPassword()));
 
 		IMClient client = new IMClient(w.getUsername());
 		client.init();
@@ -141,7 +147,7 @@ public class IMClient implements Runnable {
 			}
 		}
 	}
-	
+
 	//this thread is the incoming message scanner.
 	public void run() {
 		try {

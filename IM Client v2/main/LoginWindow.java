@@ -64,11 +64,11 @@ public class LoginWindow {
 		d.getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		d.getContentPane().add(contentPanel, BorderLayout.CENTER);
-		
+
 		/*
 		 * Username field listeners
 		 */
-		
+
 		txtEnterUsername = new JTextField();
 		txtEnterUsername.addMouseListener(new MouseAdapter() {
 			//Mouse entered
@@ -107,9 +107,9 @@ public class LoginWindow {
 		/*
 		 * Password field listeners
 		 */
-		
+
 		txtEnterPassword = new JPasswordField();
-		
+
 		final char defaultEchoChar = txtEnterPassword.getEchoChar();
 		txtEnterPassword.setEchoChar((char) 0);
 		txtEnterPassword.addMouseListener(new MouseAdapter() {
@@ -129,10 +129,10 @@ public class LoginWindow {
 			//On focus
 			@Override
 			public void focusGained(FocusEvent arg0) {
-					txtEnterPassword.setForeground(Color.BLACK);
-					txtEnterPassword.selectAll();
+				txtEnterPassword.setForeground(Color.BLACK);
+				txtEnterPassword.selectAll();
 			}
-			
+
 			@Override
 			public void focusLost(FocusEvent e) {
 				txtEnterPassword.setForeground(Color.LIGHT_GRAY);
@@ -142,14 +142,14 @@ public class LoginWindow {
 				}
 			}
 		});
-		
+
 		txtEnterPassword.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent arg0) {
 				txtEnterPassword.setEchoChar(defaultEchoChar);
 			}
 		});
-		
+
 		txtEnterPassword.setText("Enter Password");
 		txtEnterPassword.setHorizontalAlignment(SwingConstants.CENTER);
 		txtEnterPassword.setForeground(Color.LIGHT_GRAY);
@@ -167,7 +167,7 @@ public class LoginWindow {
 					public void actionPerformed(ActionEvent arg0) {
 						if (!txtEnterUsername.getText().equals("Enter Username") && 
 								!txtEnterUsername.getText().equals("")) {
-							
+
 							username = txtEnterUsername.getText();
 							password = new String(txtEnterPassword.getPassword());
 							//Close the window
@@ -204,9 +204,13 @@ public class LoginWindow {
 		d.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		d.setVisible(true);
 
+		/*
+		 * Blocks main thread
+		 */
+
 		synchronized(o) {
 			try {
-				o.wait(); //Blocks main thread
+				o.wait();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -219,7 +223,7 @@ public class LoginWindow {
 	public String getUsername() {
 		return username;
 	}
-	
+
 	/**
 	 * @return the password.
 	 */
