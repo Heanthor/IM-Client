@@ -4,16 +4,14 @@ import java.io.Serializable;
 
 import login.*;
 
-public class Message implements Serializable {
+public abstract class Message implements Serializable {
 	private static final long serialVersionUID = -7316250263820535794L;
 	private User sender;
 	private User recipient;
-	private String message;
 	
-	public Message(User sender, User recipient, String message) {
+	public Message(User sender, User recipient) {
 		this.sender = sender;
 		this.recipient = recipient;
-		this.message = message;
 	}
 
 	/**
@@ -30,10 +28,5 @@ public class Message implements Serializable {
 		return recipient;
 	}
 
-	/**
-	 * @return the message
-	 */
-	public String getMessage() {
-		return message;
-	}
+
 }

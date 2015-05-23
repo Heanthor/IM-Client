@@ -13,20 +13,20 @@ import org.junit.Test;
 
 public class TestHelperMethods {
 
-	@SuppressWarnings("resource")
 	@Test
 	public void test() {
 		IMServer s = new IMServer(null);
 		
 		try {
-			BufferedWriter bw = new BufferedWriter(new FileWriter("users/identifiers.txt", false));
+			File f = new File("users/identifiers.txt");
+			BufferedWriter bw = new BufferedWriter(new FileWriter(f, false));
 			
 			bw.write("user1 192.168.1");
+			bw.flush();
+			
+			assertTrue(s.contains("user1") != null);
 			
 			bw.close();
-			
-			assertTrue(s.contains("user1"));
-
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

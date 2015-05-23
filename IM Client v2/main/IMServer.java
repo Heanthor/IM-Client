@@ -134,7 +134,7 @@ public class IMServer implements Runnable {
 		 * out stuff is trying to do. */
 		//Handle message
 		if (rawInput.size() > 0) { //Handles broken messages being sent
-			BufferedReader fileReader = new BufferedReader
+			/*BufferedReader fileReader = new BufferedReader
 					(new FileReader("users/identifiers.txt"));
 
 			String line;
@@ -148,7 +148,12 @@ public class IMServer implements Runnable {
 				}
 			}
 
-			fileReader.close();
+			fileReader.close(); */
+			String line;
+			if ((line = contains(rawInput.get(1))) != null) {
+				recipientIP = line.substring
+						(line.indexOf(" ") + 1); //Saves IP
+			}
 
 			recipientIP = rawInput.get(0); //backup
 
@@ -237,10 +242,10 @@ public class IMServer implements Runnable {
 	/**
 	 * Helper method for reading identifiers.txt file.
 	 * @param name The username being searched for
-	 * @return True if the username is found in the list, false otherwise.
+	 * @return the line containing the name if found, or null if not found.
 	 * @throws IOException
 	 */
-	public boolean contains(String name) throws IOException {
+	public String contains(String name) throws IOException {
 		BufferedReader fileReader = null;
 		
 		try {
@@ -256,12 +261,12 @@ public class IMServer implements Runnable {
 			if (line.substring(0, line.indexOf(" ")).
 					equals(name)) {
 				fileReader.close();
-				return true;
+				return line;
 			}
 		}
 
 		fileReader.close();
-		return false;
+		return null;
 	}
 	
 	private AuthenticateResponse authenticate(User u) {
