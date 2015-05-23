@@ -133,9 +133,8 @@ public class IMServer implements Runnable {
 		 * out stuff is trying to do. */
 		//Handle message
 		if (rawInput.size() > 0) { //Handles broken messages being sent
-			/* Temporarily commented out
 			 BufferedReader fileReader = new BufferedReader
-					(new FileReader("identifiers.txt"));
+					(new FileReader("users/identifiers.txt"));
 
 			String line;
 			//Finds the first instance of the identifier in list, saves IP
@@ -149,7 +148,7 @@ public class IMServer implements Runnable {
 			}
 
 			fileReader.close();
-			 */
+			 
 			recipientIP = rawInput.get(0); //backup
 
 			if(true) { //TODO if ip is in connectedIPs
