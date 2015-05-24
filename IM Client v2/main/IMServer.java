@@ -166,7 +166,19 @@ public class IMServer implements Runnable {
 						System.out.println("Client " +
 								clientSocket.getInetAddress().toString() + " connected.");
 
-						//AuthenticateResponse r = authenticate(temp.getUser());
+						AuthenticateResponse r = loginServer.authenticate(temp.getUser().getCredentials());
+						
+						//Send the results of authentication back to client
+						if (r.reponseCode == AuthenticateResponse.RESPONSE_AUTHENTICATED) {
+							message = new InternalMessage(null, temp.getUser(), null, "$authenticated$");
+						} else if (r.reponseCode == AuthenticateResponse.RESPONSE_WRONG_PASSWORD) {
+							message = new InternalMessage(null, temp.getUser(), null, "$wrong_password$");
+						} else if (r.reponseCode == AuthenticateResponse.RESPONSE_USERNAME_NOT_FOUND) {
+							message = new InternalMessage(null, temp.getUser(), null, "$username_not_found$");
+						}
+						
+						send();
+						
 						return false; // Don't send message
 					}
 
@@ -285,11 +297,5 @@ public class IMServer implements Runnable {
 
 		fileReader.close();
 		return null;
-	}
-
-	//TODO when authenticating, use the sender User object in the InternalMessage to get his Credentials
-	private AuthenticateResponse authenticate(User u) {
-
-		return loginServer.authenticate(u.getCredentials());
 	}
 }

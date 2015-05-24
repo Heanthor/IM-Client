@@ -34,6 +34,8 @@ public class IMClient implements Runnable {
 	private Socket serverSocket; // connection to the server
 	private InetAddress serverIP; // get IP
 	private static Object o = new Object(); // synchronization
+	private static Object internal = new Object(); //Alert for internal messages
+	private InternalMessage currentInternalMessage; //Internal message to be evaluated
 	private MainWindow mainWindow; // associated MainWindow, for printing
 	private boolean register = false;
 
@@ -83,12 +85,10 @@ public class IMClient implements Runnable {
 	private void init() {
 		//If the first part of the username contains the register code
 		if (register) {
-			System.out.println("Register new user.");
+			System.out.println("Registering new user.");
 			//Register the user
 			new Thread(new Sender(this, new InternalMessage("test", identifier, "test", "$register$"))).start();
 		}
-		
-		mainWindow = new MainWindow(o, identifier.getCredentials().getUsername());
 
 		//Starts incoming message scanner
 		new Thread(this).start();
@@ -96,25 +96,43 @@ public class IMClient implements Runnable {
 		//Lets server know client is "connected"
 		new Thread(new Sender(this, new InternalMessage("test", identifier, "test", "$connected$"))).start();
 
-		while (true) {
+		//Wait for results of authentication
+		synchronized(internal) {
 			try {
-				synchronized(o) {
-					o.wait(); // main thread waits
-					Message message = mainWindow.getMessage();
-
-					if (message instanceof Internal) {
-						new Thread(new Sender(this, new InternalMessage
-								("test", identifier, "test", ((Internal) message)
-										.getCode()))).start();
-					} else {
-						//Starts send message thread
-						new Thread(new Sender(this, new ExternalMessage
-								("test", "test", ((External) message).
-										getMessage()))).start();
-					}
-				}
+				internal.wait();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
+			}
+		}
+
+		//Check authentication response
+		if (currentInternalMessage.getMessage().equals("$wrong_password$")) {
+			System.err.println("Wrong password");
+		} else if (currentInternalMessage.getMessage().equals("$username_not_found$")) {
+			System.err.println("Username not found");
+		} else {
+			mainWindow = new MainWindow(o, identifier.getCredentials().getUsername());
+
+			while (true) {
+				try {
+					synchronized(o) {
+						o.wait(); // main thread waits
+						Message message = mainWindow.getMessage();
+
+						if (message instanceof Internal) {
+							new Thread(new Sender(this, new InternalMessage
+									("test", identifier, "test", ((Internal) message)
+											.getCode()))).start();
+						} else {
+							//Starts send message thread
+							new Thread(new Sender(this, new ExternalMessage
+									("test", "test", ((External) message).
+											getMessage()))).start();
+						}
+					}
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}
@@ -155,7 +173,14 @@ public class IMClient implements Runnable {
 			if (temp != null) {
 				if (temp instanceof InternalMessage) {
 					//TODO add internal message support
-					System.out.println("(temp) Internal message" + temp);
+					System.out.println("Internal message" + temp);
+
+					currentInternalMessage = (InternalMessage)temp;
+
+					//Notify that an internal message is received
+					synchronized(internal) {
+						internal.notifyAll();
+					}
 				} else { //External message
 					ExternalMessage response = (ExternalMessage)temp;
 					System.out.println("Received message: " + response.getMessage());
