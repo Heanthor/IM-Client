@@ -118,6 +118,7 @@ public class IMServer implements Runnable {
 					new ObjectInputStream(clientSocket.getInputStream()));
 		} catch (IOException e) {
 			System.err.println("ObjectInputStream exception");
+			loopInput = false; //kills thread
 			e.printStackTrace();
 		}
 
@@ -170,11 +171,17 @@ public class IMServer implements Runnable {
 						
 						//Send the results of authentication back to client
 						if (r.reponseCode == AuthenticateResponse.RESPONSE_AUTHENTICATED) {
+							
 							message = new InternalMessage(null, temp.getUser(), null, "$authenticated$");
+							System.out.println("Authenticated " + clientSocket.getInetAddress().toString());
 						} else if (r.reponseCode == AuthenticateResponse.RESPONSE_WRONG_PASSWORD) {
+							
 							message = new InternalMessage(null, temp.getUser(), null, "$wrong_password$");
+							System.out.println("Wrong password on " + clientSocket.getInetAddress().toString());
 						} else if (r.reponseCode == AuthenticateResponse.RESPONSE_USERNAME_NOT_FOUND) {
+							
 							message = new InternalMessage(null, temp.getUser(), null, "$username_not_found$");
+							System.out.println("Username not found on " + clientSocket.getInetAddress().toString());
 						}
 						
 						send();
@@ -250,6 +257,7 @@ public class IMServer implements Runnable {
 			System.out.println("Opened conection to recipient");
 		} catch (IOException e) {
 			System.err.println("IP Exception");
+			loopInput = false; //kills thread
 			e.printStackTrace();
 		}
 
