@@ -88,6 +88,22 @@ public class IMClient implements Runnable {
 			System.out.println("Registering new user.");
 			//Register the user
 			new Thread(new Sender(this, new InternalMessage("test", identifier, "test", "$register$"))).start();
+			
+			synchronized(internal) {
+				try {
+					internal.wait();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			if (currentInternalMessage.getMessage().equals("$true$")) {
+				System.out.println("Registration successful, welcome " + 
+			identifier.getCredentials().getUsername());
+			} else {
+				System.err.println("Registration unsucessful.");
+				System.exit(1);
+			}
 		}
 
 		//Starts incoming message scanner

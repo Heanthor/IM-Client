@@ -88,8 +88,6 @@ public class IMServer implements Runnable {
 					} else {
 						System.out.println("Did not send message.");
 					}
-				} else {
-					System.out.println("Not proceeding to send.");
 				}
 			} catch (Exception e) {
 				System.out.println("Exception in run method");
@@ -193,8 +191,10 @@ public class IMServer implements Runnable {
 						//Register new user, returns the results to the client.
 						if (loginServer.newUser(((InternalMessage) rawInput).getUser().getCredentials())) {
 							message = new InternalMessage(null, temp.getUser(), null, "$true$");
+							System.out.println("Registration successful");
 						} else {
 							message = new InternalMessage(null, temp.getUser(), null, "$false$");
+							System.err.println("Registration failed");
 						}
 						
 						//sends response message
