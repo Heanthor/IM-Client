@@ -26,8 +26,8 @@ import login.*;
  * @author Reed
  */
 public class IMClient implements Runnable {
-	//private String host = "162.203.101.47";  // refers to the server IP
-	private String host = "52.10.127.193";  // refers to the server IP
+	private String host = "162.203.101.47";  // refers to the server IP
+	//private String host = "52.10.127.193";  // refers to the server IP
 	private String identifier; //Your unique identifier
 	private int portNumber = 6969;	//Port the program runs on
 	private ObjectInputStream reader;  // stream used to read the server's response
@@ -97,7 +97,7 @@ public class IMClient implements Runnable {
 						new Thread(new Sender(this, new InternalMessage("test", "test", "$logout$"))).start();
 					} else {
 						//Starts send message thread
-						new Thread(new Sender(this, new ExternalMessage(null, null, message))).start();
+						new Thread(new Sender(this, new ExternalMessage("test", "test", message))).start();
 					}
 				}
 			} catch (InterruptedException e) {
@@ -147,7 +147,7 @@ public class IMClient implements Runnable {
 					ExternalMessage response = (ExternalMessage)temp;
 					System.out.println("Received message: " + response.getMessage());
 					mainWindow.getTextArea().
-					append(response.getSender() + ": " + response + "\n");
+					append(response.getSender() + ": " + response.getMessage() + "\n");
 
 					//Scroll to bottom
 					mainWindow.getScrollPane().getVerticalScrollBar().

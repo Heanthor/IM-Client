@@ -144,7 +144,7 @@ public class IMServer implements Runnable {
 				if (line.substring(0, line.indexOf(" ")).
 						equals(rawInput.getRecipient())) {
 					recipientIP = line.substring
-							(line.indexOf(" ") + 1); //Saves IP
+							(line.indexOf(" ") + 2); //Saves IP
 					break;
 				}
 			}
@@ -180,8 +180,6 @@ public class IMServer implements Runnable {
 					ExternalMessage message = (ExternalMessage)rawInput;
 					String str = message.getMessage();
 					str.substring(1);
-
-					
 
 					/* Saves identifier and InetAddress to a file in form
 				/* <identifier> /<ip address> */
