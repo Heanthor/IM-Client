@@ -26,9 +26,9 @@ import login.*;
  * @author Reed
  */
 public class IMClient implements Runnable {
-	private String host = "162.203.101.47";  // refers to the server IP
-	//private String host = "52.10.127.193";  // refers to the server IP
-	private String identifier; //Your unique identifier
+	//private String host = "162.203.101.47";  // refers to the server IP
+	private String host = "52.10.127.193";  // refers to the server IP AMAZON IP
+	private User identifier; //Your unique identifier
 	private int portNumber = 6969;	//Port the program runs on
 	private ObjectInputStream reader;  // stream used to read the server's response
 	private Socket serverSocket; // connection to the server
@@ -40,8 +40,8 @@ public class IMClient implements Runnable {
 	 * @param username - What user is using this IMClient. Used for printing 
 	 * namestamp in chat, and for identification.
 	 */
-	public IMClient(String username) {
-		identifier = username;
+	public IMClient(User u) {
+		identifier = u;
 
 		//Opens connection to server
 		try {
@@ -71,7 +71,7 @@ public class IMClient implements Runnable {
 		User u = new User(PermissionLevel.USER,
 				new Credentials(w.getUsername(), w.getPassword()));
 
-		IMClient client = new IMClient(w.getUsername());
+		IMClient client = new IMClient(u);
 		client.init();
 	}
 
@@ -79,13 +79,13 @@ public class IMClient implements Runnable {
 	 * Launches the main threads for the client.
 	 */
 	private void init() {
-		mainWindow = new MainWindow(o, identifier);
+		mainWindow = new MainWindow(o, identifier.getCredentials().getUsername());
 
 		//Starts incoming message scanner
 		new Thread(this).start();
 
 		//Lets server know client is "connected"
-		new Thread(new Sender(this, new InternalMessage("test", "test", "$connected$"))).start();
+		new Thread(new Sender(this, new InternalMessage("test", identifier, "test", "$connected$"))).start();
 
 		while (true) {
 			try {
@@ -94,7 +94,7 @@ public class IMClient implements Runnable {
 					String message = mainWindow.getMessage();
 
 					if (message.equals("$logout$")) {
-						new Thread(new Sender(this, new InternalMessage("test", "test", "$logout$"))).start();
+						new Thread(new Sender(this, new InternalMessage("test", identifier, "test", "$logout$"))).start();
 					} else {
 						//Starts send message thread
 						new Thread(new Sender(this, new ExternalMessage("test", "test", message))).start();

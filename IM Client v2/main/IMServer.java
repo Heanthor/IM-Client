@@ -163,7 +163,7 @@ public class IMServer implements Runnable {
 						System.out.println("Client " +
 								clientSocket.getInetAddress().toString() + " connected.");
 
-						//AuthenticateResponse r = authenticate();
+						AuthenticateResponse r = authenticate(temp.getUser());
 						return false; // Don't send message
 					}
 
