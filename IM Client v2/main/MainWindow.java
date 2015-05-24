@@ -192,7 +192,7 @@ public class MainWindow {
 
 					//Sets message
 					message = new External(txtEnterMessage.getText());
-					textArea.append(username + ": " + message + "\n");
+					textArea.append(username + ": " + ((External)message).getMessage() + "\n");
 
 					//Scrolls to bottom
 					JScrollBar vertical = scrollPane.getVerticalScrollBar();
