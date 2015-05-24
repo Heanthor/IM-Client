@@ -3,15 +3,11 @@ package main;
 // first, then run the client, that will connect to it.  Using localhost
 // means the client will connect to the server running on the same machine.
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -39,6 +35,7 @@ public class IMClient implements Runnable {
 	private InetAddress serverIP; // get IP
 	private static Object o = new Object(); // synchronization
 	private MainWindow mainWindow; // associated MainWindow, for printing
+	private boolean register = false;
 
 	/**
 	 * @param username - What user is using this IMClient. Used for printing 
@@ -76,6 +73,7 @@ public class IMClient implements Runnable {
 				new Credentials(w.getUsername(), w.getPassword()));
 
 		IMClient client = new IMClient(u);
+		client.register = w.isRegister(); //Register or not?
 		client.init();
 	}
 
@@ -84,10 +82,7 @@ public class IMClient implements Runnable {
 	 */
 	private void init() {
 		//If the first part of the username contains the register code
-		if (identifier.getCredentials().getUsername().length() > 10 && 
-				identifier.getCredentials().getUsername().
-				substring(0, 10).equals("$register$")) {
-			
+		if (register) {
 			System.out.println("Register new user.");
 			//Register the user
 			new Thread(new Sender(this, new InternalMessage("test", identifier, "test", "$register$"))).start();

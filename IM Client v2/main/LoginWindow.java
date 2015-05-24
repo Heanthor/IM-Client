@@ -33,6 +33,7 @@ public class LoginWindow {
 	@SuppressWarnings("unused")
 	private static Object o; //Synchronization
 	private JPasswordField txtEnterPassword;
+	private boolean register = false;
 
 	/**
 	 * Launch the application.
@@ -204,8 +205,10 @@ public class LoginWindow {
 									!new String(txtEnterPassword.getPassword()).equals("Enter Password") &&
 									!new String(txtEnterPassword.getPassword()).equals("")) {
 
-								username = "$register$" + txtEnterUsername.getText(); //hack
+								username = txtEnterUsername.getText();
 								password = new String(txtEnterPassword.getPassword());
+
+								register = true;
 								//Close the window
 								close();
 
@@ -255,6 +258,13 @@ public class LoginWindow {
 	 */
 	protected String getPassword() {
 		return password;
+	}
+	
+	/**
+	 * @return the register
+	 */
+	public boolean isRegister() {
+		return register;
 	}
 
 	//Closes the window
