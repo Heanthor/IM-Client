@@ -14,7 +14,7 @@ import org.junit.Test;
 
 public class TestHelperMethods {
 
-	@Test
+	/*@Test
 	public void testFileIO() {
 		IMServer s = new IMServer(null);
 		
@@ -32,11 +32,18 @@ public class TestHelperMethods {
 			e.printStackTrace();
 		}
 	}
-	
+	*/
 	@Test
 	public void testPolymorphism() {
-		Message m = new InternalMessage(null, null, null);
+		Message m = new InternalMessage(null, null, null, null);
 		
 		assertTrue(m instanceof InternalMessage);
+	}
+	
+	@Test
+	public void testSubstring() {
+		String register = "$register$Heanthor";
+		
+		assertTrue(register.substring(0, 10).equals("$register$"));
 	}
 }

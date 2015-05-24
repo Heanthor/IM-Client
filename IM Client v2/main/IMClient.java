@@ -88,6 +88,7 @@ public class IMClient implements Runnable {
 				identifier.getCredentials().getUsername().
 				substring(0, 10).equals("$register$")) {
 			
+			System.out.println("Register new user.");
 			//Register the user
 			new Thread(new Sender(this, new InternalMessage("test", identifier, "test", "$register$"))).start();
 		}

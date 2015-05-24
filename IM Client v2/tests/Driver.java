@@ -40,7 +40,7 @@ public class Driver {
 		LoginWindow w = new LoginWindow(new Object());
 		//If the IM server is not running, client will not be initialized
 		
-		client = new IMClient(w.getUsername());
+		client = new IMClient(null);
 		
 		System.out.println("Client successfully launched.\n"
 				+ "Enter message:");
