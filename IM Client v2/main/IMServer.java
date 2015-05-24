@@ -121,7 +121,7 @@ public class IMServer implements Runnable {
 		// read the client's request, interpret message
 
 		try {
-			rawInput = (InternalMessage) reader.readObject();
+			rawInput = (Message) reader.readObject();
 		} catch (Exception e) {
 			System.out.println("Exception in receive() after reading rawInput");
 			e.printStackTrace();
@@ -155,13 +155,9 @@ public class IMServer implements Runnable {
 
 			if(true) { //TODO if ip is in connectedIPs
 				if (rawInput instanceof InternalMessage) {
-					//TODO add this
-				} else {
-					message = rawInput;
-					ExternalMessage message = (ExternalMessage)rawInput;
-					String str = message.getMessage();
-					str.substring(1);
-
+					InternalMessage temp = (InternalMessage)rawInput;
+					String str = temp.getMessage();
+					
 					if (str.equals("$connected$")) {
 						connectedIPs.add(clientSocket.getInetAddress().toString());
 						System.out.println("Client " +
@@ -179,6 +175,13 @@ public class IMServer implements Runnable {
 						loopInput = false;
 						return false;
 					}
+				} else {
+					message = rawInput;
+					ExternalMessage message = (ExternalMessage)rawInput;
+					String str = message.getMessage();
+					str.substring(1);
+
+					
 
 					/* Saves identifier and InetAddress to a file in form
 				/* <identifier> /<ip address> */
