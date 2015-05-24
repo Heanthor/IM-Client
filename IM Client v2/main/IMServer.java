@@ -121,7 +121,7 @@ public class IMServer implements Runnable {
 		// read the client's request, interpret message
 
 		try {
-			rawInput = (Message) reader.readObject();
+			rawInput = (InternalMessage) reader.readObject();
 		} catch (Exception e) {
 			System.out.println("Exception in receive() after reading rawInput");
 			e.printStackTrace();
