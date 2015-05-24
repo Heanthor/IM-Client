@@ -34,7 +34,7 @@ public class IMServer implements Runnable {
 	private Socket recipientSocket;
 	private ArrayList<String> connectedIPs = new ArrayList<String>();
 	private static Object o = new Object(); // Synchronizing
-	private LoginServer loginServer = new LoginServer("/users/users.ser"); //Authentication
+	private LoginServer loginServer = new LoginServer("users/users.ser"); //Authentication
 	private boolean loopInput = true; // Controls looping IO for one connection
 
 	public static TreeMap<String, Socket> openConnections = new TreeMap<String, Socket>();
