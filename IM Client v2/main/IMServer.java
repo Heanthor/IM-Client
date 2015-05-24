@@ -203,11 +203,7 @@ public class IMServer implements Runnable {
 			System.out.println("Message not received properly");
 		}
 		//Successfully parsed a message, or not
-		if (!(rawInput.equals(new ArrayList<String>()))) {
-			return true;
-		} else {
-			return false;
-		}
+		return true;
 	}
 
 	/**
