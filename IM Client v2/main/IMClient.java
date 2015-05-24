@@ -84,7 +84,8 @@ public class IMClient implements Runnable {
 	 */
 	private void init() {
 		//If the first part of the username contains the register code
-		if (identifier.getCredentials().getUsername().
+		if (identifier.getCredentials().getUsername().length() > 10 && 
+				identifier.getCredentials().getUsername().
 				substring(0, 10).equals("$register$")) {
 			
 			//Register the user
