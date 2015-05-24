@@ -16,4 +16,12 @@ public class Internal extends Message {
 	public String getCode() {
 		return code;
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "Internal [code=" + code + "]";
+	}
 }

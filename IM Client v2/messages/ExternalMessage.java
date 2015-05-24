@@ -22,4 +22,12 @@ public class ExternalMessage extends Message {
 	public String getMessage() {
 		return message;
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "ExternalMessage [message=" + message + "]";
+	}
 }

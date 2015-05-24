@@ -179,7 +179,6 @@ public class MainWindow {
 		panel_2.add(txtEnterMessage);
 		txtEnterMessage.setColumns(10);
 
-
 		JPanel panel_1 = new JPanel();
 		frmReedreadV.getContentPane().add(panel_1);
 

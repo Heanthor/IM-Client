@@ -33,4 +33,12 @@ public class InternalMessage extends Message {
 	public User getUser() {
 		return u;
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "InternalMessage [message=" + message + "]";
+	}
 }
