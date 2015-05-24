@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
@@ -26,7 +27,7 @@ import login.*;
  */
 public class IMServer implements Runnable {
 	private String recipientIP;
-	private String message;
+	private Message message;
 	private Socket clientSocket;
 	private Socket recipientSocket;
 	private ArrayList<String> connectedIPs = new ArrayList<String>();
@@ -105,7 +106,7 @@ public class IMServer implements Runnable {
 	@SuppressWarnings("unchecked")
 	public boolean receive() throws IOException {
 		ObjectInputStream reader = null;
-		List<String> rawInput = new ArrayList<String>();
+		Message rawInput = null;
 
 		//Opens input stream to read message
 		try {
@@ -120,7 +121,7 @@ public class IMServer implements Runnable {
 		// read the client's request, interpret message
 
 		try {
-			rawInput = (List<String>) reader.readObject();
+			rawInput = (Message) reader.readObject();
 		} catch (Exception e) {
 			System.out.println("Exception in receive() after reading rawInput");
 			e.printStackTrace();
@@ -133,66 +134,67 @@ public class IMServer implements Runnable {
 		 * and updates them when a new user is created. This is what this commented
 		 * out stuff is trying to do. */
 		//Handle message
-		if (rawInput.size() > 0) { //Handles broken messages being sent
-			/*BufferedReader fileReader = new BufferedReader
+		if (rawInput != null) {
+			BufferedReader fileReader = new BufferedReader
 					(new FileReader("users/identifiers.txt"));
 
 			String line;
 			//Finds the first instance of the identifier in list, saves IP
 			while ((line = fileReader.readLine()) != null) {
 				if (line.substring(0, line.indexOf(" ")).
-						equals(rawInput.get(1))) {
+						equals(rawInput.getRecipient())) {
 					recipientIP = line.substring
 							(line.indexOf(" ") + 1); //Saves IP
 					break;
 				}
 			}
 
-			fileReader.close(); */
-			/*String line;
-			if ((line = contains(rawInput.get(1))) != null) {
-				recipientIP = line.substring
-						(line.indexOf(" ") + 1); //Saves IP
-			}
-			*/
-			recipientIP = rawInput.get(0); //backup
+			fileReader.close(); 
+
+			//recipientIP = rawInput.get(0); //backup
 
 			if(true) { //TODO if ip is in connectedIPs
-				message = rawInput.get(2);
-				message.substring(1);
+				if (rawInput instanceof InternalMessage) {
+					//TODO add this
+				} else {
+					message = rawInput;
+					ExternalMessage message = (ExternalMessage)rawInput;
+					String str = message.getMessage();
+					str.substring(1);
 
-				if (message.equals("$connected$")) {
-					connectedIPs.add(clientSocket.getInetAddress().toString());
-					System.out.println("Client " +
-							clientSocket.getInetAddress().toString() + " connected.");
+					if (str.equals("$connected$")) {
+						connectedIPs.add(clientSocket.getInetAddress().toString());
+						System.out.println("Client " +
+								clientSocket.getInetAddress().toString() + " connected.");
 
-					//AuthenticateResponse r = authenticate();
-					return false; // Don't send message
-				}
+						//AuthenticateResponse r = authenticate();
+						return false; // Don't send message
+					}
 
-				if (message.equals("$logout$")) {
-					connectedIPs.remove(clientSocket.getInetAddress().toString());
-					System.out.println("Client " +
-							clientSocket.getInetAddress().toString() + " disconnected.");
+					if (str.equals("$logout$")) {
+						connectedIPs.remove(clientSocket.getInetAddress().toString());
+						System.out.println("Client " +
+								clientSocket.getInetAddress().toString() + " disconnected.");
 
-					loopInput = false;
-					return false;
-				}
+						loopInput = false;
+						return false;
+					}
 
-				/* Saves identifier and InetAddress to a file in form
+					/* Saves identifier and InetAddress to a file in form
 				/* <identifier> /<ip address> */
-				String identifier = rawInput.get(1);
-				BufferedWriter fileWriter = new 
-						BufferedWriter(new PrintWriter("users/identifiers.txt"));
-				fileWriter.write(identifier + " " + 
-						clientSocket.getInetAddress());
+					String identifier = rawInput.getSender();
+					BufferedWriter fileWriter = new 
+							BufferedWriter(new PrintWriter("users/identifiers.txt"));
+					fileWriter.write(identifier + " " + 
+							clientSocket.getInetAddress());
 
-				fileWriter.flush();
-				fileWriter.close();
+					fileWriter.flush();
+					fileWriter.close();
 
-				System.out.println("Sender IP: " + clientSocket.getInetAddress());
-				System.out.println("Dest IP: " + recipientIP);
-				System.out.println("Message: " + message); 
+					System.out.println("Sender IP: " + clientSocket.getInetAddress());
+					System.out.println("Dest IP: " + recipientIP);
+					System.out.println("Message: " + str); 
+				}
 			} else {
 				System.out.println("Recipient not connected.");
 				return false;
@@ -213,13 +215,12 @@ public class IMServer implements Runnable {
 	 *  @return true if message is sent, false otherwise.
 	 */
 	public boolean send() {
-		PrintWriter writer = null;
+		ObjectOutputStream writer = null;
 
 		try {
 			System.out.println("Attempting to open connection 2");
 			recipientSocket = openConnections.get(recipientIP);
-			writer= new PrintWriter(
-					new OutputStreamWriter(recipientSocket.getOutputStream()));
+			writer = new ObjectOutputStream(recipientSocket.getOutputStream());
 			System.out.println("Opened conection to recipient");
 		} catch (IOException e) {
 			System.err.println("IP Exception");
@@ -227,12 +228,15 @@ public class IMServer implements Runnable {
 		}
 
 		// send message to recipient
-		writer.println(message);
+		try {
+			writer.writeObject(message);
+			// flush the stream
+			writer.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
-		// flush the stream, and close the socket
-		writer.flush();
-
-		if (message.length() != 0) {
+		if (message != null) {
 			return true;
 		} else {
 			return false;
@@ -247,7 +251,7 @@ public class IMServer implements Runnable {
 	 */
 	public String contains(String name) throws IOException {
 		BufferedReader fileReader = null;
-		
+
 		try {
 			fileReader = new BufferedReader
 					(new FileReader("users/identifiers.txt"));
@@ -268,7 +272,7 @@ public class IMServer implements Runnable {
 		fileReader.close();
 		return null;
 	}
-	
+
 	//TODO when authenticating, use the sender User object in the InternalMessage to get his Credentials
 	private AuthenticateResponse authenticate(User u) {
 		LoginServer s = new LoginServer("/users/users.ser");

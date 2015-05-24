@@ -6,6 +6,7 @@ package main;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -28,8 +29,7 @@ public class IMClient implements Runnable {
 	private String host = "162.203.101.47";  // refers to the server IP
 	private String identifier; //Your unique identifier
 	private int portNumber = 6969;	//Port the program runs on
-	private String response; // reads the server's response
-	private BufferedReader reader;  // stream used to read the server's response
+	private ObjectInputStream reader;  // stream used to read the server's response
 	private Socket serverSocket; // connection to the server
 	private InetAddress serverIP; // get IP
 	private static Object o = new Object(); // synchronization
@@ -84,7 +84,7 @@ public class IMClient implements Runnable {
 		new Thread(this).start();
 
 		//Lets server know client is "connected"
-		new Thread(new Sender(this, "$connected$")).start();
+		new Thread(new Sender(this, new InternalMessage("test", "test", "$connected$"))).start();
 
 		while (true) {
 			try {
@@ -93,7 +93,7 @@ public class IMClient implements Runnable {
 					String message = mainWindow.getMessage();
 
 					//Starts send message thread
-					new Thread(new Sender(this, message)).start();
+					new Thread(new Sender(this, new ExternalMessage(null, null, message))).start();
 				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -107,16 +107,11 @@ public class IMClient implements Runnable {
 	 * @param messageOut - The message to be sent
 	 * @throws IOException If a problem in the ObjectOutputStream occurs.
 	 */
-	public void outgoing(String messageOut) throws IOException {
+	public void outgoing(Message messageOut) throws IOException {
 		ObjectOutputStream writer = new ObjectOutputStream(new ObjectOutputStream(
 				serverSocket.getOutputStream()));
-		List<String> message = new ArrayList<String>();  //Data to be sent
 
-		message.add("72.45.15.42"); //Recipient IP -- outdated
-		message.add(identifier); //Recipient unique identifier
-		message.add(messageOut); //Message
-
-		writer.writeObject(message);
+		writer.writeObject(messageOut);
 		writer.flush();
 		//Don't close the ObjectOutputStream, it closes the socket in use!
 	}
@@ -128,22 +123,32 @@ public class IMClient implements Runnable {
 	 */
 	public void incoming() throws IOException {
 		while (true) {
-			reader = new BufferedReader(new InputStreamReader(
-					serverSocket.getInputStream()));
+			reader = new ObjectInputStream(
+					serverSocket.getInputStream());
 
 			//Protects against null output, shows real messages only
-			String temp = reader.readLine();
+			Object temp = null;
+			try {
+				temp = reader.readObject();
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
 
 			if (temp != null) {
-				response = temp;
-				System.out.println("Received message: " + response);
-				//TODO temp name, have client fill in who you're talking to
-				mainWindow.getTextArea().append("temp: " + response + "\n");
+				if (temp instanceof InternalMessage) {
+					//TODO add internal message support
+					System.out.println("(temp) Internal message" + temp);
+				} else { //External message
+					ExternalMessage response = (ExternalMessage)temp;
+					System.out.println("Received message: " + response.getMessage());
+					mainWindow.getTextArea().
+					append(response.getSender() + ": " + response + "\n");
 
-				//Scroll to bottom
-				mainWindow.getScrollPane().getVerticalScrollBar().
-				setValue(mainWindow.getScrollPane().
-						getVerticalScrollBar().getMaximum());
+					//Scroll to bottom
+					mainWindow.getScrollPane().getVerticalScrollBar().
+					setValue(mainWindow.getScrollPane().
+							getVerticalScrollBar().getMaximum());
+				}
 			}
 		}
 	}

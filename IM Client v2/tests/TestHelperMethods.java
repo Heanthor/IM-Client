@@ -8,13 +8,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import main.IMServer;
+import main.*;
 
 import org.junit.Test;
 
 public class TestHelperMethods {
 
 	@Test
-	public void test() {
+	public void testFileIO() {
 		IMServer s = new IMServer(null);
 		
 		try {
@@ -31,5 +32,11 @@ public class TestHelperMethods {
 			e.printStackTrace();
 		}
 	}
-
+	
+	@Test
+	public void testPolymorphism() {
+		Message m = new InternalMessage(null, null, null);
+		
+		assertTrue(m instanceof InternalMessage);
+	}
 }

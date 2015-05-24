@@ -7,9 +7,9 @@ package main;
  */
 public class Sender implements Runnable {
 	private IMClient client;
-	private String messageOut;
+	private Message messageOut;
 
-	public Sender(IMClient client, String message) {
+	public Sender(IMClient client, Message message) {
 		this.client = client;
 		messageOut = message;
 	}
