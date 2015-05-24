@@ -83,6 +83,14 @@ public class IMClient implements Runnable {
 	 * Launches the main threads for the client.
 	 */
 	private void init() {
+		//If the first part of the username contains the register code
+		if (identifier.getCredentials().getUsername().
+				substring(0, 10).equals("$register$")) {
+			
+			//Register the user
+			new Thread(new Sender(this, new InternalMessage("test", identifier, "test", "$register$"))).start();
+		}
+		
 		mainWindow = new MainWindow(o, identifier.getCredentials().getUsername());
 
 		//Starts incoming message scanner

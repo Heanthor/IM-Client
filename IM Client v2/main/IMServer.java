@@ -34,6 +34,7 @@ public class IMServer implements Runnable {
 	private Socket recipientSocket;
 	private ArrayList<String> connectedIPs = new ArrayList<String>();
 	private static Object o = new Object(); // Synchronizing
+	private LoginServer loginServer = new LoginServer("/users/users.ser"); //Authentication
 	private boolean loopInput = true; // Controls looping IO for one connection
 
 	public static TreeMap<String, Socket> openConnections = new TreeMap<String, Socket>();
@@ -159,14 +160,28 @@ public class IMServer implements Runnable {
 				if (rawInput instanceof InternalMessage) {
 					InternalMessage temp = (InternalMessage)rawInput;
 					String str = temp.getMessage();
-					
+
 					if (str.equals("$connected$")) {
 						connectedIPs.add(clientSocket.getInetAddress().toString());
 						System.out.println("Client " +
 								clientSocket.getInetAddress().toString() + " connected.");
 
-						AuthenticateResponse r = authenticate(temp.getUser());
+						//AuthenticateResponse r = authenticate(temp.getUser());
 						return false; // Don't send message
+					}
+
+					if (str.equals("$register$")) {
+						//Register new user, returns the results to the client.
+						if (loginServer.newUser(((InternalMessage) rawInput).getUser().getCredentials())) {
+							message = new InternalMessage(null, temp.getUser(), null, "$true$");
+						} else {
+							message = new InternalMessage(null, temp.getUser(), null, "$false$");
+						}
+						
+						//sends response message
+						send();
+						
+						return false;
 					}
 
 					if (str.equals("$logout$")) {
@@ -274,8 +289,7 @@ public class IMServer implements Runnable {
 
 	//TODO when authenticating, use the sender User object in the InternalMessage to get his Credentials
 	private AuthenticateResponse authenticate(User u) {
-		LoginServer s = new LoginServer("/users/users.ser");
 
-		return s.authenticate(u.getCredentials());
+		return loginServer.authenticate(u.getCredentials());
 	}
 }

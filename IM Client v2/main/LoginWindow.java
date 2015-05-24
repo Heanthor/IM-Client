@@ -161,8 +161,8 @@ public class LoginWindow {
 			buttonPane.setLayout(new FlowLayout(FlowLayout.CENTER));
 			d.getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
-				JButton okButton = new JButton("OK");
-				okButton.addActionListener(new ActionListener() {
+				JButton loginButton = new JButton("Login");
+				loginButton.addActionListener(new ActionListener() {
 					//Button pressed
 					public void actionPerformed(ActionEvent arg0) {
 						if (!txtEnterUsername.getText().equals("Enter Username") && 
@@ -182,9 +182,9 @@ public class LoginWindow {
 						}	
 					}
 				});
-				okButton.setActionCommand("OK");
-				buttonPane.add(okButton);
-				d.getRootPane().setDefaultButton(okButton);
+				loginButton.setActionCommand("OK");
+				buttonPane.add(loginButton);
+				d.getRootPane().setDefaultButton(loginButton);
 			}
 			{
 				JButton cancelButton = new JButton("Cancel");
@@ -194,6 +194,30 @@ public class LoginWindow {
 						System.exit(0);
 					}
 				});
+				{
+					//Register button
+					JButton registerButton = new JButton("Register");
+					registerButton.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent arg0) {
+							if (!txtEnterUsername.getText().equals("Enter Username") && 
+									!txtEnterUsername.getText().equals("") &&
+									!new String(txtEnterPassword.getPassword()).equals("Enter Password") &&
+									!new String(txtEnterPassword.getPassword()).equals("")) {
+
+								username = "$register$" + txtEnterUsername.getText(); //hack
+								password = new String(txtEnterPassword.getPassword());
+								//Close the window
+								close();
+
+								//Creates the main window after completion of first dialog
+								synchronized(o) {
+									o.notifyAll();
+								}
+							}
+						}
+					});
+					buttonPane.add(registerButton);
+				}
 				cancelButton.setActionCommand("Cancel");
 				buttonPane.add(cancelButton);
 			}
