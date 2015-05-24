@@ -7,8 +7,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import main.IMServer;
 import main.*;
+import messages.InternalMessage;
 
 import org.junit.Test;
 

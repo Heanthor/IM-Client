@@ -28,6 +28,9 @@ import java.awt.event.WindowListener;
 
 import javax.swing.JScrollPane;
 
+import messages.External;
+import messages.Internal;
+
 import java.awt.EventQueue;
 import java.awt.Insets;
 import java.awt.Cursor;
@@ -35,7 +38,7 @@ import java.awt.Cursor;
 public class MainWindow {
 	private JFrame frmReedreadV;
 	private JTextField txtEnterMessage;
-	private String message;
+	private Message message;
 	private static Object o;
 	private JTextArea textArea;
 	private JScrollPane scrollPane;
@@ -111,7 +114,7 @@ public class MainWindow {
 			@Override
 			public void windowClosing(WindowEvent arg0) {
 				//Notifies the server that this client is logging out.
-				message = "$logout$";
+				message = new Internal("$logout$");
 				synchronized(o) {
 					o.notifyAll();
 				}
@@ -188,7 +191,7 @@ public class MainWindow {
 						!txtEnterMessage.getText().equals("Enter Message...")) {
 
 					//Sets message
-					message = txtEnterMessage.getText();
+					message = new External(txtEnterMessage.getText());
 					textArea.append(username + ": " + message + "\n");
 
 					//Scrolls to bottom
@@ -210,7 +213,7 @@ public class MainWindow {
 			//Logout
 			public void actionPerformed(ActionEvent e) {
 				//Notifies the server that this client is logging out.
-				message = "$logout$";
+				message = new Internal("$logout$");
 				synchronized(o) {
 					o.notifyAll();
 				}
@@ -227,7 +230,7 @@ public class MainWindow {
 	 * Message getter.
 	 * @return Current message
 	 */
-	public String getMessage() {
+	public Message getMessage() {
 		return message;
 	}
 

@@ -17,6 +17,10 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import login.*;
+import messages.External;
+import messages.ExternalMessage;
+import messages.Internal;
+import messages.InternalMessage;
 
 /**
  * The IMClient is the client portion of the chat program.
@@ -91,13 +95,17 @@ public class IMClient implements Runnable {
 			try {
 				synchronized(o) {
 					o.wait(); // main thread waits
-					String message = mainWindow.getMessage();
+					Message message = mainWindow.getMessage();
 
-					if (message.equals("$logout$")) {
-						new Thread(new Sender(this, new InternalMessage("test", identifier, "test", "$logout$"))).start();
+					if (message instanceof Internal) {
+						new Thread(new Sender(this, new InternalMessage
+								("test", identifier, "test", ((Internal) message)
+										.getCode()))).start();
 					} else {
 						//Starts send message thread
-						new Thread(new Sender(this, new ExternalMessage("test", "test", message))).start();
+						new Thread(new Sender(this, new ExternalMessage
+								("test", "test", ((External) message).
+										getMessage()))).start();
 					}
 				}
 			} catch (InterruptedException e) {

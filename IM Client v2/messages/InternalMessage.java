@@ -1,6 +1,7 @@
-package main;
+package messages;
 
 import login.User;
+import main.Message;
 
 
 /**

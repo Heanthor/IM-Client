@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.TreeMap;
 
 import login.*;
+import messages.ExternalMessage;
+import messages.InternalMessage;
 
 /**
  * The IMServer is the server portion of the chat program.

@@ -1,4 +1,6 @@
-package main;
+package messages;
+
+import main.Message;
 
 /**
  * External messages are packets containing actual messages to be shown to users.

@@ -7,6 +7,11 @@ public abstract class Message implements Serializable {
 	private String senderUsername;
 	private String recipientUsername;
 	
+	public Message() {
+		senderUsername = null;
+		recipientUsername = null;
+	}
+	
 	public Message(String sender, String recipient) {
 		this.senderUsername = sender;
 		this.recipientUsername = recipient;
