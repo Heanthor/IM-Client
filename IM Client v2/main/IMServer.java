@@ -161,7 +161,7 @@ public class IMServer implements Runnable {
 						BufferedWriter(new PrintWriter(new FileWriter("users/identifiers.txt", true)));
 				fileWriter.write("\n" + identifier + " " + 
 						clientSocket.getInetAddress());
-				recipientIP = clientSocket.getInetAddress().toString();
+				recipientIP = clientSocket.getInetAddress().toString().substring(1); //Trims /
 
 				fileWriter.flush();
 				fileWriter.close();
