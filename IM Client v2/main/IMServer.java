@@ -170,6 +170,7 @@ public class IMServer implements Runnable {
 
 			if(true) { //TODO if ip is in connectedIPs
 				if (rawInput instanceof InternalMessage) {
+					recipientIP = rawInput.getSender(); //Send to itself
 					InternalMessage temp = (InternalMessage)rawInput;
 					String str = temp.getMessage();
 
