@@ -3,15 +3,14 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-
 import java.util.TreeMap;
 
 import login.*;
@@ -135,7 +134,7 @@ public class IMServer implements Runnable {
 		//TODO read these files to memory on start of server, move this to before anything is processed
 		String identifier = rawInput.getSender();
 		BufferedWriter fileWriter = new 
-				BufferedWriter(new PrintWriter("users/identifiers.txt"));
+				BufferedWriter(new PrintWriter(new FileWriter("users/identifiers.txt", true)));
 		fileWriter.write(identifier + " " + 
 				clientSocket.getInetAddress());
 
