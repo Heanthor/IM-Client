@@ -165,12 +165,10 @@ public class IMServer implements Runnable {
 				fileWriter.flush();
 				fileWriter.close();
 			}
-			
-			//recipientIP = rawInput.get(0); //backup
 
 			if(true) { //TODO if ip is in connectedIPs
 				if (rawInput instanceof InternalMessage) {
-					recipientIP = rawInput.getSender(); //Send to itself
+					recipientIP = clientSocket.getInetAddress().toString(); //Send to itself
 					InternalMessage temp = (InternalMessage)rawInput;
 					String str = temp.getMessage();
 
