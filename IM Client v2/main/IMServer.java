@@ -141,6 +141,7 @@ public class IMServer implements Runnable {
 			String line;
 			//Finds the first instance of the identifier in list, saves IP
 			while ((line = fileReader.readLine()) != null) {
+				line = line.replace("\n", ""); //trim away newlines
 				if (line.substring(0, line.indexOf(" ")).
 						equals(rawInput.getRecipient())) {
 					recipientIP = line.substring
