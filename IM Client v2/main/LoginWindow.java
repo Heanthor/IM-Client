@@ -41,7 +41,7 @@ public class LoginWindow {
 	public static void main(String[] args) {
 		try {
 			LoginWindow dialog = new LoginWindow(new Object());
-			dialog.d.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			dialog.d.setDefaultCloseOperation(JDialog.EXIT_ON_CLOSE);
 			dialog.d.setVisible(true);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -60,7 +60,7 @@ public class LoginWindow {
 		}
 
 		LoginWindow.o = o;
-		d.setResizable(false);
+		d.setTitle("Placeholder v1.0 Login");
 		d.setBounds(100, 100, 333, 155);
 		d.getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));

@@ -27,8 +27,10 @@ import messages.InternalMessage;
  */
 public class IMClient implements Runnable {
 	//private String host = "162.203.101.47";  // refers to the server IP JOSEPH IP
-	private String host = "52.10.127.193";  // refers to the server IP AMAZON IP
+	//TODO obfuscate this IP
+	private String host = "52.10.127.193";  // refers to the server IP AMAZON IP 
 	private User identifier; //Your unique identifier
+	private String myUsername; //Username of this client
 	private int portNumber = 6969;	//Port the program runs on
 	private ObjectInputStream reader;  // stream used to read the server's response
 	private Socket serverSocket; // connection to the server
@@ -45,7 +47,8 @@ public class IMClient implements Runnable {
 	 */
 	public IMClient(User u) {
 		identifier = u;
-
+		myUsername = u.getCredentials().getUsername();
+		
 		//Opens connection to server
 		try {
 			serverIP = InetAddress.getByName(host);
@@ -90,7 +93,8 @@ public class IMClient implements Runnable {
 		if (register) {
 			System.out.println("Registering new user.");
 			//Register the user
-			new Thread(new Sender(this, new InternalMessage("test", identifier, "test", "$register$"))).start();
+			new Thread(new Sender(this, new InternalMessage
+					(myUsername, identifier, myUsername, "$register$"))).start();
 
 			//Wait for response
 			synchronized(internal) {
@@ -116,7 +120,8 @@ public class IMClient implements Runnable {
 		}
 
 		//Lets server know client is "connected"
-		new Thread(new Sender(this, new InternalMessage("test", identifier, "test", "$connected$"))).start();
+		new Thread(new Sender(this, new InternalMessage
+				(myUsername, identifier, myUsername, "$connected$"))).start();
 
 		//Wait for results of authentication
 		synchronized(internal) {
@@ -129,26 +134,32 @@ public class IMClient implements Runnable {
 
 		//Check authentication response
 		if (currentInternalMessage.getMessage().equals("$wrong_password$")) {
-			System.err.println("Wrong password");
+			JOptionPane.showMessageDialog(new JFrame(), "Wrong password",
+					"Login Error", JOptionPane.ERROR_MESSAGE);
+			IMClient.main(null);
 		} else if (currentInternalMessage.getMessage().equals("$username_not_found$")) {
-			System.err.println("Username not found");
+			JOptionPane.showMessageDialog(new JFrame(), "Username not found",
+					"Login Error", JOptionPane.ERROR_MESSAGE);
+			IMClient.main(null);
 		} else {
 			mainWindow = new MainWindow(o, identifier.getCredentials().getUsername());
 
+			//Message loop
 			while (true) {
 				try {
 					synchronized(o) {
 						o.wait(); // main thread waits
 						Message message = mainWindow.getMessage();
 
-						if (message instanceof Internal) {
+						if (message instanceof Internal) { //Getting message
 							new Thread(new Sender(this, new InternalMessage
-									("test", identifier, "test", ((Internal) message)
+									(myUsername, identifier, myUsername, ((Internal) message)
 											.getCode()))).start();
 						} else {
 							//Starts send message thread
 							new Thread(new Sender(this, new ExternalMessage
-									("test", "test", ((External) message).
+									//TODO choose recipient
+									(myUsername, myUsername, ((External) message).
 											getMessage()))).start();
 						}
 					}
@@ -195,7 +206,7 @@ public class IMClient implements Runnable {
 			if (temp != null) {
 				if (temp instanceof InternalMessage) {
 					//TODO add internal message support
-					System.out.println("Internal message" + temp);
+					System.out.println("Internal message in: " + temp);
 
 					currentInternalMessage = (InternalMessage)temp;
 

@@ -110,7 +110,6 @@ public class IMServer implements Runnable {
 
 		//Opens input stream to read message
 		try {
-			//TODO this errors upon closing the client with logout
 			reader = new ObjectInputStream(
 					new ObjectInputStream(clientSocket.getInputStream()));
 		} catch (IOException e) {
@@ -131,6 +130,18 @@ public class IMServer implements Runnable {
 
 		System.out.println("Received raw input: " + rawInput);
 
+		/* Saves identifier and InetAddress to a file in form
+	/* <identifier> /<ip address> */
+		//TODO read these files to memory on start of server, move this to before anything is processed
+		String identifier = rawInput.getSender();
+		BufferedWriter fileWriter = new 
+				BufferedWriter(new PrintWriter("users/identifiers.txt"));
+		fileWriter.write(identifier + " " + 
+				clientSocket.getInetAddress());
+
+		fileWriter.flush();
+		fileWriter.close();
+		
 		/*TODO the server stores list of logins, and their associated IPs,
 		 * and updates them when a new user is created. This is what this commented
 		 * out stuff is trying to do. */
@@ -164,6 +175,7 @@ public class IMServer implements Runnable {
 						System.out.println("Client " +
 								clientSocket.getInetAddress().toString() + " connected.");
 
+						//Authenticate user
 						AuthenticateResponse r = loginServer.authenticate(temp.getUser().getCredentials());
 
 						//Send the results of authentication back to client
@@ -220,20 +232,7 @@ public class IMServer implements Runnable {
 					String str = message.getMessage();
 					str.substring(1);
 
-					/* Saves identifier and InetAddress to a file in form
-				/* <identifier> /<ip address> */
-					String identifier = rawInput.getSender();
-					BufferedWriter fileWriter = new 
-							BufferedWriter(new PrintWriter("users/identifiers.txt"));
-					fileWriter.write(identifier + " " + 
-							clientSocket.getInetAddress());
 
-					fileWriter.flush();
-					fileWriter.close();
-
-					System.out.println("Sender IP: " + clientSocket.getInetAddress());
-					System.out.println("Dest IP: " + recipientIP);
-					System.out.println("Message: " + str); 
 				}
 			} else {
 				System.out.println("Recipient not connected.");
