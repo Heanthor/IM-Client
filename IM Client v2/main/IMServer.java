@@ -161,6 +161,7 @@ public class IMServer implements Runnable {
 						BufferedWriter(new PrintWriter(new FileWriter("users/identifiers.txt", true)));
 				fileWriter.write("\n" + identifier + " " + 
 						clientSocket.getInetAddress());
+				recipientIP = clientSocket.getInetAddress().toString();
 
 				fileWriter.flush();
 				fileWriter.close();
@@ -168,11 +169,6 @@ public class IMServer implements Runnable {
 
 			if(true) { //TODO if ip is in connectedIPs
 				if (rawInput instanceof InternalMessage) {
-
-					/*if (recipientIP == null) {
-						recipientIP = clientSocket.getInetAddress().toString();//Send to itself
-					} */
-					
 					InternalMessage temp = (InternalMessage)rawInput;
 					String str = temp.getMessage();
 
