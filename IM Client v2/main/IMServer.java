@@ -129,10 +129,6 @@ public class IMServer implements Runnable {
 
 		System.out.println("Received raw input: " + rawInput);
 
-
-		/*TODO the server stores list of logins, and their associated IPs,
-		 * and updates them when a new user is created. This is what this commented
-		 * out stuff is trying to do. */
 		//Handle message
 		if (rawInput != null) {
 			BufferedReader fileReader = new BufferedReader
@@ -156,6 +152,7 @@ public class IMServer implements Runnable {
 				/* Saves identifier and InetAddress to a file in form
 			/* <identifier> /<ip address> */
 				//TODO read these files to memory on start of server, move this to before anything is processed
+				//TODO make server update IP if IP changes
 				String identifier = rawInput.getSender();
 				BufferedWriter fileWriter = new 
 						BufferedWriter(new PrintWriter(new FileWriter("users/identifiers.txt", true)));

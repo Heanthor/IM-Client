@@ -9,6 +9,7 @@ import main.Message;
  * @author Reed
  *
  */
+//TODO why does this have sender and recipient, shouldn't it just send to u.getUsername()?
 public class InternalMessage extends Message {
 	private static final long serialVersionUID = 2907853835140463173L;
 	private String message;
