@@ -104,7 +104,6 @@ public class IMServer implements Runnable {
 	 * @throws IOException if the input is corrupted.
 	 * 
 	 */
-	@SuppressWarnings("unchecked")
 	public boolean receive() throws IOException {
 		ObjectInputStream reader = null;
 		Message rawInput = null;
@@ -151,7 +150,7 @@ public class IMServer implements Runnable {
 				}
 			}
 
-			fileReader.close(); 
+			fileReader.close();
 
 			//recipientIP = rawInput.get(0); //backup
 
@@ -166,40 +165,44 @@ public class IMServer implements Runnable {
 								clientSocket.getInetAddress().toString() + " connected.");
 
 						AuthenticateResponse r = loginServer.authenticate(temp.getUser().getCredentials());
-						
+
 						//Send the results of authentication back to client
 						if (r.reponseCode == AuthenticateResponse.RESPONSE_AUTHENTICATED) {
-							
+
 							message = new InternalMessage(null, temp.getUser(), null, "$authenticated$");
 							System.out.println("Authenticated " + clientSocket.getInetAddress().toString());
 						} else if (r.reponseCode == AuthenticateResponse.RESPONSE_WRONG_PASSWORD) {
-							
+
 							message = new InternalMessage(null, temp.getUser(), null, "$wrong_password$");
 							System.out.println("Wrong password on " + clientSocket.getInetAddress().toString());
 						} else if (r.reponseCode == AuthenticateResponse.RESPONSE_USERNAME_NOT_FOUND) {
-							
+
 							message = new InternalMessage(null, temp.getUser(), null, "$username_not_found$");
 							System.out.println("Username not found on " + clientSocket.getInetAddress().toString());
 						}
-						
+
 						send();
-						
+
 						return false; // Don't send message
 					}
 
 					if (str.equals("$register$")) {
-						//Register new user, returns the results to the client.
-						if (loginServer.newUser(((InternalMessage) rawInput).getUser().getCredentials())) {
-							message = new InternalMessage(null, temp.getUser(), null, "$true$");
-							System.out.println("Registration successful");
-						} else {
+						try {
+							//Register new user, returns the results to the client.
+							if (loginServer.newUser(((InternalMessage) rawInput).getUser().getCredentials())) {
+								message = new InternalMessage(null, temp.getUser(), null, "$true$");
+								System.out.println("Registration successful");
+							} else {
+								message = new InternalMessage(null, temp.getUser(), null, "$duplicate$");
+								System.err.println("Registration failed - duplicate user");
+							}
+						} catch (IOException e) { //Serialize failed
 							message = new InternalMessage(null, temp.getUser(), null, "$false$");
-							System.err.println("Registration failed");
+							System.err.println("Registration failed - write error");
 						}
-						
 						//sends response message
 						send();
-						
+
 						return false;
 					}
 

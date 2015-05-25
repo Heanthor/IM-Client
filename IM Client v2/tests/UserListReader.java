@@ -4,6 +4,12 @@ import filter.BloomFilter;
 import login.Credentials;
 import login.LoginServer;
 
+/**
+ * Utility for reading the user list contained in users.ser. Just runs
+ * the debug command buried in LoginServer.
+ * @author Reed
+ *
+ */
 public class UserListReader {
 	private LoginServer s;
 	

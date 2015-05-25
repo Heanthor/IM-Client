@@ -26,7 +26,7 @@ import messages.InternalMessage;
  * @author Reed
  */
 public class IMClient implements Runnable {
-	//private String host = "162.203.101.47";  // refers to the server IP
+	//private String host = "162.203.101.47";  // refers to the server IP JOSEPH IP
 	private String host = "52.10.127.193";  // refers to the server IP AMAZON IP
 	private User identifier; //Your unique identifier
 	private int portNumber = 6969;	//Port the program runs on
@@ -83,12 +83,16 @@ public class IMClient implements Runnable {
 	 * Launches the main threads for the client.
 	 */
 	private void init() {
+		//Starts incoming message scanner
+		new Thread(this).start();
+
 		//If the first part of the username contains the register code
 		if (register) {
 			System.out.println("Registering new user.");
 			//Register the user
 			new Thread(new Sender(this, new InternalMessage("test", identifier, "test", "$register$"))).start();
-			
+
+			//Wait for response
 			synchronized(internal) {
 				try {
 					internal.wait();
@@ -96,18 +100,20 @@ public class IMClient implements Runnable {
 					e.printStackTrace();
 				}
 			}
-			
+
 			if (currentInternalMessage.getMessage().equals("$true$")) {
 				System.out.println("Registration successful, welcome " + 
-			identifier.getCredentials().getUsername());
+						identifier.getCredentials().getUsername());
+			} else if (currentInternalMessage.getMessage().equals("$duplicate$")) {
+				JOptionPane.showMessageDialog(new JFrame(), "User already has account",
+						"Registration Error", JOptionPane.ERROR_MESSAGE);
+				IMClient.main(null); // Restart program
 			} else {
-				System.err.println("Registration unsucessful.");
-				System.exit(1);
+				JOptionPane.showMessageDialog(new JFrame(), "Registration write error",
+						"Registration Error", JOptionPane.ERROR_MESSAGE);
+				IMClient.main(null); // Restart program
 			}
 		}
-
-		//Starts incoming message scanner
-		new Thread(this).start();
 
 		//Lets server know client is "connected"
 		new Thread(new Sender(this, new InternalMessage("test", identifier, "test", "$connected$"))).start();
