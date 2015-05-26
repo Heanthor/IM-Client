@@ -145,7 +145,7 @@ public class IMServer implements Runnable {
 
 			String checker;
 			if ((checker = contains(identifier)) != null &&
-					!checker.equals(identifier +
+					!checker.equals(identifier + identifier + " " + 
 							clientSocket.getInetAddress() + "\n")) { //IP for a user changed
 				System.out.println("IP for \"" + identifier + "\" has changed.");
 				System.out.println("Difference: " + contains(identifier) + " : " + clientSocket.getInetAddress() + "\n");
