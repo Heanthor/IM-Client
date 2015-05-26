@@ -145,7 +145,7 @@ public class IMServer implements Runnable {
 
 			if (contains(identifier) != null) { //IP for a user changed
 				System.out.println("IP for \"" + identifier + "\" has changed.");
-				replace(identifier, "\n" + identifier + " " + 
+				replace(identifier, identifier + " " + 
 						clientSocket.getInetAddress());
 			} else {
 				fileWriter.write("\n" + identifier + " " + 
