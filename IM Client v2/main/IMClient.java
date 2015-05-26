@@ -209,7 +209,22 @@ public class IMClient implements Runnable {
 					//TODO add internal message support
 					System.out.println("Internal message in: " + temp);
 
-					currentInternalMessage = (InternalMessage)temp;
+					//TODO this is terrible
+					InternalMessage tempIM = (InternalMessage)temp;
+					if (mainWindow != null) {
+						if (tempIM.getMessage().contains("$list_add ")) {
+							String nameToAdd = tempIM.getMessage().
+									substring(tempIM.getMessage().indexOf(" ") + 1);
+
+							mainWindow.getList().addToList(nameToAdd);
+						} else if (tempIM.getMessage().contains("$list_remove ")) {
+							String nameToRemove = tempIM.getMessage().
+									substring(tempIM.getMessage().indexOf(" ") + 1);
+
+							mainWindow.getList().removeFromList(nameToRemove);
+						}
+					}
+					currentInternalMessage = tempIM;
 
 					//Notify that an internal message is received
 					synchronized(internal) {
@@ -226,8 +241,6 @@ public class IMClient implements Runnable {
 					mainWindow.getScrollPane().getVerticalScrollBar().
 					setValue(mainWindow.getScrollPane().
 							getVerticalScrollBar().getMaximum());
-
-
 				}
 			}
 		}
