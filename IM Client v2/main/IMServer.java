@@ -144,6 +144,7 @@ public class IMServer implements Runnable {
 					BufferedWriter(new PrintWriter(new FileWriter("users/identifiers.txt", true)));
 
 			if (contains(identifier) != null) { //IP for a user changed
+				System.out.println("IP for \"" + identifier + "\" has changed.");
 				replace(identifier, "\n" + identifier + " " + 
 						clientSocket.getInetAddress());
 			} else {
@@ -154,6 +155,7 @@ public class IMServer implements Runnable {
 				fileWriter.flush();
 				fileWriter.close();
 			}
+
 			String line;
 			//Finds the first instance of the identifier in list, saves IP
 			while ((line = fileReader.readLine()) != null) {
@@ -331,8 +333,10 @@ public class IMServer implements Runnable {
 			wr.close();
 		} catch (IOException e) {
 			e.printStackTrace();
+			
 			return false;
 		}
+		
 		return true;
 	}
 }
