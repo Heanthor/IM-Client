@@ -31,6 +31,7 @@ public class IMClient implements Runnable {
 	private String host = "52.10.127.193";  // refers to the server IP AMAZON IP 
 	private User identifier; //Your unique identifier
 	private String myUsername; //Username of this client
+	private String recipient; //Recipient of current message
 	private int portNumber = 6969;	//Port the program runs on
 	private ObjectInputStream reader;  // stream used to read the server's response
 	private Socket serverSocket; // connection to the server
@@ -161,7 +162,7 @@ public class IMClient implements Runnable {
 							//Starts send message thread
 							new Thread(new Sender(this, new ExternalMessage
 									//TODO choose recipient
-									(myUsername, myUsername, ((External) message).
+									(myUsername, message.getRecipient(), ((External) message).
 											getMessage()))).start();
 						}
 					}
