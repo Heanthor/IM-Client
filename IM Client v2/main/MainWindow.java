@@ -31,7 +31,6 @@ import javax.swing.JScrollPane;
 import messages.External;
 import messages.Internal;
 
-import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -106,8 +105,8 @@ public class MainWindow {
 		//GridBag is made of nightmares
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.fill = GridBagConstraints.BOTH;
-		gbc.weightx = 0.75;
-		gbc.weighty = 0.25;
+		gbc.weightx = 1;
+		gbc.weighty = 1;
 
 		stretchyPanel.add(textAndUsers);
 
@@ -215,6 +214,15 @@ public class MainWindow {
 		});
 		txtEnterMessage.setForeground(Color.LIGHT_GRAY);
 		txtEnterMessage.setText("Enter Message...");
+		txtEnterMessage.addActionListener(new ActionListener() {
+
+			@Override //Enter is pressed
+			public void actionPerformed(ActionEvent arg0) {
+				sendMessage();
+				txtEnterMessage.setText(""); //Clear text
+			}
+			
+		});
 		panel_2.add(txtEnterMessage);
 		txtEnterMessage.setColumns(10);
 
@@ -225,23 +233,8 @@ public class MainWindow {
 		btnNewButton.addActionListener(new ActionListener() {
 			//"Send" button press
 			public void actionPerformed(ActionEvent e) {
-				if (!txtEnterMessage.getText().equals("") &&
-						!txtEnterMessage.getText().equals("Enter Message...")) {
-
-					//Sets message
-					message = new External(txtEnterMessage.getText());
-					textArea.append(username + ": " + ((External)message).getMessage() + "\n");
-
-					//Scrolls to bottom
-					JScrollBar vertical = scrollPane.getVerticalScrollBar();
-					vertical.setValue(vertical.getMaximum());
-
-					if (message != null) {
-						synchronized(o) {
-							o.notifyAll(); //Message is ready!
-						}
-					}
-				}
+				sendMessage();
+				txtEnterMessage.setText("");
 			}
 		});
 		panel_1.add(btnNewButton);
@@ -279,6 +272,26 @@ public class MainWindow {
 		return scrollPane;
 	}
 
+	private void sendMessage() {
+		if (!txtEnterMessage.getText().equals("") &&
+				!txtEnterMessage.getText().equals("Enter Message...")) {
+
+			//Sets message
+			message = new External(txtEnterMessage.getText());
+			textArea.append(username + ": " + ((External)message).getMessage() + "\n");
+
+			//Scrolls to bottom
+			JScrollBar vertical = scrollPane.getVerticalScrollBar();
+			vertical.setValue(vertical.getMaximum());
+
+			if (message != null) {
+				synchronized(o) {
+					o.notifyAll(); //Message is ready!
+				}
+			}
+		}
+	}
+	
 	/**
 	 * @return the x
 	 */

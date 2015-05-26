@@ -138,7 +138,6 @@ public class IMServer implements Runnable {
 			/* Saves identifier and InetAddress to a file in form
 				/* <identifier> /<ip address> */
 			//TODO read these files to memory on start of server, move this to before anything is processed
-			//TODO make server update IP if IP changes
 			String identifier = rawInput.getSender();
 			BufferedWriter fileWriter = new 
 					BufferedWriter(new PrintWriter(new FileWriter("users/identifiers.txt", true)));
@@ -146,7 +145,7 @@ public class IMServer implements Runnable {
 			String checker;
 			if ((checker = contains(identifier)) != null &&
 					!checker.equals(identifier + " " + 
-							clientSocket.getInetAddress() + "\n")) { //IP for a user changed
+							clientSocket.getInetAddress())) { //IP for a user changed
 				System.out.println("IP for \"" + identifier + "\" has changed.");
 				System.out.println("Difference: " + contains(identifier) + " : " + identifier + " " + clientSocket.getInetAddress() + "\n");
 				replace(identifier, identifier + " " + 
