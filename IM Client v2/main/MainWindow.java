@@ -31,7 +31,10 @@ import javax.swing.JScrollPane;
 import messages.External;
 import messages.Internal;
 
+import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Cursor;
 
@@ -43,6 +46,10 @@ public class MainWindow {
 	private JTextArea textArea;
 	private JScrollPane scrollPane;
 	private String username;
+	private int x = 100;
+	private int y = 100;
+	private int width = 550;
+	private int height = 600;
 
 	/**
 	 * Launch the application.
@@ -76,24 +83,56 @@ public class MainWindow {
 
 		frmReedreadV = new JFrame();
 		frmReedreadV.setTitle("ReedRead v2");
-		frmReedreadV.setBounds(100, 100, 454, 558);
+		frmReedreadV.setBounds(x, y, width, height);
 		frmReedreadV.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmReedreadV.getContentPane().setLayout(new BoxLayout(frmReedreadV.getContentPane(), BoxLayout.Y_AXIS));
 		frmReedreadV.setVisible(true);
+		frmReedreadV.setResizable(false); //TODO make this resizable, fix gridbaglayout
+		//frmReedreadV.setMinimumSize(new Dimension(550, 600));
 
-		JPanel panel = new JPanel();
-		panel.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
-		frmReedreadV.getContentPane().add(panel);
-		panel.setLayout(new CardLayout(0, 0));
+		JPanel stretchyPanel = new JPanel();
+		frmReedreadV.getContentPane().add(stretchyPanel);
+		stretchyPanel.setLayout(new CardLayout(0, 0));
+
+		JPanel textAndUsers = new JPanel();
+		GridBagLayout gbl = new GridBagLayout();
+		textAndUsers.setLayout(gbl);
+
+		gbl.columnWidths = new int[] {75, 25};
+		gbl.rowHeights = new int[] {450};
+		gbl.columnWeights = new double[] {1, 1};
+		gbl.rowWeights = new double[] {1};
+
+		//GridBag is made of nightmares
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.weightx = 0.75;
+		gbc.weighty = 0.25;
+
+		stretchyPanel.add(textAndUsers);
 
 		textArea = new JTextArea();
 		textArea.setMargin(new Insets(2, 5, 5, 2));
 		textArea.setLineWrap(true);
 		textArea.setEditable(false);
-		//panel.add(textArea, "name_49774492601421");
 
 		scrollPane = new JScrollPane(textArea);
-		panel.add(scrollPane, "name_43068028454051");
+		scrollPane.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
+
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.gridheight = 1;
+		gbc.gridwidth = 1;
+		gbl.setConstraints(scrollPane, gbc);
+		textAndUsers.add(scrollPane);
+
+		JPanel f = new FriendsList().frmUserList;
+		gbc.gridx = 1;
+		gbc.gridy = 0;
+		gbc.gridheight = 1;
+		gbc.gridwidth = 2;
+		gbl.setConstraints(f, gbc);
+		textAndUsers.add(f);
 
 		JPanel panel_2 = new JPanel();
 		frmReedreadV.getContentPane().add(panel_2);
@@ -238,5 +277,33 @@ public class MainWindow {
 	}
 	public JScrollPane getScrollPane() {
 		return scrollPane;
+	}
+
+	/**
+	 * @return the x
+	 */
+	public int getX() {
+		return x;
+	}
+
+	/**
+	 * @return the y
+	 */
+	public int getY() {
+		return y;
+	}
+
+	/**
+	 * @return the width
+	 */
+	public int getWidth() {
+		return width;
+	}
+
+	/**
+	 * @return the height
+	 */
+	public int getHeight() {
+		return height;
 	}
 }

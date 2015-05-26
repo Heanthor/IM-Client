@@ -134,6 +134,26 @@ public class IMServer implements Runnable {
 			BufferedReader fileReader = new BufferedReader
 					(new FileReader("users/identifiers.txt"));
 
+			//IP not found
+			/* Saves identifier and InetAddress to a file in form
+				/* <identifier> /<ip address> */
+			//TODO read these files to memory on start of server, move this to before anything is processed
+			//TODO make server update IP if IP changes
+			String identifier = rawInput.getSender();
+			BufferedWriter fileWriter = new 
+					BufferedWriter(new PrintWriter(new FileWriter("users/identifiers.txt", true)));
+
+			if (contains(identifier) != null) { //IP for a user changed
+				replace(identifier, "\n" + identifier + " " + 
+						clientSocket.getInetAddress());
+			} else {
+				fileWriter.write("\n" + identifier + " " + 
+						clientSocket.getInetAddress());
+				recipientIP = clientSocket.getInetAddress().toString().substring(1); //Trims /
+
+				fileWriter.flush();
+				fileWriter.close();
+			}
 			String line;
 			//Finds the first instance of the identifier in list, saves IP
 			while ((line = fileReader.readLine()) != null) {
@@ -147,22 +167,6 @@ public class IMServer implements Runnable {
 			}
 
 			fileReader.close();
-
-			if (line == null) {
-				/* Saves identifier and InetAddress to a file in form
-			/* <identifier> /<ip address> */
-				//TODO read these files to memory on start of server, move this to before anything is processed
-				//TODO make server update IP if IP changes
-				String identifier = rawInput.getSender();
-				BufferedWriter fileWriter = new 
-						BufferedWriter(new PrintWriter(new FileWriter("users/identifiers.txt", true)));
-				fileWriter.write("\n" + identifier + " " + 
-						clientSocket.getInetAddress());
-				recipientIP = clientSocket.getInetAddress().toString().substring(1); //Trims /
-
-				fileWriter.flush();
-				fileWriter.close();
-			}
 
 			if(true) { //TODO if ip is in connectedIPs
 				if (rawInput instanceof InternalMessage) {
@@ -306,5 +310,29 @@ public class IMServer implements Runnable {
 
 		fileReader.close();
 		return null;
+	}
+
+	public boolean replace(String oldStr, String newStr) {
+		try {
+			BufferedReader rd = new BufferedReader(new FileReader("users/identifiers.txt"));
+			String line;
+			String input = "";
+
+			while ((line = rd.readLine()) != null) {
+				line = line.replaceAll(oldStr + " .*", newStr);
+				input += line + "\n";
+			}
+
+			BufferedWriter wr = new BufferedWriter(new PrintWriter("users/identifiers.txt"));
+
+			wr.write(input);
+			wr.flush();
+			rd.close();
+			wr.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
 	}
 }

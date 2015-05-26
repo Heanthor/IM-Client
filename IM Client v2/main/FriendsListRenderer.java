@@ -17,7 +17,7 @@ public class FriendsListRenderer extends DefaultListCellRenderer {
 		JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 		
 		label.setHorizontalTextPosition(JLabel.RIGHT);
-		label.setPreferredSize(new Dimension(175, 50));
+		label.setPreferredSize(new Dimension(125, 50));
 		label.setIcon(new ImageIcon("icon.jpg"));
 		
 		return label;

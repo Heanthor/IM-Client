@@ -46,4 +46,13 @@ public class TestHelperMethods {
 		
 		assertTrue(register.substring(0, 10).equals("$register$"));
 	}
+	
+	@Test
+	public void testReplace() {
+		IMServer s = new IMServer(null);
+		String oldStr = "test";
+		String newStr = "replace";
+		
+		s.replace(oldStr, newStr);
+	}
 }

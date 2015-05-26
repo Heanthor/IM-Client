@@ -39,7 +39,8 @@ public class IMClient implements Runnable {
 	private static Object internal = new Object(); //Alert for internal messages
 	private InternalMessage currentInternalMessage; //Internal message to be evaluated
 	private MainWindow mainWindow; // associated MainWindow, for printing
-	private boolean register = false;
+	private FriendsList userList; //User list
+	private boolean register = false; //Registration request
 
 	/**
 	 * @param username - What user is using this IMClient. Used for printing 
@@ -48,7 +49,7 @@ public class IMClient implements Runnable {
 	public IMClient(User u) {
 		identifier = u;
 		myUsername = u.getCredentials().getUsername();
-		
+
 		//Opens connection to server
 		try {
 			serverIP = InetAddress.getByName(host);
