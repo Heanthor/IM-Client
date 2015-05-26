@@ -41,13 +41,6 @@ public class TestHelperMethods {
 	}
 	
 	@Test
-	public void testSubstring() {
-		String register = "$register$Heanthor";
-		
-		assertTrue(register.substring(0, 10).equals("$register$"));
-	}
-	
-	@Test
 	public void testReplace() {
 		IMServer s = new IMServer(null);
 		String oldStr = "test";
