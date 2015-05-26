@@ -189,15 +189,18 @@ public class IMServer implements Runnable {
 						//Send the results of authentication back to client
 						if (r.reponseCode == AuthenticateResponse.RESPONSE_AUTHENTICATED) {
 
-							message = new InternalMessage(null, temp.getUser(), null, "$authenticated$");
+							updateUserList("$list_add " + 
+									((InternalMessage) rawInput).getUser().
+									getCredentials().getUsername()); //Send username to all clients
+							message = new InternalMessage(temp.getUser(), "$authenticated$");
 							System.out.println("Authenticated " + clientSocket.getInetAddress().toString());
 						} else if (r.reponseCode == AuthenticateResponse.RESPONSE_WRONG_PASSWORD) {
 
-							message = new InternalMessage(null, temp.getUser(), null, "$wrong_password$");
+							message = new InternalMessage(temp.getUser(), "$wrong_password$");
 							System.out.println("Wrong password on " + clientSocket.getInetAddress().toString());
 						} else if (r.reponseCode == AuthenticateResponse.RESPONSE_USERNAME_NOT_FOUND) {
 
-							message = new InternalMessage(null, temp.getUser(), null, "$username_not_found$");
+							message = new InternalMessage(temp.getUser(), "$username_not_found$");
 							System.out.println("Username not found on " + clientSocket.getInetAddress().toString());
 						}
 
@@ -210,14 +213,14 @@ public class IMServer implements Runnable {
 						try {
 							//Register new user, returns the results to the client.
 							if (loginServer.newUser(((InternalMessage) rawInput).getUser().getCredentials())) {
-								message = new InternalMessage(null, temp.getUser(), null, "$true$");
+								message = new InternalMessage(temp.getUser(), "$true$");
 								System.out.println("Registration successful");
 							} else {
-								message = new InternalMessage(null, temp.getUser(), null, "$duplicate$");
+								message = new InternalMessage(temp.getUser(), "$duplicate$");
 								System.err.println("Registration failed - duplicate user");
 							}
 						} catch (IOException e) { //Serialize failed
-							message = new InternalMessage(null, temp.getUser(), null, "$false$");
+							message = new InternalMessage(temp.getUser(), "$false$");
 							System.err.println("Registration failed - write error");
 						}
 						//sends response message
@@ -227,6 +230,8 @@ public class IMServer implements Runnable {
 					}
 
 					if (str.equals("$logout$")) {
+						updateUserList("$list_remove " + ((InternalMessage) rawInput).getUser().
+								getCredentials().getUsername()); //Remove user from list
 						connectedIPs.remove(clientSocket.getInetAddress().toString());
 						System.out.println("Client " +
 								clientSocket.getInetAddress().toString() + " disconnected.");
@@ -317,6 +322,15 @@ public class IMServer implements Runnable {
 		return null;
 	}
 
+	private void updateUserList(String update) {
+		for (String s: connectedIPs) {
+			recipientIP = s.substring(s.indexOf("/") + 1);
+			message = new InternalMessage(null, update);
+
+			send();
+		}
+	}
+
 	public boolean replace(String oldStr, String newStr) {
 		try {
 			BufferedReader rd = new BufferedReader(new FileReader("users/identifiers.txt"));
@@ -336,10 +350,10 @@ public class IMServer implements Runnable {
 			wr.close();
 		} catch (IOException e) {
 			e.printStackTrace();
-			
+
 			return false;
 		}
-		
+
 		return true;
 	}
 }

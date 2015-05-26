@@ -95,7 +95,7 @@ public class IMClient implements Runnable {
 			System.out.println("Registering new user.");
 			//Register the user
 			new Thread(new Sender(this, new InternalMessage
-					(myUsername, identifier, myUsername, "$register$"))).start();
+					(identifier, "$register$"))).start();
 
 			//Wait for response
 			synchronized(internal) {
@@ -122,7 +122,7 @@ public class IMClient implements Runnable {
 
 		//Lets server know client is "connected"
 		new Thread(new Sender(this, new InternalMessage
-				(myUsername, identifier, myUsername, "$connected$"))).start();
+				(identifier, "$connected$"))).start();
 
 		//Wait for results of authentication
 		synchronized(internal) {
@@ -154,7 +154,7 @@ public class IMClient implements Runnable {
 
 						if (message instanceof Internal) { //Getting message
 							new Thread(new Sender(this, new InternalMessage
-									(myUsername, identifier, myUsername, ((Internal) message)
+									(identifier, ((Internal) message)
 											.getCode()))).start();
 						} else {
 							//Starts send message thread
@@ -226,6 +226,8 @@ public class IMClient implements Runnable {
 					mainWindow.getScrollPane().getVerticalScrollBar().
 					setValue(mainWindow.getScrollPane().
 							getVerticalScrollBar().getMaximum());
+
+
 				}
 			}
 		}

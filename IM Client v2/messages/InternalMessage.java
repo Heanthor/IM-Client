@@ -15,8 +15,11 @@ public class InternalMessage extends Message {
 	private String message;
 	private User u;
 	
-	public InternalMessage(String sender, User u, String recipient, String internalMessage) {
-		super(sender, recipient);
+	/**
+	 * @param u - The user this message is associated with
+	 * @param internalMessage - The message
+	 */
+	public InternalMessage(User u, String internalMessage) {
 		this.u = u;
 		this.message = internalMessage;
 	}

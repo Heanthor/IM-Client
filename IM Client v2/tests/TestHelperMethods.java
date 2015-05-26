@@ -2,11 +2,6 @@ package tests;
 
 import static org.junit.Assert.*;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-
 import main.*;
 import messages.InternalMessage;
 
@@ -35,7 +30,7 @@ public class TestHelperMethods {
 	*/
 	@Test
 	public void testPolymorphism() {
-		Message m = new InternalMessage(null, null, null, null);
+		Message m = new InternalMessage(null, null);
 		
 		assertTrue(m instanceof InternalMessage);
 	}

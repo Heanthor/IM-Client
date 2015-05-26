@@ -4,6 +4,7 @@ import javax.swing.JFrame;
 
 import java.awt.GridLayout;
 
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -45,6 +46,7 @@ public class MainWindow {
 	private JTextArea textArea;
 	private JScrollPane scrollPane;
 	private String username;
+	private FriendsList list;
 	private int x = 100;
 	private int y = 100;
 	private int width = 550;
@@ -128,7 +130,8 @@ public class MainWindow {
 		gbl.setConstraints(scrollPane, gbc);
 		textAndUsers.add(scrollPane);
 
-		JPanel f = new FriendsList().frmUserList;
+		list = new FriendsList();
+		JPanel f = list.frmUserList;
 		gbc.gridx = 1;
 		gbc.gridy = 0;
 		gbc.gridheight = 1;
@@ -322,5 +325,12 @@ public class MainWindow {
 	 */
 	public int getHeight() {
 		return height;
+	}
+	
+	/**
+	 * @return the user list
+	 */
+	public FriendsList getList() {
+		return list;
 	}
 }
