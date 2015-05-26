@@ -92,8 +92,8 @@ public class FriendsList {
 		frmUserList.add(scrollPane, "name_12871148397846");
 	}
 
-	public JList<String> getList() {
-		return list;
+	public String getSelectedValue() {
+		return  list.getSelectedValue();
 	}
 	
 	public void addToList(String s) {
