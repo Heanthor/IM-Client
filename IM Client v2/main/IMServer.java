@@ -143,7 +143,10 @@ public class IMServer implements Runnable {
 			BufferedWriter fileWriter = new 
 					BufferedWriter(new PrintWriter(new FileWriter("users/identifiers.txt", true)));
 
-			if (contains(identifier) != null) { //IP for a user changed
+			String checker;
+			if ((checker = contains(identifier)) != null &&
+					!checker.equals(identifier +
+							clientSocket.getInetAddress())) { //IP for a user changed
 				System.out.println("IP for \"" + identifier + "\" has changed.");
 				replace(identifier, identifier + " " + 
 						clientSocket.getInetAddress());
