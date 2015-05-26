@@ -57,8 +57,9 @@ public class MainWindow {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					@SuppressWarnings("unused")
 					MainWindow window = new MainWindow(new Object(), "test");
-					window.frmReedreadV.setVisible(true);
+					//window.frmReedreadV.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -113,7 +114,9 @@ public class MainWindow {
 		textArea = new JTextArea();
 		textArea.setMargin(new Insets(2, 5, 5, 2));
 		textArea.setLineWrap(true);
+		textArea.setWrapStyleWord(true);
 		textArea.setEditable(false);
+
 
 		scrollPane = new JScrollPane(textArea);
 		scrollPane.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
@@ -253,8 +256,9 @@ public class MainWindow {
 			}
 		});
 		panel_1.add(btnNewButton_1);
-
-		frmReedreadV.revalidate();
+		
+		frmReedreadV.setVisible(true);
+		txtEnterMessage.requestFocus();
 	}
 
 	/**
