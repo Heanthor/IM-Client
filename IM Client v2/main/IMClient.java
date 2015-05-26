@@ -11,6 +11,7 @@ import java.net.Socket;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 import login.*;
 import messages.External;
@@ -145,7 +146,13 @@ public class IMClient implements Runnable {
 					"Login Error", JOptionPane.ERROR_MESSAGE);
 			IMClient.main(null);
 		} else {
-			mainWindow = new MainWindow(o, identifier.getCredentials().getUsername());
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					mainWindow = new MainWindow(o, identifier.getCredentials().getUsername());
+				}
+
+			});
 
 			//Message loop
 			while (true) {
@@ -162,7 +169,7 @@ public class IMClient implements Runnable {
 							//Starts send message thread
 							new Thread(new Sender(this, new ExternalMessage
 									//TODO choose recipient
-									(myUsername, message.getRecipient(), ((External) message).
+									(myUsername, myUsername, ((External) message).
 											getMessage()))).start();
 						}
 					}
