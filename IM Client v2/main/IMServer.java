@@ -31,7 +31,7 @@ public class IMServer implements Runnable {
 	private Message message;
 	private Socket clientSocket;
 	private Socket recipientSocket;
-	private ArrayList<String> connectedIPs;
+	private static ArrayList<String> connectedIPs;
 	private static Object o = new Object(); // Synchronizing
 	private LoginServer loginServer = new LoginServer("users/users.ser"); //Authentication
 	private boolean loopInput = true; // Controls looping IO for one connection
