@@ -323,8 +323,10 @@ public class IMServer implements Runnable {
 	}
 
 	private void updateUserList(String update) {
+		System.out.println("Updating user list, sending to... ");
 		for (String s: connectedIPs) {
 			recipientIP = s.substring(s.indexOf("/") + 1);
+			System.out.println(recipientIP);
 			message = new InternalMessage(null, update);
 
 			send();
