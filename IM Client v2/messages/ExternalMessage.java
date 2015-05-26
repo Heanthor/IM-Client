@@ -4,6 +4,7 @@ import main.Message;
 
 /**
  * External messages are packets containing actual messages to be shown to users.
+ * Messages have a 10,000 character limit.
  * @author Reed
  *
  */
@@ -13,6 +14,11 @@ public class ExternalMessage extends Message {
 	
 	public ExternalMessage(String sender, String recipient, String externalMessage) {
 		super(sender, recipient);
+		
+		//Add length restriction
+		if (externalMessage.length() > 10000) {
+			externalMessage = externalMessage.substring(0, 10000);
+		}
 		this.message = externalMessage;
 	}
 

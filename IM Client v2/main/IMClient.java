@@ -222,6 +222,7 @@ public class IMClient implements Runnable {
 					append(response.getSender() + ": " + response.getMessage() + "\n");
 
 					//Scroll to bottom
+					//TODO this doesn't scroll properly if the message is very long
 					mainWindow.getScrollPane().getVerticalScrollBar().
 					setValue(mainWindow.getScrollPane().
 							getVerticalScrollBar().getMaximum());
