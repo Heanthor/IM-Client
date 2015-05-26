@@ -17,7 +17,7 @@ public class ExternalMessage extends Message {
 		
 		//Add length restriction
 		if (externalMessage.length() > 10000) {
-			externalMessage = externalMessage.substring(0, 10000);
+			externalMessage = externalMessage.substring(0, 10000) + "...";
 		}
 		this.message = externalMessage;
 	}

@@ -31,7 +31,7 @@ public class IMServer implements Runnable {
 	private Message message;
 	private Socket clientSocket;
 	private Socket recipientSocket;
-	private ArrayList<String> connectedIPs = new ArrayList<String>();
+	private ArrayList<String> connectedIPs;
 	private static Object o = new Object(); // Synchronizing
 	private LoginServer loginServer = new LoginServer("users/users.ser"); //Authentication
 	private boolean loopInput = true; // Controls looping IO for one connection
@@ -43,6 +43,7 @@ public class IMServer implements Runnable {
 	 */
 	public IMServer(Socket clientSocket) {
 		this.clientSocket = clientSocket;
+		connectedIPs = new ArrayList<String>();
 	}
 
 	public static void main(String args[]) throws Exception {
