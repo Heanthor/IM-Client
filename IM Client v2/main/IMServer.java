@@ -179,7 +179,9 @@ public class IMServer implements Runnable {
 					String str = temp.getMessage();
 
 					if (str.equals("$connected$")) {
-						connectedIPs.add(clientSocket.getInetAddress().toString());
+						if (!connectedIPs.contains(clientSocket.getInetAddress().toString())) {
+							connectedIPs.add(clientSocket.getInetAddress().toString());
+						}
 						System.out.println("Client " +
 								clientSocket.getInetAddress().toString() + " connected.");
 

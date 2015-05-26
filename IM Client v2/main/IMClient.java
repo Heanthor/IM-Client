@@ -39,6 +39,7 @@ public class IMClient implements Runnable {
 	private static Object internal = new Object(); //Alert for internal messages
 	private InternalMessage currentInternalMessage; //Internal message to be evaluated
 	private MainWindow mainWindow; // associated MainWindow, for printing
+	@SuppressWarnings("unused")
 	private FriendsList userList; //User list
 	private boolean register = false; //Registration request
 
