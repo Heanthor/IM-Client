@@ -31,7 +31,7 @@ public class IMServer implements Runnable {
 	private Message message;
 	private Socket clientSocket;
 	private Socket recipientSocket;
-	private ArrayList<String> userList = new ArrayList<String>(); //To be sent to client's userlists
+	private static ArrayList<String> userList = new ArrayList<String>(); //To be sent to client's userlists
 	private static ArrayList<String> connectedIPs = new ArrayList<String>();
 	private static Object o = new Object(); // Synchronizing
 	private LoginServer loginServer = new LoginServer("users/users.ser"); //Authentication
