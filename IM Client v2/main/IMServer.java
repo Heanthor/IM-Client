@@ -129,10 +129,7 @@ public class IMServer implements Runnable {
 
 		System.out.println("Received raw input: " + rawInput);
 
-		//Handle printing to identifiers.txt
-		if (rawInput != null) {
-			identifiers(rawInput);
-		}
+		
 
 		if(true) { //TODO if ip is in connectedIPs
 			if (rawInput instanceof InternalMessage) {
@@ -143,6 +140,12 @@ public class IMServer implements Runnable {
 					if (!connectedIPs.contains(clientSocket.getInetAddress().toString())) {
 						connectedIPs.add(clientSocket.getInetAddress().toString());
 					}
+					
+					//Handle printing to identifiers.txt
+					if (rawInput != null) {
+						identifiers(rawInput);
+					}
+					
 					System.out.println("Client " +
 							clientSocket.getInetAddress().toString() + " connected.");
 
@@ -174,6 +177,7 @@ public class IMServer implements Runnable {
 
 				if (str.equals("$register$")) {
 					try {
+						recipientIP = clientSocket.getInetAddress().toString().substring(1);
 						//Register new user, returns the results to the client.
 						if (loginServer.newUser(((InternalMessage) rawInput).getUser().getCredentials())) {
 							message = new InternalMessage(temp.getUser(), "$true$");
@@ -193,9 +197,10 @@ public class IMServer implements Runnable {
 				}
 
 				if (str.equals("$logout$")) {
+					connectedIPs.remove(clientSocket.getInetAddress().toString());
 					updateUserList("$list_remove " + ((InternalMessage) rawInput).getUser().
 							getCredentials().getUsername()); //Remove user from list
-					connectedIPs.remove(clientSocket.getInetAddress().toString());
+					
 					System.out.println("Client " +
 							clientSocket.getInetAddress().toString() + " disconnected.");
 

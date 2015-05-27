@@ -42,6 +42,7 @@ public class MainWindow {
 	private JTextField txtEnterMessage;
 	private Message message;
 	private static Object o;
+	private static Object outgoing;
 	private JTextArea textArea;
 	private JScrollPane scrollPane;
 	private String username;
@@ -59,7 +60,7 @@ public class MainWindow {
 			public void run() {
 				try {
 					@SuppressWarnings("unused")
-					MainWindow window = new MainWindow(new Object(), "test");
+					MainWindow window = new MainWindow(new Object(), new Object(), "test");
 					//window.frmReedreadV.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -68,8 +69,9 @@ public class MainWindow {
 		});
 	}
 
-	public MainWindow(Object o, String username) {
+	public MainWindow(Object o, Object outgoing, String username) {
 		MainWindow.o = o;
+		MainWindow.outgoing = outgoing;
 		this.username = username;
 		initialize();
 	}
@@ -162,6 +164,14 @@ public class MainWindow {
 					o.notifyAll();
 				}
 
+				synchronized(outgoing) {
+					try {
+						outgoing.wait();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					//Okay to close now
+				}
 				System.out.println("Window closing");
 			}
 
@@ -226,7 +236,7 @@ public class MainWindow {
 				sendMessage();
 				txtEnterMessage.setText(""); //Clear text
 			}
-			
+
 		});
 		panel_2.add(txtEnterMessage);
 		txtEnterMessage.setColumns(10);
@@ -250,15 +260,24 @@ public class MainWindow {
 			public void actionPerformed(ActionEvent e) {
 				//Notifies the server that this client is logging out.
 				message = new Internal("$logout$");
+
 				synchronized(o) {
 					o.notifyAll();
 				}
 
-				System.exit(0);
+				synchronized(outgoing) {
+					try {
+						outgoing.wait();
+					} catch (InterruptedException e1) {
+						e1.printStackTrace();
+					}
+					System.exit(0);
+				}
+
 			}
 		});
 		panel_1.add(btnNewButton_1);
-		
+
 		frmReedreadV.setVisible(true);
 		txtEnterMessage.requestFocus();
 	}
@@ -297,7 +316,7 @@ public class MainWindow {
 			}
 		}
 	}
-	
+
 	/**
 	 * @return the x
 	 */
@@ -325,7 +344,7 @@ public class MainWindow {
 	public int getHeight() {
 		return height;
 	}
-	
+
 	/**
 	 * @return the user list
 	 */

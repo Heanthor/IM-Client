@@ -27,9 +27,9 @@ import messages.InternalMessage;
  * @author Reed
  */
 public class IMClient implements Runnable {
-	//private String host = "162.203.101.47";  // refers to the server IP JOSEPH IP
+	private String host = "162.203.101.47";  // refers to the server IP JOSEPH IP
 	//TODO obfuscate this IP
-	private String host = "52.10.127.193";  // refers to the server IP AMAZON IP 
+	//private String host = "52.10.127.193";  // refers to the server IP AMAZON IP 
 	//private String host = "72.45.15.42"; //REED IP
 	private User identifier; //Your unique identifier
 	private String myUsername; //Username of this client
@@ -40,6 +40,7 @@ public class IMClient implements Runnable {
 	private InetAddress serverIP; // get IP
 	private static Object o = new Object(); // synchronization
 	private static Object internal = new Object(); //Alert for internal messages
+	public static Object outgoing = new Object(); //Make sure program doesn't close too early
 	private InternalMessage currentInternalMessage; //Internal message to be evaluated
 	private MainWindow mainWindow; // associated MainWindow, for printing
 	@SuppressWarnings("unused")
@@ -150,7 +151,7 @@ public class IMClient implements Runnable {
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override
 				public void run() {
-					mainWindow = new MainWindow(o, identifier.getCredentials().getUsername());
+					mainWindow = new MainWindow(o, outgoing, identifier.getCredentials().getUsername());
 				}
 
 			});
@@ -194,6 +195,10 @@ public class IMClient implements Runnable {
 		writer.writeObject(messageOut);
 		writer.flush();
 		//Don't close the ObjectOutputStream, it closes the socket in use!
+		
+		synchronized(outgoing) { //Make sure program doesn't close too quickly
+			outgoing.notifyAll();
+		}
 	}
 
 	/**
