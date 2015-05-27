@@ -129,6 +129,96 @@ public class IMServer implements Runnable {
 
 		System.out.println("Received raw input: " + rawInput);
 
+		//Handle printing to identifiers.txt
+		identifiers(rawInput);
+
+		if(true) { //TODO if ip is in connectedIPs
+			if (rawInput instanceof InternalMessage) {
+				InternalMessage temp = (InternalMessage)rawInput;
+				String str = temp.getMessage();
+
+				if (str.equals("$connected$")) {
+					if (!connectedIPs.contains(clientSocket.getInetAddress().toString())) {
+						connectedIPs.add(clientSocket.getInetAddress().toString());
+					}
+					System.out.println("Client " +
+							clientSocket.getInetAddress().toString() + " connected.");
+
+					//Authenticate user
+					AuthenticateResponse r = loginServer.authenticate(temp.getUser().getCredentials());
+
+					//Send the results of authentication back to client
+					if (r.reponseCode == AuthenticateResponse.RESPONSE_AUTHENTICATED) {
+
+						updateUserList("$list_add " + 
+								((InternalMessage) rawInput).getUser().
+								getCredentials().getUsername()); //Send username to all clients
+						message = new InternalMessage(temp.getUser(), "$authenticated$");
+						System.out.println("Authenticated " + clientSocket.getInetAddress().toString());
+					} else if (r.reponseCode == AuthenticateResponse.RESPONSE_WRONG_PASSWORD) {
+
+						message = new InternalMessage(temp.getUser(), "$wrong_password$");
+						System.out.println("Wrong password on " + clientSocket.getInetAddress().toString());
+					} else if (r.reponseCode == AuthenticateResponse.RESPONSE_USERNAME_NOT_FOUND) {
+
+						message = new InternalMessage(temp.getUser(), "$username_not_found$");
+						System.out.println("Username not found on " + clientSocket.getInetAddress().toString());
+					}
+
+					send();
+
+					return false; // Don't send message
+				}
+
+				if (str.equals("$register$")) {
+					try {
+						//Register new user, returns the results to the client.
+						if (loginServer.newUser(((InternalMessage) rawInput).getUser().getCredentials())) {
+							message = new InternalMessage(temp.getUser(), "$true$");
+							System.out.println("Registration successful");
+						} else {
+							message = new InternalMessage(temp.getUser(), "$duplicate$");
+							System.err.println("Registration failed - duplicate user");
+						}
+					} catch (IOException e) { //Serialize failed
+						message = new InternalMessage(temp.getUser(), "$false$");
+						System.err.println("Registration failed - write error");
+					}
+					//sends response message
+					send();
+
+					return false;
+				}
+
+				if (str.equals("$logout$")) {
+					updateUserList("$list_remove " + ((InternalMessage) rawInput).getUser().
+							getCredentials().getUsername()); //Remove user from list
+					connectedIPs.remove(clientSocket.getInetAddress().toString());
+					System.out.println("Client " +
+							clientSocket.getInetAddress().toString() + " disconnected.");
+
+					loopInput = false;
+					return false;
+				}
+			} else {
+				message = rawInput;
+				ExternalMessage message = (ExternalMessage)rawInput;
+				String str = message.getMessage();
+				str.substring(1);
+
+
+			}
+		} else {
+			System.out.println("Recipient not connected.");
+			return false;
+		}
+
+		//Successfully parsed a message, or not
+		return true;
+	}
+
+	private void identifiers(Message rawInput) throws IOException {
+
 		//Handle message
 		if (rawInput != null) {
 			BufferedReader fileReader = new BufferedReader
@@ -150,6 +240,7 @@ public class IMServer implements Runnable {
 				System.out.println("Difference: " + contains(identifier) + " : " + identifier + " " + clientSocket.getInetAddress() + "\n");
 				replace(identifier, identifier + " " + 
 						clientSocket.getInetAddress());
+
 			} else {
 				fileWriter.write("\n" + identifier + " " + 
 						clientSocket.getInetAddress());
@@ -172,92 +263,7 @@ public class IMServer implements Runnable {
 			}
 
 			fileReader.close();
-
-			if(true) { //TODO if ip is in connectedIPs
-				if (rawInput instanceof InternalMessage) {
-					InternalMessage temp = (InternalMessage)rawInput;
-					String str = temp.getMessage();
-
-					if (str.equals("$connected$")) {
-						if (!connectedIPs.contains(clientSocket.getInetAddress().toString())) {
-							connectedIPs.add(clientSocket.getInetAddress().toString());
-						}
-						System.out.println("Client " +
-								clientSocket.getInetAddress().toString() + " connected.");
-
-						//Authenticate user
-						AuthenticateResponse r = loginServer.authenticate(temp.getUser().getCredentials());
-
-						//Send the results of authentication back to client
-						if (r.reponseCode == AuthenticateResponse.RESPONSE_AUTHENTICATED) {
-
-							updateUserList("$list_add " + 
-									((InternalMessage) rawInput).getUser().
-									getCredentials().getUsername()); //Send username to all clients
-							message = new InternalMessage(temp.getUser(), "$authenticated$");
-							System.out.println("Authenticated " + clientSocket.getInetAddress().toString());
-						} else if (r.reponseCode == AuthenticateResponse.RESPONSE_WRONG_PASSWORD) {
-
-							message = new InternalMessage(temp.getUser(), "$wrong_password$");
-							System.out.println("Wrong password on " + clientSocket.getInetAddress().toString());
-						} else if (r.reponseCode == AuthenticateResponse.RESPONSE_USERNAME_NOT_FOUND) {
-
-							message = new InternalMessage(temp.getUser(), "$username_not_found$");
-							System.out.println("Username not found on " + clientSocket.getInetAddress().toString());
-						}
-
-						send();
-
-						return false; // Don't send message
-					}
-
-					if (str.equals("$register$")) {
-						try {
-							//Register new user, returns the results to the client.
-							if (loginServer.newUser(((InternalMessage) rawInput).getUser().getCredentials())) {
-								message = new InternalMessage(temp.getUser(), "$true$");
-								System.out.println("Registration successful");
-							} else {
-								message = new InternalMessage(temp.getUser(), "$duplicate$");
-								System.err.println("Registration failed - duplicate user");
-							}
-						} catch (IOException e) { //Serialize failed
-							message = new InternalMessage(temp.getUser(), "$false$");
-							System.err.println("Registration failed - write error");
-						}
-						//sends response message
-						send();
-
-						return false;
-					}
-
-					if (str.equals("$logout$")) {
-						updateUserList("$list_remove " + ((InternalMessage) rawInput).getUser().
-								getCredentials().getUsername()); //Remove user from list
-						connectedIPs.remove(clientSocket.getInetAddress().toString());
-						System.out.println("Client " +
-								clientSocket.getInetAddress().toString() + " disconnected.");
-
-						loopInput = false;
-						return false;
-					}
-				} else {
-					message = rawInput;
-					ExternalMessage message = (ExternalMessage)rawInput;
-					String str = message.getMessage();
-					str.substring(1);
-
-
-				}
-			} else {
-				System.out.println("Recipient not connected.");
-				return false;
-			}
-		} else {
-			System.out.println("Message not received properly");
 		}
-		//Successfully parsed a message, or not
-		return true;
 	}
 
 	/**
