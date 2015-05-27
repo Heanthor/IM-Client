@@ -112,4 +112,8 @@ public class FriendsList {
 	public void clearList() {
 		dlm.clear();
 	}
+	
+	public void addPlaceholder() {
+
+	}
 }

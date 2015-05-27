@@ -57,4 +57,16 @@ public class TestHelperMethods {
 		}
 		System.out.println("]");
 	}
+	
+	@Test
+	public void testRegex() {
+		String in = "   ";
+		String regex = "^[\\s]*$";
+		
+		assertTrue(in.matches(regex));
+		
+		in = "   d";
+		assertFalse(in.matches(regex));
+		
+	}
 }

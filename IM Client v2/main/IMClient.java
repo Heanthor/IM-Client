@@ -163,7 +163,7 @@ public class IMClient implements Runnable {
 			IMClient.main(null);
 		} else {
 			mainWindow.setVisible(true);
-			
+
 			//Start listener for changes
 			new Thread(new RecipientChangeListener(this, mainWindow.getList(), recipientChange)).start();
 
@@ -235,28 +235,18 @@ public class IMClient implements Runnable {
 					//TODO this is terrible
 					InternalMessage tempIM = (InternalMessage)temp;
 					if (mainWindow != null) {
-						/*
-						if (tempIM.getMessage().contains("$list_add ")) {
-							String nameToAdd = tempIM.getMessage().
-									substring(tempIM.getMessage().indexOf(" ") + 1);
-
-							mainWindow.getList().addToList(nameToAdd);
-						} else if (tempIM.getMessage().contains("$list_remove ")) {
-							String nameToRemove = tempIM.getMessage().
-									substring(tempIM.getMessage().indexOf(" ") + 1);
-
-							mainWindow.getList().removeFromList(nameToRemove);
-						}
-						*/
 						if (tempIM.getMessage().contains("$list_update ")) {
 							mainWindow.getList().clearList(); //Empty list
-							
+							mainWindow.getList().addToList("yep");
+
 							String tempx = tempIM.getMessage().substring(tempIM.getMessage().indexOf(" ") + 1);
 							String[] names = tempx.split(" ");
 							Arrays.sort(names); //Correct order
-							
+
 							for(String s: names) {
-								mainWindow.getList().addToList(s);
+								if (!s.equals(myUsername)) {
+									mainWindow.getList().addToList(s);
+								}
 							}
 						}
 					}

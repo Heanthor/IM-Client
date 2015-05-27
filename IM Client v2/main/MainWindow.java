@@ -98,7 +98,7 @@ public class MainWindow {
 
 		JPanel textAndUsers = new JPanel();
 		GridBagLayout gbl = new GridBagLayout();
-		textAndUsers.setLayout(gbl);
+		
 
 		gbl.columnWidths = new int[] {75, 25};
 		gbl.rowHeights = new int[] {450};
@@ -128,8 +128,10 @@ public class MainWindow {
 		gbc.gridheight = 1;
 		gbc.gridwidth = 1;
 		gbl.setConstraints(scrollPane, gbc);
+		
 		textAndUsers.add(scrollPane);
-
+		
+		textAndUsers.setLayout(gbl);
 		list = new FriendsList(listUpdate);
 		JPanel f = list.frmUserList;
 		gbc.gridx = 1;
@@ -203,8 +205,7 @@ public class MainWindow {
 			@Override
 			public void focusLost(FocusEvent e) {
 				if (txtEnterMessage.getText().equals("")) {
-					txtEnterMessage.setForeground(Color.LIGHT_GRAY);
-					txtEnterMessage.setText("Enter Message...");
+					setDefaultText();
 				}
 			}
 		});
@@ -239,8 +240,10 @@ public class MainWindow {
 		btnNewButton.addActionListener(new ActionListener() {
 			//"Send" button press
 			public void actionPerformed(ActionEvent e) {
-				sendMessage();
-				txtEnterMessage.setText("");
+				btnNewButton.requestFocus();
+				if (sendMessage()) {
+					setDefaultText();
+				}
 			}
 		});
 		panel_1.add(btnNewButton);
@@ -281,9 +284,10 @@ public class MainWindow {
 		return scrollPane;
 	}
 
-	private void sendMessage() {
+	private boolean sendMessage() {
 		if (!txtEnterMessage.getText().equals("") &&
-				!txtEnterMessage.getText().equals("Enter Message...")) {
+				!txtEnterMessage.getText().equals("Enter Message...") &&
+				!txtEnterMessage.getText().matches("^[\\s]*$")) { //Doesn't match all space characters
 
 			//Sets message
 			message = new External(txtEnterMessage.getText());
@@ -298,7 +302,16 @@ public class MainWindow {
 					o.notifyAll(); //Message is ready!
 				}
 			}
+
+			return true; //Message sent
+		} else {
+			return false; //Message not sent
 		}
+	}
+
+	private void setDefaultText() {
+		txtEnterMessage.setForeground(Color.LIGHT_GRAY);
+		txtEnterMessage.setText("Enter Message...");
 	}
 
 	/**
@@ -335,7 +348,7 @@ public class MainWindow {
 	public FriendsList getList() {
 		return list;
 	}
-	
+
 	public void setVisible(boolean b) {
 		frmReedreadV.setVisible(b);
 	}

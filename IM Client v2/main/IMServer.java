@@ -107,7 +107,7 @@ public class IMServer implements Runnable {
 	public boolean receive() throws IOException {
 		ObjectInputStream reader = null;
 		Message rawInput = null;
-		
+
 		//Opens input stream to read message
 		try {
 			reader = new ObjectInputStream(
@@ -139,12 +139,12 @@ public class IMServer implements Runnable {
 					if (!connectedIPs.contains(clientSocket.getInetAddress().toString())) {
 						connectedIPs.add(clientSocket.getInetAddress().toString());
 					}
-					
+
 					//Handle printing to identifiers.txt
 					if (rawInput != null) {
 						identifiers(rawInput);
 					}
-					
+
 					System.out.println("Client " +
 							clientSocket.getInetAddress().toString() + " connected.");
 
@@ -153,15 +153,11 @@ public class IMServer implements Runnable {
 
 					//Send the results of authentication back to client
 					if (r.reponseCode == AuthenticateResponse.RESPONSE_AUTHENTICATED) {
-
-						/*updateUserList("$list_add " + 
-								((InternalMessage) rawInput).getUser().
-								getCredentials().getUsername()); //Send username to all clients */
 						String username = ((InternalMessage) rawInput).getUser().
 								getCredentials().getUsername();
 						userList.add(username);
 						updateUserList2();
-						
+
 						message = new InternalMessage(temp.getUser(), "$authenticated$");
 						System.out.println("Authenticated " + clientSocket.getInetAddress().toString());
 					} else if (r.reponseCode == AuthenticateResponse.RESPONSE_WRONG_PASSWORD) {
@@ -185,7 +181,7 @@ public class IMServer implements Runnable {
 					if (!connectedIPs.contains(clientSocket.getInetAddress().toString())) {
 						connectedIPs.add(clientSocket.getInetAddress().toString());
 					}
-					
+
 					try {
 						recipientIP = clientSocket.getInetAddress().toString().substring(1);
 						//Register new user, returns the results to the client.
@@ -210,17 +206,13 @@ public class IMServer implements Runnable {
 
 				if (str.equals("$logout$")) {
 					connectedIPs.remove(clientSocket.getInetAddress().toString());
-					
-					/*updateUserList("$list_remove " + ((InternalMessage) rawInput).getUser().
-							getCredentials().getUsername()); //Remove user from list
-					*/
-					
+
 					String username = ((InternalMessage) rawInput).getUser().
 							getCredentials().getUsername();
-					
+
 					userList.remove(username);
 					updateUserList2();
-					
+
 					System.out.println("Client " +
 							clientSocket.getInetAddress().toString() + " disconnected.");
 
@@ -254,7 +246,7 @@ public class IMServer implements Runnable {
 		if (identifier == null) { //InternalMessage
 			identifier = ((InternalMessage)rawInput).getUser().getCredentials().getUsername();
 		}
-		
+
 		BufferedWriter fileWriter = new 
 				BufferedWriter(new PrintWriter(new FileWriter("users/identifiers.txt", true)));
 
@@ -357,25 +349,14 @@ public class IMServer implements Runnable {
 		return null;
 	}
 
-	private void updateUserList(String update) {
-		System.out.println("Updating user list, sending to... ");
-		for (String s: connectedIPs) {
-			recipientIP = s.substring(s.indexOf("/") + 1);
-			System.out.println(recipientIP);
-			message = new InternalMessage(null, update);
-
-			send();
-		}
-	}
-	
 	private void updateUserList2() {
 		System.out.println("Updating user list, sending to... ");
 		String usrListMessage = "$list_update ";
-		
+
 		for (String s: userList) {
 			usrListMessage += s + " ";
 		}
-		
+
 		for (String s: connectedIPs) {
 			recipientIP = s.substring(s.indexOf("/") + 1);
 			System.out.println(recipientIP);
@@ -384,7 +365,7 @@ public class IMServer implements Runnable {
 			send();
 		}
 	}
-	
+
 	public boolean replace(String oldStr, String newStr) {
 		try {
 			BufferedReader rd = new BufferedReader(new FileReader("users/identifiers.txt"));
