@@ -147,8 +147,13 @@ public class IMClient implements Runnable {
 					"Login Error", JOptionPane.ERROR_MESSAGE);
 			IMClient.main(null);
 		} else {
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					mainWindow = new MainWindow(o, identifier.getCredentials().getUsername());
+				}
 
-			mainWindow = new MainWindow(o, identifier.getCredentials().getUsername());
+			});
 
 			//Message loop
 			while (true) {

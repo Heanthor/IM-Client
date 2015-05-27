@@ -130,7 +130,9 @@ public class IMServer implements Runnable {
 		System.out.println("Received raw input: " + rawInput);
 
 		//Handle printing to identifiers.txt
-		identifiers(rawInput);
+		if (rawInput != null) {
+			identifiers(rawInput);
+		}
 
 		if(true) { //TODO if ip is in connectedIPs
 			if (rawInput instanceof InternalMessage) {
@@ -206,7 +208,6 @@ public class IMServer implements Runnable {
 				String str = message.getMessage();
 				str.substring(1);
 
-
 			}
 		} else {
 			System.out.println("Recipient not connected.");
@@ -218,52 +219,56 @@ public class IMServer implements Runnable {
 	}
 
 	private void identifiers(Message rawInput) throws IOException {
-
 		//Handle message
-		if (rawInput != null) {
-			BufferedReader fileReader = new BufferedReader
-					(new FileReader("users/identifiers.txt"));
 
-			//IP not found
-			/* Saves identifier and InetAddress to a file in form
+		BufferedReader fileReader = new BufferedReader
+				(new FileReader("users/identifiers.txt"));
+
+		//IP not found
+		/* Saves identifier and InetAddress to a file in form
 				/* <identifier> /<ip address> */
-			//TODO read these files to memory on start of server, move this to before anything is processed
-			String identifier = rawInput.getSender();
-			BufferedWriter fileWriter = new 
-					BufferedWriter(new PrintWriter(new FileWriter("users/identifiers.txt", true)));
-
-			String checker;
-			if ((checker = contains(identifier)) != null &&
-					!checker.equals(identifier + " " + 
-							clientSocket.getInetAddress())) { //IP for a user changed
-				System.out.println("IP for \"" + identifier + "\" has changed.");
-				System.out.println("Difference: " + contains(identifier) + " : " + identifier + " " + clientSocket.getInetAddress() + "\n");
-				replace(identifier, identifier + " " + 
-						clientSocket.getInetAddress());
-
-			} else {
-				fileWriter.write("\n" + identifier + " " + 
-						clientSocket.getInetAddress());
-				recipientIP = clientSocket.getInetAddress().toString().substring(1); //Trims /
-
-				fileWriter.flush();
-				fileWriter.close();
-			}
-
-			String line;
-			//Finds the first instance of the identifier in list, saves IP
-			while ((line = fileReader.readLine()) != null) {
-				line = line.replace("\n", ""); //trim away newlines
-				if (line.contains(" ") && line.substring(0, line.indexOf(" ")).
-						equals(rawInput.getRecipient())) {
-					recipientIP = line.substring
-							(line.indexOf(" ") + 2); //Saves IP
-					break;
-				}
-			}
-
-			fileReader.close();
+		//TODO read these files to memory on start of server, move this to before anything is processed
+		String identifier = rawInput.getSender();
+		if (identifier == null) { //InternalMessage
+			identifier = ((InternalMessage)rawInput).getUser().getCredentials().getUsername();
 		}
+		
+		BufferedWriter fileWriter = new 
+				BufferedWriter(new PrintWriter(new FileWriter("users/identifiers.txt", true)));
+
+		String checker;
+		if ((checker = contains(identifier)) != null &&
+				!checker.equals(identifier + " " + 
+						clientSocket.getInetAddress())) { //IP for a user changed
+			System.out.println("IP for \"" + identifier + "\" has changed.");
+			System.out.println("Difference: " + contains(identifier) + " : " + identifier + " " + clientSocket.getInetAddress() + "\n");
+			replace(identifier, identifier + " " + 
+					clientSocket.getInetAddress());
+
+		} else if (checker != null) {
+			recipientIP = clientSocket.getInetAddress().toString().substring(1); //Trims /
+		} else {
+			fileWriter.write("\n" + identifier + " " + 
+					clientSocket.getInetAddress());
+			recipientIP = clientSocket.getInetAddress().toString().substring(1); //Trims /
+
+			fileWriter.flush();
+			fileWriter.close();
+		}
+
+		String line;
+		//Finds the first instance of the identifier in list, saves IP
+		while ((line = fileReader.readLine()) != null) {
+			line = line.replace("\n", ""); //trim away newlines
+			if (line.contains(" ") && line.substring(0, line.indexOf(" ")).
+					equals(rawInput.getRecipient())) {
+				recipientIP = line.substring
+						(line.indexOf(" ") + 2); //Saves IP
+				break;
+			}
+		}
+
+		fileReader.close();
 	}
 
 	/**
