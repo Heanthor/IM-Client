@@ -210,7 +210,6 @@ public class IMServer implements Runnable {
 				ExternalMessage message = (ExternalMessage)rawInput;
 				String str = message.getMessage();
 				str.substring(1);
-
 			}
 		} else {
 			System.out.println("Recipient not connected.");

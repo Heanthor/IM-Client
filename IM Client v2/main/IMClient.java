@@ -58,11 +58,11 @@ public class IMClient implements Runnable {
 		//Opens connection to server
 		try {
 			serverIP = InetAddress.getByName(host);
-			
+
 			if (serverSocket != null) { //If program is being relaunched
 				serverSocket.close();
 			}
-			
+
 			serverSocket = new Socket(serverIP, portNumber);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -114,7 +114,7 @@ public class IMClient implements Runnable {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-			} 
+			}
 
 			if (currentInternalMessage.getMessage().equals("$true$")) {
 				System.out.println("Registration successful, welcome " + 
@@ -199,7 +199,7 @@ public class IMClient implements Runnable {
 		writer.writeObject(messageOut);
 		writer.flush();
 		//Don't close the ObjectOutputStream, it closes the socket in use!
-		
+
 		synchronized(outgoing) { //Make sure program doesn't close too quickly
 			outgoing.notifyAll();
 		}
