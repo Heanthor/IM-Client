@@ -181,7 +181,7 @@ public class IMClient implements Runnable {
 							//Starts send message thread
 							new Thread(new Sender(this, new ExternalMessage
 									//TODO choose recipient
-									(myUsername, myUsername, ((External) message).
+									(myUsername, recipient, ((External) message).
 											getMessage()))).start();
 						}
 					}
