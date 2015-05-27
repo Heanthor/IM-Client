@@ -114,7 +114,7 @@ public class IMClient implements Runnable {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-			}
+			} 
 
 			if (currentInternalMessage.getMessage().equals("$true$")) {
 				System.out.println("Registration successful, welcome " + 

@@ -106,7 +106,7 @@ public class IMServer implements Runnable {
 	public boolean receive() throws IOException {
 		ObjectInputStream reader = null;
 		Message rawInput = null;
-
+		
 		//Opens input stream to read message
 		try {
 			reader = new ObjectInputStream(
