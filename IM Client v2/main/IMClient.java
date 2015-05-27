@@ -58,6 +58,11 @@ public class IMClient implements Runnable {
 		//Opens connection to server
 		try {
 			serverIP = InetAddress.getByName(host);
+			
+			if (serverSocket != null) { //If program is being relaunched
+				serverSocket.close();
+			}
+			
 			serverSocket = new Socket(serverIP, portNumber);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -153,7 +158,6 @@ public class IMClient implements Runnable {
 				public void run() {
 					mainWindow = new MainWindow(o, outgoing, identifier.getCredentials().getUsername());
 				}
-
 			});
 
 			//Message loop

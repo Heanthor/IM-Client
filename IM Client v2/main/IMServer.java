@@ -129,8 +129,6 @@ public class IMServer implements Runnable {
 
 		System.out.println("Received raw input: " + rawInput);
 
-		
-
 		if(true) { //TODO if ip is in connectedIPs
 			if (rawInput instanceof InternalMessage) {
 				InternalMessage temp = (InternalMessage)rawInput;
