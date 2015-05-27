@@ -162,10 +162,12 @@ public class IMServer implements Runnable {
 
 						message = new InternalMessage(temp.getUser(), "$wrong_password$");
 						System.out.println("Wrong password on " + clientSocket.getInetAddress().toString());
+						loopInput = false;
 					} else if (r.reponseCode == AuthenticateResponse.RESPONSE_USERNAME_NOT_FOUND) {
 
 						message = new InternalMessage(temp.getUser(), "$username_not_found$");
 						System.out.println("Username not found on " + clientSocket.getInetAddress().toString());
+						loopInput = false;
 					}
 
 					send();
@@ -198,7 +200,6 @@ public class IMServer implements Runnable {
 					connectedIPs.remove(clientSocket.getInetAddress().toString());
 					updateUserList("$list_remove " + ((InternalMessage) rawInput).getUser().
 							getCredentials().getUsername()); //Remove user from list
-					
 					System.out.println("Client " +
 							clientSocket.getInetAddress().toString() + " disconnected.");
 
