@@ -157,10 +157,10 @@ public class IMServer implements Runnable {
 						/*updateUserList("$list_add " + 
 								((InternalMessage) rawInput).getUser().
 								getCredentials().getUsername()); //Send username to all clients */
-						updateUserList2();
 						String username = ((InternalMessage) rawInput).getUser().
 								getCredentials().getUsername();
 						userList.add(username);
+						updateUserList2();
 						
 						message = new InternalMessage(temp.getUser(), "$authenticated$");
 						System.out.println("Authenticated " + clientSocket.getInetAddress().toString());
@@ -214,12 +214,13 @@ public class IMServer implements Runnable {
 					/*updateUserList("$list_remove " + ((InternalMessage) rawInput).getUser().
 							getCredentials().getUsername()); //Remove user from list
 					*/
-					updateUserList2();
 					
 					String username = ((InternalMessage) rawInput).getUser().
 							getCredentials().getUsername();
 					
 					userList.remove(username);
+					updateUserList2();
+					
 					System.out.println("Client " +
 							clientSocket.getInetAddress().toString() + " disconnected.");
 
