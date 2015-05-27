@@ -176,6 +176,10 @@ public class IMServer implements Runnable {
 				}
 
 				if (str.equals("$register$")) {
+					if (!connectedIPs.contains(clientSocket.getInetAddress().toString())) {
+						connectedIPs.add(clientSocket.getInetAddress().toString());
+					}
+					
 					try {
 						recipientIP = clientSocket.getInetAddress().toString().substring(1);
 						//Register new user, returns the results to the client.
@@ -185,10 +189,12 @@ public class IMServer implements Runnable {
 						} else {
 							message = new InternalMessage(temp.getUser(), "$duplicate$");
 							System.err.println("Registration failed - duplicate user");
+							loopInput = false;
 						}
 					} catch (IOException e) { //Serialize failed
 						message = new InternalMessage(temp.getUser(), "$false$");
 						System.err.println("Registration failed - write error");
+						loopInput = false;
 					}
 					//sends response message
 					send();

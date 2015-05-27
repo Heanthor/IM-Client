@@ -42,7 +42,7 @@ public class MainWindow {
 	private JTextField txtEnterMessage;
 	private Message message;
 	private static Object o;
-	private static Object outgoing;
+	private static Object listUpdate;
 	private JTextArea textArea;
 	private JScrollPane scrollPane;
 	private String username;
@@ -69,9 +69,9 @@ public class MainWindow {
 		});
 	}
 
-	public MainWindow(Object o, Object outgoing, String username) {
+	public MainWindow(Object o, Object listUpdate, String username) {
 		MainWindow.o = o;
-		MainWindow.outgoing = outgoing;
+		MainWindow.listUpdate = listUpdate;
 		this.username = username;
 		initialize();
 	}
@@ -89,7 +89,6 @@ public class MainWindow {
 		frmReedreadV.setBounds(x, y, width, height);
 		frmReedreadV.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmReedreadV.getContentPane().setLayout(new BoxLayout(frmReedreadV.getContentPane(), BoxLayout.Y_AXIS));
-		frmReedreadV.setVisible(true);
 		frmReedreadV.setResizable(false); //TODO make this resizable, fix gridbaglayout
 		//frmReedreadV.setMinimumSize(new Dimension(550, 600));
 
@@ -131,7 +130,7 @@ public class MainWindow {
 		gbl.setConstraints(scrollPane, gbc);
 		textAndUsers.add(scrollPane);
 
-		list = new FriendsList();
+		list = new FriendsList(listUpdate);
 		JPanel f = list.frmUserList;
 		gbc.gridx = 1;
 		gbc.gridy = 0;
@@ -164,14 +163,6 @@ public class MainWindow {
 					o.notifyAll();
 				}
 
-				synchronized(outgoing) {
-					try {
-						outgoing.wait();
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-					//Okay to close now
-				}
 				System.out.println("Window closing");
 			}
 
@@ -265,20 +256,13 @@ public class MainWindow {
 					o.notifyAll();
 				}
 
-				synchronized(outgoing) {
-					try {
-						outgoing.wait();
-					} catch (InterruptedException e1) {
-						e1.printStackTrace();
-					}
-					System.exit(0);
-				}
+				System.exit(0);
 
 			}
 		});
 		panel_1.add(btnNewButton_1);
 
-		frmReedreadV.setVisible(true);
+		//frmReedreadV.setVisible(true);
 		txtEnterMessage.requestFocus();
 	}
 
@@ -350,5 +334,9 @@ public class MainWindow {
 	 */
 	public FriendsList getList() {
 		return list;
+	}
+	
+	public void setVisible(boolean b) {
+		frmReedreadV.setVisible(b);
 	}
 }

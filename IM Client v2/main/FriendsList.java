@@ -23,6 +23,7 @@ import java.awt.Font;
 public class FriendsList {
 	public JPanel frmUserList;
 	private JList<String> list;
+	private Object listUpdate;
 	private DefaultListModel<String> dlm;
 
 	/**
@@ -33,7 +34,7 @@ public class FriendsList {
 			public void run() {
 				try {
 					@SuppressWarnings("unused")
-					FriendsList window = new FriendsList();
+					FriendsList window = new FriendsList(new Object());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -44,7 +45,8 @@ public class FriendsList {
 	/**
 	 * Create the application.
 	 */
-	public FriendsList() {
+	public FriendsList(Object listUpdate) {
+		this.listUpdate = listUpdate;
 		initialize();
 	}
 
@@ -75,6 +77,10 @@ public class FriendsList {
 			@Override
 			public void valueChanged(ListSelectionEvent arg0) {
 				if (arg0.getValueIsAdjusting() == false) {
+					
+					synchronized(listUpdate) { //Alert thread that it has changed
+						listUpdate.notifyAll();
+					}
 					System.out.println(list.getSelectedValue());
 				}
 			}

@@ -27,9 +27,9 @@ import messages.InternalMessage;
  * @author Reed
  */
 public class IMClient implements Runnable {
-	private String host = "162.203.101.47";  // refers to the server IP JOSEPH IP
+	//private String host = "162.203.101.47";  // refers to the server IP JOSEPH IP
 	//TODO obfuscate this IP
-	//private String host = "52.10.127.193";  // refers to the server IP AMAZON IP 
+	private String host = "52.10.127.193";  // refers to the server IP AMAZON IP 
 	//private String host = "72.45.15.42"; //REED IP
 	private User identifier; //Your unique identifier
 	private String myUsername; //Username of this client
@@ -40,7 +40,7 @@ public class IMClient implements Runnable {
 	private InetAddress serverIP; // get IP
 	private static Object o = new Object(); // synchronization
 	private static Object internal = new Object(); //Alert for internal messages
-	public static Object outgoing = new Object(); //Make sure program doesn't close too early
+	private static Object recipientChange = new Object();
 	private InternalMessage currentInternalMessage; //Internal message to be evaluated
 	private MainWindow mainWindow; // associated MainWindow, for printing
 	@SuppressWarnings("unused")
@@ -130,6 +130,14 @@ public class IMClient implements Runnable {
 			}
 		}
 
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				mainWindow = new MainWindow(o, recipientChange, identifier.getCredentials().getUsername());
+				System.out.println("MainWindow created"); //temp
+			}
+		});
+
 		//Lets server know client is "connected"
 		new Thread(new Sender(this, new InternalMessage
 				(identifier, "$connected$"))).start();
@@ -153,12 +161,10 @@ public class IMClient implements Runnable {
 					"Login Error", JOptionPane.ERROR_MESSAGE);
 			IMClient.main(null);
 		} else {
-			SwingUtilities.invokeLater(new Runnable() {
-				@Override
-				public void run() {
-					mainWindow = new MainWindow(o, outgoing, identifier.getCredentials().getUsername());
-				}
-			});
+			mainWindow.setVisible(true);
+			
+			//Start listener for changes
+			new Thread(new RecipientChangeListener(this, mainWindow.getList(), recipientChange)).start();
 
 			//Message loop
 			while (true) {
@@ -200,9 +206,6 @@ public class IMClient implements Runnable {
 		writer.flush();
 		//Don't close the ObjectOutputStream, it closes the socket in use!
 
-		synchronized(outgoing) { //Make sure program doesn't close too quickly
-			outgoing.notifyAll();
-		}
 	}
 
 	/**
@@ -263,6 +266,13 @@ public class IMClient implements Runnable {
 				}
 			}
 		}
+	}
+
+	/**
+	 * @param recipient the recipient to set
+	 */
+	public void setRecipient(String recipient) {
+		this.recipient = recipient;
 	}
 
 	//this thread is the incoming message scanner.
