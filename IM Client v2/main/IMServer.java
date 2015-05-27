@@ -31,6 +31,7 @@ public class IMServer implements Runnable {
 	private Message message;
 	private Socket clientSocket;
 	private Socket recipientSocket;
+	private ArrayList<String> userList = new ArrayList<String>(); //To be sent to client's userlists
 	private static ArrayList<String> connectedIPs = new ArrayList<String>();
 	private static Object o = new Object(); // Synchronizing
 	private LoginServer loginServer = new LoginServer("users/users.ser"); //Authentication
@@ -153,9 +154,14 @@ public class IMServer implements Runnable {
 					//Send the results of authentication back to client
 					if (r.reponseCode == AuthenticateResponse.RESPONSE_AUTHENTICATED) {
 
-						updateUserList("$list_add " + 
+						/*updateUserList("$list_add " + 
 								((InternalMessage) rawInput).getUser().
-								getCredentials().getUsername()); //Send username to all clients
+								getCredentials().getUsername()); //Send username to all clients */
+						updateUserList2();
+						String username = ((InternalMessage) rawInput).getUser().
+								getCredentials().getUsername();
+						userList.add(username);
+						
 						message = new InternalMessage(temp.getUser(), "$authenticated$");
 						System.out.println("Authenticated " + clientSocket.getInetAddress().toString());
 					} else if (r.reponseCode == AuthenticateResponse.RESPONSE_WRONG_PASSWORD) {
@@ -204,8 +210,16 @@ public class IMServer implements Runnable {
 
 				if (str.equals("$logout$")) {
 					connectedIPs.remove(clientSocket.getInetAddress().toString());
-					updateUserList("$list_remove " + ((InternalMessage) rawInput).getUser().
+					
+					/*updateUserList("$list_remove " + ((InternalMessage) rawInput).getUser().
 							getCredentials().getUsername()); //Remove user from list
+					*/
+					updateUserList2();
+					
+					String username = ((InternalMessage) rawInput).getUser().
+							getCredentials().getUsername();
+					
+					userList.remove(username);
 					System.out.println("Client " +
 							clientSocket.getInetAddress().toString() + " disconnected.");
 
@@ -354,7 +368,24 @@ public class IMServer implements Runnable {
 			send();
 		}
 	}
+	
+	private void updateUserList2() {
+		System.out.println("Updating user list, sending to... ");
+		String usrListMessage = "$list_update ";
+		
+		for (String s: userList) {
+			usrListMessage += userList + " ";
+		}
+		
+		for (String s: connectedIPs) {
+			recipientIP = s.substring(s.indexOf("/") + 1);
+			System.out.println(recipientIP);
+			message = new InternalMessage(null, usrListMessage);
 
+			send();
+		}
+	}
+	
 	public boolean replace(String oldStr, String newStr) {
 		try {
 			BufferedReader rd = new BufferedReader(new FileReader("users/identifiers.txt"));

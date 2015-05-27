@@ -234,6 +234,7 @@ public class IMClient implements Runnable {
 					//TODO this is terrible
 					InternalMessage tempIM = (InternalMessage)temp;
 					if (mainWindow != null) {
+						/*
 						if (tempIM.getMessage().contains("$list_add ")) {
 							String nameToAdd = tempIM.getMessage().
 									substring(tempIM.getMessage().indexOf(" ") + 1);
@@ -244,6 +245,17 @@ public class IMClient implements Runnable {
 									substring(tempIM.getMessage().indexOf(" ") + 1);
 
 							mainWindow.getList().removeFromList(nameToRemove);
+						}
+						*/
+						if (tempIM.getMessage().contains("$list_update ")) {
+							mainWindow.getList().clearList(); //Empty list
+							
+							String tempx = tempIM.getMessage().substring(tempIM.getMessage().indexOf(" ") + 1);
+							String[] names = tempx.split(" ");
+							
+							for(String s: names) {
+								mainWindow.getList().addToList(s);
+							}
 						}
 					}
 					currentInternalMessage = tempIM;

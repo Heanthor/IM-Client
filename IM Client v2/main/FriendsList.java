@@ -109,4 +109,8 @@ public class FriendsList {
 	public void removeFromList(String s) {
 		dlm.removeElement(s);
 	}
+	
+	public void clearList() {
+		dlm.clear();
+	}
 }

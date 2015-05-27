@@ -43,4 +43,18 @@ public class TestHelperMethods {
 		
 		s.replace(oldStr, newStr);
 	}
+	
+	@Test
+	public void testSplit() {
+		String in = "$list_update reed test ";
+		String two = in.substring(in.indexOf(" ") + 1);
+		
+		String[] names = two.split(" ");
+		
+		System.out.println("[");
+		for (String s: names) {
+			System.out.println(s);
+		}
+		System.out.println("]");
+	}
 }
