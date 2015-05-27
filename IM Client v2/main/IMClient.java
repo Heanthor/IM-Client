@@ -86,8 +86,15 @@ public class IMClient implements Runnable {
 		LoginWindow w = new LoginWindow(o);
 
 		//Create authentication bit
-		User u = new User(PermissionLevel.USER,
-				new Credentials(w.getUsername(), w.getPassword()));
+		User u = null;
+		try {
+			u = new User(PermissionLevel.USER,
+					new Credentials(w.getUsername(), w.getPassword()));
+		} catch (NameTooLongException e) {
+			JOptionPane.showMessageDialog(new JFrame(), e.getMessage(),
+					"Registration Error", JOptionPane.ERROR_MESSAGE);
+			IMClient.main(null);
+		}
 
 		IMClient client = new IMClient(u);
 		client.register = w.isRegister(); //Register or not?
