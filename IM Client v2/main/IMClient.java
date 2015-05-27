@@ -8,6 +8,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.Arrays;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -252,6 +253,7 @@ public class IMClient implements Runnable {
 							
 							String tempx = tempIM.getMessage().substring(tempIM.getMessage().indexOf(" ") + 1);
 							String[] names = tempx.split(" ");
+							Arrays.sort(names); //Correct order
 							
 							for(String s: names) {
 								mainWindow.getList().addToList(s);

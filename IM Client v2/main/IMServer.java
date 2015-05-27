@@ -229,9 +229,7 @@ public class IMServer implements Runnable {
 				}
 			} else {
 				message = rawInput;
-				ExternalMessage message = (ExternalMessage)rawInput;
-				String str = message.getMessage();
-				str.substring(1);
+				identifiers(rawInput);
 			}
 		} else {
 			System.out.println("Recipient not connected.");

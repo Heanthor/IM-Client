@@ -81,7 +81,6 @@ public class FriendsList {
 					synchronized(listUpdate) { //Alert thread that it has changed
 						listUpdate.notifyAll();
 					}
-					System.out.println(list.getSelectedValue());
 				}
 			}
 		});
