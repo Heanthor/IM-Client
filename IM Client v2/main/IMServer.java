@@ -374,7 +374,7 @@ public class IMServer implements Runnable {
 		String usrListMessage = "$list_update ";
 		
 		for (String s: userList) {
-			usrListMessage += userList + " ";
+			usrListMessage += s + " ";
 		}
 		
 		for (String s: connectedIPs) {
