@@ -68,6 +68,7 @@ public class FriendsList {
 		frmUserList.setLayout(new CardLayout());
 		list = new JList();
 		list.setFont(new Font("Tahoma", Font.BOLD, 14));
+		list.setBackground(new Color(173, 173, 173));
 		list.setForeground(Color.BLACK);
 		list.setDropMode(DropMode.ON);
 		list.setCellRenderer(new FriendsListRenderer());

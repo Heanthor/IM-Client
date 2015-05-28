@@ -171,7 +171,9 @@ public class IMClient implements Runnable {
 					"Login Error", JOptionPane.ERROR_MESSAGE);
 			IMClient.main(null);
 		} else {
+			//Helps keep the users list the right size
 			mainWindow.setVisible(true);
+			mainWindow.getList().removeFromList("");
 
 			//Start listener for changes
 			new Thread(new RecipientChangeListener(this, mainWindow.getList(), recipientChange)).start();
@@ -238,14 +240,13 @@ public class IMClient implements Runnable {
 
 			if (temp != null) {
 				if (temp instanceof InternalMessage) {
-					//TODO add internal message support
 					System.out.println("Internal message in: " + temp);
 
-					//TODO this is terrible
 					InternalMessage tempIM = (InternalMessage)temp;
 					if (mainWindow != null) {
 						if (tempIM.getMessage().contains("$list_update ")) {
 							mainWindow.getList().clearList(); //Empty list
+							//mainWindow.revalidate();
 
 							String tempx = tempIM.getMessage().substring(tempIM.getMessage().indexOf(" ") + 1);
 							String[] names = tempx.split(" ");
@@ -272,21 +273,30 @@ public class IMClient implements Runnable {
 				} else { //External message
 					ExternalMessage response = (ExternalMessage)temp;
 					System.out.println("Received message: " + response.getMessage());
-					/*mainWindow.getTextPane().
-					append(response.getSender() + ": " + response.getMessage() + "\n");
-					 */
+
+					//Mark up string to insert
 					Document doc = mainWindow.getTextPane().getDocument();
-					SimpleAttributeSet keyWord = new SimpleAttributeSet();
-					StyleConstants.setForeground(keyWord, Color.BLUE);
-					StyleConstants.setBackground(keyWord, Color.YELLOW);
-					StyleConstants.setBold(keyWord, true);
+
+					//Set colors and styles
+					SimpleAttributeSet usernameStyle = new SimpleAttributeSet();
+					StyleConstants.setForeground(usernameStyle, Color.BLUE);
+					StyleConstants.setBackground(usernameStyle, Color.YELLOW);
+					StyleConstants.setBold(usernameStyle, true);
+					
+					SimpleAttributeSet messageStyle = new SimpleAttributeSet();
+					StyleConstants.setForeground(messageStyle, new Color(255, 255, 255));
+
 					try {
 						doc.insertString(doc.getLength(), response.getSender() +
-								": " + response.getMessage() + "\n", keyWord);
+								":", usernameStyle);
+						
+						doc.insertString(doc.getLength(), " " + response.getMessage() + 
+								"\n", messageStyle);
 
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
+
 					//Scroll to bottom
 					//TODO this doesn't scroll properly if the message is very long
 					mainWindow.getScrollPane().getVerticalScrollBar().

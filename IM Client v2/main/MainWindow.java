@@ -3,6 +3,7 @@ package main;
 import java.awt.*;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import javax.swing.text.*;
 
 import messages.External;
@@ -21,7 +22,8 @@ public class MainWindow {
 	private JFrame frmReedreadV;
 	private JPanel stretchyPanel;
 	private JPanel panel;
-	private JTextPane textArea;
+	private JTextPane textArea; //TODO add html support
+	//http://stackoverflow.com/questions/14038703/how-can-i-add-hyperlinks-to-a-jtextpane-without-html
 	private JScrollPane scrollPane;
 	private FriendsList list;
 	private JPanel panel_2;
@@ -64,6 +66,7 @@ public class MainWindow {
 
 		frmReedreadV = new JFrame();
 		frmReedreadV.setTitle("Quillchat v2");
+		frmReedreadV.setIconImage(new ImageIcon("logos/Quillchat-30.png").getImage());
 		frmReedreadV.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent arg0) {
@@ -79,8 +82,10 @@ public class MainWindow {
 		frmReedreadV.getContentPane().setLayout((new BoxLayout(frmReedreadV.getContentPane(), BoxLayout.Y_AXIS)));
 		frmReedreadV.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmReedreadV.setBounds(100, 100, 550, 600);
+		frmReedreadV.getContentPane().setBackground(new Color(173, 173, 173));
 
 		stretchyPanel = new JPanel();
+		stretchyPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		frmReedreadV.getContentPane().add(stretchyPanel);
 		stretchyPanel.setLayout(new CardLayout(0, 0));
 
@@ -88,6 +93,9 @@ public class MainWindow {
 		GridBagConstraints c = new GridBagConstraints();
 
 		textArea = new JTextPane();
+		textArea.setFont(new Font(textArea.getFont().getName(), Font.PLAIN, 15));
+		textArea.setBackground(new Color(153, 153, 153));
+		textArea.setBorder(new LineBorder(new Color(0, 0, 0)));
 		textArea.setMargin(new Insets(2, 5, 5, 2));
 		//textArea.setLineWrap(true); /*******************************************/
 		textArea.setEditable(false); 
@@ -95,6 +103,7 @@ public class MainWindow {
 		scrollPane = new JScrollPane(textArea);
 		scrollPane.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
 		list = new FriendsList(listUpdate);
+		list.addToList("");
 
 		c.fill = GridBagConstraints.BOTH;
 		c.weightx = .8;
@@ -150,9 +159,11 @@ public class MainWindow {
 		txtEnterMessage.setColumns(10);
 
 		panel_1 = new JPanel();
+		panel_1.setBackground(new Color(173, 173, 173));
 		frmReedreadV.getContentPane().add(panel_1);
 
 		btnNewButton = new JButton("Send");
+		btnNewButton.setBackground(new Color(173, 173, 173));
 		btnNewButton.addActionListener(new ActionListener() {
 			//"Send" button press
 			public void actionPerformed(ActionEvent e) {
@@ -165,6 +176,7 @@ public class MainWindow {
 		panel_1.add(btnNewButton);
 
 		btnNewButton_1 = new JButton("Logout");
+		btnNewButton_1.setBackground(new Color(173, 173, 173));
 		btnNewButton_1.addActionListener(new ActionListener() {
 			//Logout
 			public void actionPerformed(ActionEvent e) {
@@ -193,16 +205,24 @@ public class MainWindow {
 			message = new External(txtEnterMessage.getText());
 			//textArea.append(username + ": " + ((External)message).getMessage() + "\n");
 			StyledDocument doc = textArea.getStyledDocument();
-			SimpleAttributeSet keyWord = new SimpleAttributeSet();
-			StyleConstants.setForeground(keyWord, Color.RED);
-			StyleConstants.setBackground(keyWord, Color.YELLOW);
-			StyleConstants.setBold(keyWord, true);
+			
+			//Set colors
+			SimpleAttributeSet usernameStyle = new SimpleAttributeSet();
+			StyleConstants.setBackground(usernameStyle, new Color(255, 194, 102));
+			StyleConstants.setBold(usernameStyle, true);
+			
+			SimpleAttributeSet messageStyle = new SimpleAttributeSet();
+			StyleConstants.setForeground(messageStyle, new Color(255, 255, 255));
+			
 			try {
-				doc.insertString(doc.getLength(), username + ": " + ((External)message).getMessage() + "\n", keyWord);
+				doc.insertString(doc.getLength(), username + ":", usernameStyle);
+				doc.insertString(doc.getLength(), " " + ((External)message).
+						getMessage() + "\n", messageStyle);
 				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+			
 
 			//Scrolls to bottom
 			JScrollBar vertical = scrollPane.getVerticalScrollBar();
@@ -234,6 +254,10 @@ public class MainWindow {
 
 	public void setVisible(boolean b) {
 		frmReedreadV.setVisible(b);
+	}
+	
+	public void revalidate() {
+		frmReedreadV.revalidate();
 	}
 	
 	/**
