@@ -1,79 +1,57 @@
 package main;
 
-import javax.swing.JFrame;
+import java.awt.*;
 
-import java.awt.GridLayout;
-
-import javax.swing.JPanel;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JScrollBar;
-import javax.swing.JTextArea;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-
-import java.awt.CardLayout;
-
-import javax.swing.JTextField;
-
-import java.awt.Color;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-
-import javax.swing.JScrollPane;
+import javax.swing.*;
+import javax.swing.text.*;
 
 import messages.External;
 import messages.Internal;
 
-import java.awt.EventQueue;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.Cursor;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class MainWindow {
 	private JFrame frmReedreadV;
+	private JPanel stretchyPanel;
+	private JPanel panel;
+	private JTextPane textArea;
+	private JScrollPane scrollPane;
+	private FriendsList list;
+	private JPanel panel_2;
 	private JTextField txtEnterMessage;
+	private JPanel panel_1;
+	private JButton btnNewButton;
+	private JButton btnNewButton_1;
+
 	private Message message;
 	private static Object o;
 	private static Object listUpdate;
-	private JTextArea textArea;
-	private JScrollPane scrollPane;
 	private String username;
-	private FriendsList list;
-	private int x = 100;
-	private int y = 100;
-	private int width = 550;
-	private int height = 600;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					@SuppressWarnings("unused")
-					MainWindow window = new MainWindow(new Object(), new Object(), "test");
-					//window.frmReedreadV.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	public MainWindow(Object o, Object listUpdate, String username) {
 		MainWindow.o = o;
 		MainWindow.listUpdate = listUpdate;
 		this.username = username;
 		initialize();
+		frmReedreadV.setVisible(true);
+	}
+
+	public static void main(String[] args) {
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				@SuppressWarnings("unused")
+				MainWindow t = new MainWindow(new Object(), new Object(), "test");
+			}
+		});
 	}
 
 	private void initialize() {
@@ -85,78 +63,8 @@ public class MainWindow {
 		}
 
 		frmReedreadV = new JFrame();
-		frmReedreadV.setTitle("ReedRead v2");
-		frmReedreadV.setBounds(x, y, width, height);
-		frmReedreadV.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frmReedreadV.getContentPane().setLayout(new BoxLayout(frmReedreadV.getContentPane(), BoxLayout.Y_AXIS));
-		frmReedreadV.setResizable(false); //TODO make this resizable, fix gridbaglayout
-		//frmReedreadV.setMinimumSize(new Dimension(550, 600));
-
-		JPanel stretchyPanel = new JPanel();
-		frmReedreadV.getContentPane().add(stretchyPanel);
-		stretchyPanel.setLayout(new CardLayout(0, 0));
-
-		JPanel textAndUsers = new JPanel();
-		GridBagLayout gbl = new GridBagLayout();
-		
-
-		gbl.columnWidths = new int[] {75, 25};
-		gbl.rowHeights = new int[] {450};
-		gbl.columnWeights = new double[] {1, 1};
-		gbl.rowWeights = new double[] {1};
-
-		//GridBag is made of nightmares
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.fill = GridBagConstraints.BOTH;
-		gbc.weightx = 1;
-		gbc.weighty = 1;
-
-		stretchyPanel.add(textAndUsers);
-
-		textArea = new JTextArea();
-		textArea.setMargin(new Insets(2, 5, 5, 2));
-		textArea.setLineWrap(true);
-		textArea.setWrapStyleWord(true);
-		textArea.setEditable(false);
-
-
-		scrollPane = new JScrollPane(textArea);
-		scrollPane.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
-
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.gridheight = 1;
-		gbc.gridwidth = 1;
-		gbl.setConstraints(scrollPane, gbc);
-		
-		textAndUsers.add(scrollPane);
-		
-		textAndUsers.setLayout(gbl);
-		list = new FriendsList(listUpdate);
-		JPanel f = list.frmUserList;
-		gbc.gridx = 1;
-		gbc.gridy = 0;
-		gbc.gridheight = 1;
-		gbc.gridwidth = 2;
-		gbl.setConstraints(f, gbc);
-		textAndUsers.add(f);
-
-		JPanel panel_2 = new JPanel();
-		frmReedreadV.getContentPane().add(panel_2);
-		panel_2.setLayout(new GridLayout(0, 1, 0, 0));
-
-		frmReedreadV.addWindowListener(new WindowListener() {
-
-			@Override
-			public void windowActivated(WindowEvent arg0) {
-
-			}
-
-			@Override
-			public void windowClosed(WindowEvent arg0) {
-
-			}
-
+		frmReedreadV.setTitle("Quillchat v2");
+		frmReedreadV.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent arg0) {
 				//Notifies the server that this client is logging out.
@@ -167,31 +75,59 @@ public class MainWindow {
 
 				System.out.println("Window closing");
 			}
-
-			@Override
-			public void windowDeactivated(WindowEvent arg0) {
-
-			}
-
-			@Override
-			public void windowDeiconified(WindowEvent arg0) {
-
-			}
-
-			@Override
-			public void windowIconified(WindowEvent arg0) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void windowOpened(WindowEvent arg0) {
-
-			}
-
 		});
+		frmReedreadV.getContentPane().setLayout((new BoxLayout(frmReedreadV.getContentPane(), BoxLayout.Y_AXIS)));
+		frmReedreadV.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frmReedreadV.setBounds(100, 100, 550, 600);
+
+		stretchyPanel = new JPanel();
+		frmReedreadV.getContentPane().add(stretchyPanel);
+		stretchyPanel.setLayout(new CardLayout(0, 0));
+
+		panel = new JPanel(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
+
+		textArea = new JTextPane();
+		textArea.setMargin(new Insets(2, 5, 5, 2));
+		//textArea.setLineWrap(true); /*******************************************/
+		textArea.setEditable(false); 
+		
+		scrollPane = new JScrollPane(textArea);
+		scrollPane.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
+		list = new FriendsList(listUpdate);
+
+		c.fill = GridBagConstraints.BOTH;
+		c.weightx = .8;
+		c.weighty = 1;
+		panel.add(scrollPane, c);
+		c.weightx = .2;
+		panel.add(list.frmUserList, c);
+
+		stretchyPanel.add(panel);
+
+		panel_2 = new JPanel();
+		frmReedreadV.getContentPane().add(panel_2);
+		panel_2.setLayout(new GridLayout(0, 1, 0, 0));
 
 		txtEnterMessage = new JTextField();
+		txtEnterMessage.addActionListener(new ActionListener() {
+			@Override //Enter is pressed
+			public void actionPerformed(ActionEvent arg0) {
+				sendMessage();
+				txtEnterMessage.setText(""); //Clear text
+			}
+		});
+		txtEnterMessage.addMouseListener(new MouseAdapter() {
+			//Mouse enters frame
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				if (txtEnterMessage.getText().equals("Enter Message...")) {
+					txtEnterMessage.setForeground(Color.BLACK);
+					txtEnterMessage.setText("");
+				}
+			}
+		});
+
 		txtEnterMessage.addFocusListener(new FocusAdapter() {
 			//Focus gained in text
 			@Override
@@ -209,34 +145,14 @@ public class MainWindow {
 				}
 			}
 		});
-		txtEnterMessage.addMouseListener(new MouseAdapter() {
-			//Mouse enters frame
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
-				if (txtEnterMessage.getText().equals("Enter Message...")) {
-					txtEnterMessage.setForeground(Color.BLACK);
-					txtEnterMessage.setText("");
-				}
-			}
-		});
-		txtEnterMessage.setForeground(Color.LIGHT_GRAY);
-		txtEnterMessage.setText("Enter Message...");
-		txtEnterMessage.addActionListener(new ActionListener() {
-
-			@Override //Enter is pressed
-			public void actionPerformed(ActionEvent arg0) {
-				sendMessage();
-				txtEnterMessage.setText(""); //Clear text
-			}
-
-		});
+		
 		panel_2.add(txtEnterMessage);
 		txtEnterMessage.setColumns(10);
 
-		JPanel panel_1 = new JPanel();
+		panel_1 = new JPanel();
 		frmReedreadV.getContentPane().add(panel_1);
 
-		JButton btnNewButton = new JButton("Send");
+		btnNewButton = new JButton("Send");
 		btnNewButton.addActionListener(new ActionListener() {
 			//"Send" button press
 			public void actionPerformed(ActionEvent e) {
@@ -248,7 +164,7 @@ public class MainWindow {
 		});
 		panel_1.add(btnNewButton);
 
-		JButton btnNewButton_1 = new JButton("Logout");
+		btnNewButton_1 = new JButton("Logout");
 		btnNewButton_1.addActionListener(new ActionListener() {
 			//Logout
 			public void actionPerformed(ActionEvent e) {
@@ -265,23 +181,7 @@ public class MainWindow {
 		});
 		panel_1.add(btnNewButton_1);
 
-		//frmReedreadV.setVisible(true);
 		txtEnterMessage.requestFocus();
-	}
-
-	/**
-	 * Message getter.
-	 * @return Current message
-	 */
-	public Message getMessage() {
-		return message;
-	}
-
-	public JTextArea getTextArea() {
-		return textArea;
-	}
-	public JScrollPane getScrollPane() {
-		return scrollPane;
 	}
 
 	private boolean sendMessage() {
@@ -291,7 +191,18 @@ public class MainWindow {
 
 			//Sets message
 			message = new External(txtEnterMessage.getText());
-			textArea.append(username + ": " + ((External)message).getMessage() + "\n");
+			//textArea.append(username + ": " + ((External)message).getMessage() + "\n");
+			StyledDocument doc = textArea.getStyledDocument();
+			SimpleAttributeSet keyWord = new SimpleAttributeSet();
+			StyleConstants.setForeground(keyWord, Color.RED);
+			StyleConstants.setBackground(keyWord, Color.YELLOW);
+			StyleConstants.setBold(keyWord, true);
+			try {
+				doc.insertString(doc.getLength(), username + ": " + ((External)message).getMessage() + "\n", keyWord);
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 
 			//Scrolls to bottom
 			JScrollBar vertical = scrollPane.getVerticalScrollBar();
@@ -315,34 +226,6 @@ public class MainWindow {
 	}
 
 	/**
-	 * @return the x
-	 */
-	public int getX() {
-		return x;
-	}
-
-	/**
-	 * @return the y
-	 */
-	public int getY() {
-		return y;
-	}
-
-	/**
-	 * @return the width
-	 */
-	public int getWidth() {
-		return width;
-	}
-
-	/**
-	 * @return the height
-	 */
-	public int getHeight() {
-		return height;
-	}
-
-	/**
 	 * @return the user list
 	 */
 	public FriendsList getList() {
@@ -351,5 +234,20 @@ public class MainWindow {
 
 	public void setVisible(boolean b) {
 		frmReedreadV.setVisible(b);
+	}
+	
+	/**
+	 * Message getter.
+	 * @return Current message
+	 */
+	public Message getMessage() {
+		return message;
+	}
+
+	public JTextPane getTextPane() {
+		return textArea;
+	}
+	public JScrollPane getScrollPane() {
+		return scrollPane;
 	}
 }

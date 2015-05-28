@@ -3,6 +3,7 @@ package tests;
 import filter.BloomFilter;
 import login.Credentials;
 import login.LoginServer;
+import login.NameTooLongException;
 
 /**
  * Utility for reading the user list contained in users.ser. Just runs
@@ -23,6 +24,10 @@ public class UserListReader {
 
 	public static void main(String[] args) {
 		UserListReader r = new UserListReader("users/users.ser");
-		r.s.authenticate(new Credentials("_list_users", new BloomFilter()));
+		try {
+			r.s.authenticate(new Credentials("_list_users", new BloomFilter()));
+		} catch (NameTooLongException e) {
+			e.printStackTrace();
+		}
 	}
 }

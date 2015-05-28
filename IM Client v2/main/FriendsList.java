@@ -1,6 +1,7 @@
 package main;
 
 import java.awt.CardLayout;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 
 import javax.swing.JList;
@@ -70,6 +71,7 @@ public class FriendsList {
 		list.setForeground(Color.BLACK);
 		list.setDropMode(DropMode.ON);
 		list.setCellRenderer(new FriendsListRenderer());
+		list.setMinimumSize(new Dimension(125, 50));
 
 		//New item is selected
 		list.addListSelectionListener(new ListSelectionListener() {
@@ -86,8 +88,8 @@ public class FriendsList {
 		});
 
 		dlm = new DefaultListModel();
-		dlm.add(0, "Test1");
-		dlm.add(1, "Test2");
+		//dlm.add(0, "Test1");
+		//dlm.add(1, "Test2");
 		list.setModel(dlm);
 
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);

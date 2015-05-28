@@ -3,6 +3,7 @@ package main;
 // first, then run the client, that will connect to it.  Using localhost
 // means the client will connect to the server running on the same machine.
 
+import java.awt.Color;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -13,6 +14,7 @@ import java.util.Arrays;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import javax.swing.text.*;
 
 import login.*;
 import messages.External;
@@ -244,15 +246,19 @@ public class IMClient implements Runnable {
 					if (mainWindow != null) {
 						if (tempIM.getMessage().contains("$list_update ")) {
 							mainWindow.getList().clearList(); //Empty list
-							mainWindow.getList().addToList("yep");
 
 							String tempx = tempIM.getMessage().substring(tempIM.getMessage().indexOf(" ") + 1);
 							String[] names = tempx.split(" ");
 							Arrays.sort(names); //Correct order
 
-							for(String s: names) {
-								if (!s.equals(myUsername)) {
-									mainWindow.getList().addToList(s);
+							//Populate user list
+							if (names.length == 1 && names[0].equals(myUsername)) {
+								mainWindow.getList().addToList("Nobody here");
+							} else {
+								for(String s: names) {
+									if (!s.equals(myUsername)) {
+										mainWindow.getList().addToList(s);
+									}
 								}
 							}
 						}
@@ -266,9 +272,21 @@ public class IMClient implements Runnable {
 				} else { //External message
 					ExternalMessage response = (ExternalMessage)temp;
 					System.out.println("Received message: " + response.getMessage());
-					mainWindow.getTextArea().
+					/*mainWindow.getTextPane().
 					append(response.getSender() + ": " + response.getMessage() + "\n");
+					 */
+					Document doc = mainWindow.getTextPane().getDocument();
+					SimpleAttributeSet keyWord = new SimpleAttributeSet();
+					StyleConstants.setForeground(keyWord, Color.BLUE);
+					StyleConstants.setBackground(keyWord, Color.YELLOW);
+					StyleConstants.setBold(keyWord, true);
+					try {
+						doc.insertString(doc.getLength(), response.getSender() +
+								": " + response.getMessage() + "\n", keyWord);
 
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 					//Scroll to bottom
 					//TODO this doesn't scroll properly if the message is very long
 					mainWindow.getScrollPane().getVerticalScrollBar().

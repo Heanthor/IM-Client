@@ -1,7 +1,6 @@
 package main;
 
 import java.awt.Component;
-import java.awt.Dimension;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.ImageIcon;
@@ -17,7 +16,7 @@ public class FriendsListRenderer extends DefaultListCellRenderer {
 		JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 
 		label.setHorizontalTextPosition(JLabel.RIGHT);
-		label.setPreferredSize(new Dimension(125, 50));
+		//label.setPreferredSize(new Dimension(125, 50));
 		label.setIcon(new ImageIcon("logos/icon.jpg"));
 		return label;
 	}
