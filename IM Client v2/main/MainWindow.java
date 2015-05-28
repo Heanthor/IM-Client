@@ -208,7 +208,7 @@ public class MainWindow {
 			
 			//Set colors
 			SimpleAttributeSet usernameStyle = new SimpleAttributeSet();
-			StyleConstants.setBackground(usernameStyle, new Color(255, 194, 102));
+			StyleConstants.setForeground(usernameStyle, new Color(76, 76, 76));
 			StyleConstants.setBold(usernameStyle, true);
 			
 			SimpleAttributeSet messageStyle = new SimpleAttributeSet();

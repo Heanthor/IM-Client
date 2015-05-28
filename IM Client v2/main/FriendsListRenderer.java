@@ -22,7 +22,7 @@ public class FriendsListRenderer extends DefaultListCellRenderer {
 		}
 		label.setHorizontalTextPosition(JLabel.RIGHT);
 		//label.setPreferredSize(new Dimension(125, 50));
-		label.setIcon(new ImageIcon("logos/icon.jpg"));
+		label.setIcon(new ImageIcon("logos/quill_50.png"));
 		return label;
 	}
 }

@@ -262,6 +262,12 @@ public class IMClient implements Runnable {
 									}
 								}
 							}
+							
+							//Make sure you always have a selection
+							if (mainWindow.getList().getLength() == 1) {
+								mainWindow.getList().setSelectedIndex(0);
+								setRecipient(mainWindow.getList().getSelectedValue());
+							} 
 						}
 					}
 					currentInternalMessage = tempIM;
@@ -279,8 +285,7 @@ public class IMClient implements Runnable {
 
 					//Set colors and styles
 					SimpleAttributeSet usernameStyle = new SimpleAttributeSet();
-					StyleConstants.setForeground(usernameStyle, Color.BLUE);
-					StyleConstants.setBackground(usernameStyle, Color.YELLOW);
+					StyleConstants.setForeground(usernameStyle, new Color(52, 52, 52));
 					StyleConstants.setBold(usernameStyle, true);
 					
 					SimpleAttributeSet messageStyle = new SimpleAttributeSet();

@@ -116,7 +116,11 @@ public class FriendsList {
 		dlm.clear();
 	}
 	
-	public void addPlaceholder() {
-
+	public int getLength() {
+		return list.getModel().getSize();
+	}
+	
+	public void setSelectedIndex(int index) {
+		list.setSelectedIndex(index);
 	}
 }
