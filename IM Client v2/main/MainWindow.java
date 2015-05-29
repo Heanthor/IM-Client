@@ -65,7 +65,9 @@ public class MainWindow {
 
 		frmReedreadV = new JFrame();
 		frmReedreadV.setTitle("Quillchat v2");
-		frmReedreadV.setIconImage(new ImageIcon("logos/Quillchat-30.png").getImage());
+		Image i = Toolkit.getDefaultToolkit()
+				.getImage(FriendsListRenderer.class.getResource("logos/Quillchat-30.png"));	
+		frmReedreadV.setIconImage(new ImageIcon(i).getImage());
 		frmReedreadV.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent arg0) {
