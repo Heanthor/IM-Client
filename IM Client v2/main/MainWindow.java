@@ -37,13 +37,12 @@ public class MainWindow {
 	private static Object listUpdate;
 	private String username;
 
-
 	public MainWindow(Object o, Object listUpdate, String username) {
 		MainWindow.o = o;
 		MainWindow.listUpdate = listUpdate;
 		this.username = username;
 		initialize();
-		frmReedreadV.setVisible(true);
+		//frmReedreadV.setVisible(true);
 	}
 
 	public static void main(String[] args) {

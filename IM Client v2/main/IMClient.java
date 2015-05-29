@@ -145,6 +145,14 @@ public class IMClient implements Runnable {
 			public void run() {
 				mainWindow = new MainWindow(o, recipientChange, identifier.getCredentials().getUsername());
 				System.out.println("MainWindow created"); //temp
+
+				synchronized(internal) {
+					try {
+						internal.wait();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
 			}
 		});
 
@@ -190,11 +198,27 @@ public class IMClient implements Runnable {
 									(identifier, ((Internal) message)
 											.getCode()))).start();
 						} else {
-							//Starts send message thread
-							new Thread(new Sender(this, new ExternalMessage
-									//TODO choose recipient
-									(myUsername, recipient, ((External) message).
-											getMessage()))).start();
+							if (myUsername != recipient && !recipient.equals("No users online")) {
+								//Starts send message thread
+								new Thread(new Sender(this, new ExternalMessage
+										(myUsername, recipient, ((External) message).
+												getMessage()))).start();
+							} else if (recipient.equals("No users online")) {
+								//Mark up string to insert
+								Document doc = mainWindow.getTextPane().getDocument();
+
+								//Set colors and styles
+								SimpleAttributeSet errorStyle = new SimpleAttributeSet();
+								StyleConstants.setForeground(errorStyle, Color.RED);
+								StyleConstants.setBold(errorStyle, true);
+
+								try {
+									doc.insertString(doc.getLength(), "Error: No user to send to.", errorStyle);
+
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
+							}
 						}
 					}
 				} catch (InterruptedException e) {
@@ -254,7 +278,7 @@ public class IMClient implements Runnable {
 
 							//Populate user list
 							if (names.length == 1 && names[0].equals(myUsername)) {
-								mainWindow.getList().addToList("Nobody here");
+								mainWindow.getList().addToList("No users online");
 							} else {
 								for(String s: names) {
 									if (!s.equals(myUsername)) {
@@ -262,7 +286,7 @@ public class IMClient implements Runnable {
 									}
 								}
 							}
-							
+
 							//Make sure you always have a selection
 							if (mainWindow.getList().getLength() == 1) {
 								mainWindow.getList().setSelectedIndex(0);
@@ -287,14 +311,14 @@ public class IMClient implements Runnable {
 					SimpleAttributeSet usernameStyle = new SimpleAttributeSet();
 					StyleConstants.setForeground(usernameStyle, new Color(52, 52, 52));
 					StyleConstants.setBold(usernameStyle, true);
-					
+
 					SimpleAttributeSet messageStyle = new SimpleAttributeSet();
 					StyleConstants.setForeground(messageStyle, new Color(255, 255, 255));
 
 					try {
 						doc.insertString(doc.getLength(), response.getSender() +
 								":", usernameStyle);
-						
+
 						doc.insertString(doc.getLength(), " " + response.getMessage() + 
 								"\n", messageStyle);
 
