@@ -2,6 +2,7 @@ package main;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Image;
 import java.awt.Toolkit;
 
 import javax.swing.DefaultListCellRenderer;
@@ -22,9 +23,11 @@ public class FriendsListRenderer extends DefaultListCellRenderer {
 			label.setBackground(new Color(247, 247, 247));
 		}
 		label.setHorizontalTextPosition(JLabel.RIGHT);
-		//label.setPreferredSize(new Dimension(125, 50));
-		label.setIcon(new ImageIcon(Toolkit.getDefaultToolkit()
-				.getImage(FriendsListRenderer.class.getResource("logos/quill_50.png"))));
+
+		Image i = Toolkit.getDefaultToolkit()
+				.getImage(FriendsListRenderer.class.getResource("logos/quill_50.png"));	
+		label.setIcon(new ImageIcon(i));
+
 		return label;
 	}
 }

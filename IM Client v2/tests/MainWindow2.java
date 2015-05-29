@@ -118,6 +118,7 @@ public class MainWindow2 {
 		textAndUsers.add(scrollPane, gbc);
 
 		list = new FriendsList(listUpdate);
+		list.addToList("test1");
 
 		gbc.weightx = 0.2;
 		textAndUsers.add(list.frmUserList, gbc);
