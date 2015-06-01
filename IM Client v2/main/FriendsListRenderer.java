@@ -10,6 +10,10 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JList;
 
+/**
+ * Custom cell renderer for the JList used in FriendsList.
+ * @author Reed
+ */
 @SuppressWarnings("serial")
 public class FriendsListRenderer extends DefaultListCellRenderer {
 

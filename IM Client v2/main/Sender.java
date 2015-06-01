@@ -1,5 +1,7 @@
 package main;
 
+import messages.Message;
+
 /**
  * Runnable class that calls the associated IMClient's outgoing method, to send
  * the given message.

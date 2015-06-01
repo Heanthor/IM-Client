@@ -1,7 +1,13 @@
-package main;
+package messages;
 
 import java.io.Serializable;
 
+/**
+ * Parent class of data sent between client and server.
+ * Contains at least a sender and recipient, and is extended to include a message
+ * where needed.
+ * @author Reed
+ */
 public abstract class Message implements Serializable {
 	private static final long serialVersionUID = -7316250263820535794L;
 	private String senderUsername;

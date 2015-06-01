@@ -1,9 +1,9 @@
 package tests;
 
 import static org.junit.Assert.*;
-
 import main.*;
 import messages.InternalMessage;
+import messages.Message;
 
 import org.junit.Test;
 

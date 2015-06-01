@@ -1,7 +1,5 @@
 package messages;
 
-import main.Message;
-
 /**
  * Message class used to communicate between the LoginWindow and IMClient.
  * Used for internal messages.

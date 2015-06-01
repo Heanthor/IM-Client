@@ -8,6 +8,7 @@ import javax.swing.text.*;
 
 import messages.External;
 import messages.Internal;
+import messages.Message;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -18,6 +19,13 @@ import java.awt.event.MouseEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
+/**
+ * The main UI window used to send and receive messages, and to display everything
+ * else going on in the program. Originally generated with WindowBuilder, so is
+ * a little messy.
+ * @author Reed
+ *
+ */
 public class MainWindow {
 	private JFrame frmReedreadV;
 	private JPanel stretchyPanel;
@@ -56,6 +64,7 @@ public class MainWindow {
 	}
 
 	private void initialize() {
+		//Set native LnF
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (ClassNotFoundException | InstantiationException
@@ -98,7 +107,7 @@ public class MainWindow {
 		textArea.setBackground(new Color(153, 153, 153));
 		textArea.setBorder(new LineBorder(new Color(0, 0, 0)));
 		textArea.setMargin(new Insets(2, 5, 5, 2));
-		//textArea.setLineWrap(true); /*******************************************/
+		//textArea.setLineWrap(true); /******************************************* broken/
 		textArea.setEditable(false); 
 		
 		scrollPane = new JScrollPane(textArea);
@@ -241,6 +250,9 @@ public class MainWindow {
 		}
 	}
 
+	/**
+	 * Sets message pane's default text.
+	 */
 	private void setDefaultText() {
 		txtEnterMessage.setForeground(Color.LIGHT_GRAY);
 		txtEnterMessage.setText("Enter Message...");
@@ -253,10 +265,17 @@ public class MainWindow {
 		return list;
 	}
 
+	/**
+	 * Sets this window visible according to condition.
+	 * @param b
+	 */
 	public void setVisible(boolean b) {
 		frmReedreadV.setVisible(b);
 	}
 	
+	/**
+	 * Revalidates this window.
+	 */
 	public void revalidate() {
 		frmReedreadV.revalidate();
 	}
@@ -269,9 +288,18 @@ public class MainWindow {
 		return message;
 	}
 
+	/**
+	 * Returns the textPane used for displaying all messages.
+	 * @return
+	 */
 	public JTextPane getTextPane() {
 		return textArea;
 	}
+	
+	/**
+	 * Returns the scrollPane used to hold the textPane.
+	 * @return
+	 */
 	public JScrollPane getScrollPane() {
 		return scrollPane;
 	}

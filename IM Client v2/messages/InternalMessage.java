@@ -1,8 +1,6 @@
 package messages;
 
 import login.User;
-import main.Message;
-
 
 /**
  * Messages sent internally between client and server, for alerts and authentication.

@@ -21,6 +21,11 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import java.awt.Font;
 
+/**
+ * The user list located to the right of the chat text area.
+ * @author Reed
+ *
+ */
 public class FriendsList {
 	public JPanel frmUserList;
 	private JList<String> list;
@@ -29,6 +34,7 @@ public class FriendsList {
 
 	/**
 	 * Launch the application.
+	 * @deprecated
 	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -100,6 +106,10 @@ public class FriendsList {
 		frmUserList.add(scrollPane, "name_12871148397846");
 	}
 
+	/*
+	 * Self-explanatory getters and helpers
+	 */
+	
 	public String getSelectedValue() {
 		return  list.getSelectedValue();
 	}
@@ -116,6 +126,9 @@ public class FriendsList {
 		dlm.clear();
 	}
 	
+	/**
+	 * @return number of elements in list
+	 */
 	public int getLength() {
 		return list.getModel().getSize();
 	}

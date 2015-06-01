@@ -1,5 +1,12 @@
 package main;
 
+/**
+ * One thread running an instance of this class is created to listen for changes
+ * in the user list, and when they are detected, push the changes to the IMClient
+ * which will in turn change them in the MainWindow.
+ * @author Reed
+ *
+ */
 public class RecipientChangeListener implements Runnable {
 	private IMClient client;
 	private FriendsList f;
@@ -28,5 +35,4 @@ public class RecipientChangeListener implements Runnable {
 
 		}
 	}
-
 }

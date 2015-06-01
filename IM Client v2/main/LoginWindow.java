@@ -24,6 +24,12 @@ import java.awt.GridLayout;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
+/**
+ * Window that appears first when running program, handles login information,
+ * and the option to register users. Passes all processing to IMClient and MainWindow.
+ * @author Reed
+ *
+ */
 public class LoginWindow {
 	private final JPanel contentPanel = new JPanel();
 	private JTextField txtEnterUsername;

@@ -1,7 +1,5 @@
 package messages;
 
-import main.Message;
-
 /**
  * External messages are packets containing actual messages to be shown to users.
  * Messages have a 10,000 character limit.

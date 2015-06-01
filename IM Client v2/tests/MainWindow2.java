@@ -29,9 +29,9 @@ import java.awt.event.WindowListener;
 import javax.swing.JScrollPane;
 
 import main.FriendsList;
-import main.Message;
 import messages.External;
 import messages.Internal;
+import messages.Message;
 
 import java.awt.EventQueue;
 import java.awt.GridBagConstraints;

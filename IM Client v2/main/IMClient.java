@@ -21,6 +21,7 @@ import messages.External;
 import messages.ExternalMessage;
 import messages.Internal;
 import messages.InternalMessage;
+import messages.Message;
 
 /**
  * The IMClient is the client portion of the chat program.
@@ -126,6 +127,7 @@ public class IMClient implements Runnable {
 				}
 			}
 
+			//Check registration response
 			if (currentInternalMessage.getMessage().equals("$true$")) {
 				System.out.println("Registration successful, welcome " + 
 						identifier.getCredentials().getUsername());
@@ -144,7 +146,6 @@ public class IMClient implements Runnable {
 			@Override
 			public void run() {
 				mainWindow = new MainWindow(o, recipientChange, identifier.getCredentials().getUsername());
-				System.out.println("MainWindow created"); //temp
 
 				synchronized(internal) {
 					try {
@@ -173,11 +174,11 @@ public class IMClient implements Runnable {
 		if (currentInternalMessage.getMessage().equals("$wrong_password$")) {
 			JOptionPane.showMessageDialog(new JFrame(), "Wrong password",
 					"Login Error", JOptionPane.ERROR_MESSAGE);
-			IMClient.main(null);
+			IMClient.main(null); //Restart program
 		} else if (currentInternalMessage.getMessage().equals("$username_not_found$")) {
 			JOptionPane.showMessageDialog(new JFrame(), "Username not found",
 					"Login Error", JOptionPane.ERROR_MESSAGE);
-			IMClient.main(null);
+			IMClient.main(null); //Restart program
 		} else {
 			//Helps keep the users list the right size
 			mainWindow.setVisible(true);
@@ -204,20 +205,7 @@ public class IMClient implements Runnable {
 										(myUsername, recipient, ((External) message).
 												getMessage()))).start();
 							} else if (recipient.equals("No users online")) {
-								//Mark up string to insert
-								Document doc = mainWindow.getTextPane().getDocument();
-
-								//Set colors and styles
-								SimpleAttributeSet errorStyle = new SimpleAttributeSet();
-								StyleConstants.setForeground(errorStyle, Color.RED);
-								StyleConstants.setBold(errorStyle, true);
-
-								try {
-									doc.insertString(doc.getLength(), "Error: No user to send to.", errorStyle);
-
-								} catch (Exception e) {
-									e.printStackTrace();
-								}
+								printToUI();
 							}
 						}
 					}
@@ -225,6 +213,26 @@ public class IMClient implements Runnable {
 					e.printStackTrace();
 				}
 			}
+		}
+	}
+	
+	/**
+	 * Prints text to the UI, for use in init().
+	 */
+	private void printToUI() {
+		//Mark up string to insert
+		Document doc = mainWindow.getTextPane().getDocument();
+
+		//Set colors and styles
+		SimpleAttributeSet errorStyle = new SimpleAttributeSet();
+		StyleConstants.setForeground(errorStyle, Color.RED);
+		StyleConstants.setBold(errorStyle, true);
+
+		try {
+			doc.insertString(doc.getLength(), "Error: No user to send to.", errorStyle);
+
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
