@@ -1,11 +1,11 @@
 package tests;
 
+import gui.LoginWindow;
+import gui.MainWindow;
+
 import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.util.Scanner;
-
-import main.LoginWindow;
-import main.MainWindow;
 
 public class testBed {
 

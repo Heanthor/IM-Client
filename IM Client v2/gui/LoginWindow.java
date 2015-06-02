@@ -1,4 +1,4 @@
-package main;
+package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -262,7 +262,7 @@ public class LoginWindow {
 	/**
 	 * @return the password.
 	 */
-	protected String getPassword() {
+	public String getPassword() {
 		return password;
 	}
 	

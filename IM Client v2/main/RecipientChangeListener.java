@@ -1,5 +1,7 @@
 package main;
 
+import gui.FriendsList;
+
 /**
  * One thread running an instance of this class is created to listen for changes
  * in the user list, and when they are detected, push the changes to the IMClient

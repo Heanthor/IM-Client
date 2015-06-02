@@ -1,5 +1,7 @@
 package tests;
 
+import gui.FriendsList;
+
 import javax.swing.JFrame;
 
 import java.awt.GridLayout;
@@ -28,7 +30,6 @@ import java.awt.event.WindowListener;
 
 import javax.swing.JScrollPane;
 
-import main.FriendsList;
 import messages.External;
 import messages.Internal;
 import messages.Message;

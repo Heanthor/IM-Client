@@ -3,6 +3,10 @@ package main;
 // first, then run the client, that will connect to it.  Using localhost
 // means the client will connect to the server running on the same machine.
 
+import gui.FriendsList;
+import gui.LoginWindow;
+import gui.MainWindow;
+
 import java.awt.Color;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -33,7 +37,8 @@ import messages.Message;
 public class IMClient implements Runnable {
 	//private String host = "162.203.101.47";  // refers to the server IP JOSEPH IP
 	//TODO obfuscate this IP
-	private String host = "52.10.127.193";  // refers to the server IP AMAZON IP 
+	//private String host = "52.10.127.193";  // refers to the server IP AMAZON IP 
+	private String host = "52.11.220.192"; //Reed amazon IP
 	//private String host = "72.45.15.42"; //REED IP
 	private User identifier; //Your unique identifier
 	private String myUsername; //Username of this client
