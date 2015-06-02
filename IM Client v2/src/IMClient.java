@@ -250,16 +250,13 @@ public class IMClient implements Runnable {
 	 * @throws IOException If a problem in the ObjectOutputStream occurs.
 	 */
 	public void outgoing(Message messageOut) throws IOException {
-		if (recipient != null) {
 		ObjectOutputStream writer = new ObjectOutputStream(new ObjectOutputStream(
 				serverSocket.getOutputStream()));
 
 		writer.writeObject(messageOut);
 		writer.flush();
 		//Don't close the ObjectOutputStream, it closes the socket in use!
-		} else {
-			System.err.println("No recipient selected");
-		}
+
 	}
 
 	/**
