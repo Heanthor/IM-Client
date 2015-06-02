@@ -27,6 +27,7 @@ import messages.Message;
  * 
  * @author Reed
  */
+//TODO two people cannot connect from the same IP
 public class IMServer implements Runnable {
 	private String recipientIP;
 	private Message message;
@@ -133,7 +134,6 @@ public class IMServer implements Runnable {
 
 		System.out.println("Received raw input: " + rawInput);
 
-
 		if (rawInput instanceof InternalMessage) {
 			InternalMessage temp = (InternalMessage)rawInput;
 			String str = temp.getMessage();
@@ -213,7 +213,7 @@ public class IMServer implements Runnable {
 			System.err.println("Registration failed - write error");
 			loopInput = false;
 		}
-		
+
 		return false;
 	}
 
@@ -278,7 +278,7 @@ public class IMServer implements Runnable {
 	private String identifiers(Message rawInput) throws IOException {
 		//Handle message
 		String toReturn = null;
-		
+
 		BufferedReader fileReader = new BufferedReader
 				(new FileReader("users/identifiers.txt"));
 
@@ -327,7 +327,7 @@ public class IMServer implements Runnable {
 		}
 
 		fileReader.close();
-		
+
 		return toReturn;
 	}
 
@@ -342,8 +342,13 @@ public class IMServer implements Runnable {
 		try {
 			System.out.println("Attempting to open connection 2");
 			Socket recipientSocket = openConnections.get(recipientIP);
-			writer = new ObjectOutputStream(recipientSocket.getOutputStream());
-			System.out.println("Opened conection to recipient\n");
+			
+			if (!recipientSocket.isClosed()) { //Hopefully reduce errors
+				writer = new ObjectOutputStream(recipientSocket.getOutputStream());
+				System.out.println("Opened conection to recipient\n");
+			} else {
+				System.err.println("Socket closed too early!");
+			}
 		} catch (IOException e) {
 			System.err.println("Error in send(): ");
 			loopInput = false; //kills thread

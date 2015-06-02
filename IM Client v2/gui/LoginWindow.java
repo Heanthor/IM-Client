@@ -66,7 +66,7 @@ public class LoginWindow {
 		}
 
 		LoginWindow.o = o;
-		d.setTitle("Placeholder v1.0 Login");
+		d.setTitle("Quillchat v2.0 Login");
 		d.setBounds(100, 100, 333, 155);
 		d.getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));

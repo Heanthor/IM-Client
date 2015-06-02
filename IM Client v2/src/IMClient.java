@@ -8,6 +8,7 @@ import gui.LoginWindow;
 import gui.MainWindow;
 
 import java.awt.Color;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -76,8 +77,9 @@ public class IMClient implements Runnable {
 		} catch (IOException e) {
 			e.printStackTrace();
 
-			JOptionPane.showMessageDialog(new JFrame(), e.toString(),
-					"IM Server not running", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(new JFrame(), "The IM server is down. "
+					+ "Please try again later.",
+					"IM Server Not Running", JOptionPane.ERROR_MESSAGE);
 
 			//Quit program since it is useless if server is not running
 			System.exit(1);
@@ -220,7 +222,7 @@ public class IMClient implements Runnable {
 			}
 		}
 	}
-	
+
 	/**
 	 * Prints text to the UI, for use in init().
 	 */
@@ -248,13 +250,16 @@ public class IMClient implements Runnable {
 	 * @throws IOException If a problem in the ObjectOutputStream occurs.
 	 */
 	public void outgoing(Message messageOut) throws IOException {
+		if (recipient != null) {
 		ObjectOutputStream writer = new ObjectOutputStream(new ObjectOutputStream(
 				serverSocket.getOutputStream()));
 
 		writer.writeObject(messageOut);
 		writer.flush();
 		//Don't close the ObjectOutputStream, it closes the socket in use!
-
+		} else {
+			System.err.println("No recipient selected");
+		}
 	}
 
 	/**
@@ -264,9 +269,13 @@ public class IMClient implements Runnable {
 	 */
 	public void incoming() throws IOException {
 		while (true) {
-			reader = new ObjectInputStream(
-					serverSocket.getInputStream());
-
+			try {
+				reader = new ObjectInputStream(
+						serverSocket.getInputStream());
+			} catch (EOFException e) {
+				System.err.println("Server quit unexpectedly.");
+				System.exit(1);
+			}
 			//Protects against null output, shows real messages only
 			Object temp = null;
 			try {
