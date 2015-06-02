@@ -1,4 +1,4 @@
-package main;
+package src;
 // the client part of the example.  To run both programs, run the server
 // first, then run the client, that will connect to it.  Using localhost
 // means the client will connect to the server running on the same machine.

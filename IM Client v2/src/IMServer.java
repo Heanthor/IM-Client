@@ -1,4 +1,4 @@
-package main;
+package src;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
@@ -13,6 +13,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
+import filter.BloomFilter;
 import login.*;
 import messages.InternalMessage;
 import messages.Message;
@@ -36,7 +37,8 @@ public class IMServer implements Runnable {
 	private static Object o = new Object(); // Synchronizing
 	private LoginServer loginServer = new LoginServer("users/users.ser"); //Authentication
 	private boolean loopInput = true; // Controls looping IO for one connection
-
+	private static DebugListener debug = new DebugListener();
+	
 	public static TreeMap<String, Socket> openConnections = new TreeMap<String, Socket>();
 
 	/**
@@ -51,7 +53,8 @@ public class IMServer implements Runnable {
 		@SuppressWarnings("resource")
 		ServerSocket serverSocket = new ServerSocket(portNumber);
 		System.out.println("IM server is running.");
-
+		new Thread(debug).start();
+		
 		while (true) {  // loop forever
 			System.out.println("...");
 			//Waits for connection, saves the socket
@@ -333,7 +336,7 @@ public class IMServer implements Runnable {
 			System.out.println("Attempting to open connection 2");
 			recipientSocket = openConnections.get(recipientIP);
 			writer = new ObjectOutputStream(recipientSocket.getOutputStream());
-			System.out.println("Opened conection to recipient");
+			System.out.println("Opened conection to recipient\n");
 		} catch (IOException e) {
 			System.err.println("IP Exception");
 			loopInput = false; //kills thread
@@ -437,5 +440,27 @@ public class IMServer implements Runnable {
 		}
 
 		return true;
+	}
+
+	public static void printConnections() {
+		System.out.println("Connected IP list: ");
+
+		System.out.print("[");
+		for (String s: connectedIPs) {
+			System.out.println(s + ", ");
+		}
+		
+		System.out.println("]");
+	}
+	
+	/**
+	 * Prints contents of users.ser
+	 */
+	public static void printUsers() {
+		try {
+			new LoginServer().authenticate(new Credentials("_list_users", new BloomFilter()));
+		} catch (NameTooLongException e) {
+			e.printStackTrace();
+		}
 	}
 }
