@@ -2,6 +2,10 @@ package src;
 
 import java.util.Scanner;
 
+/**
+ * Allows user hosting an IMServer to input commands while running.
+ * @author Reed
+ */
 public class DebugListener implements Runnable {
 	public boolean run = true;
 
@@ -13,12 +17,13 @@ public class DebugListener implements Runnable {
 		while (run) {
 			String line = sc.nextLine();
 
+			//Command list
 			if (line.equals("connected")) {
 				IMServer.printConnections();
 			} else if (line.equals("quit")) {
 				System.exit(0);
 			} else if (line.equals("users")) {
-				IMServer.printUsers();
+				IMServer.printUsers("users/users.ser");
 			} else if (line.equals("help")) {
 				help();
 			}
@@ -30,11 +35,13 @@ public class DebugListener implements Runnable {
 		sc.close();
 	}
 
+	/**
+	 * Prints command list.
+	 */
 	private void help() {
-		System.out.println("Available commands: \n" +
-				"connected\n" + 
-				"quit\n" + 
-				"users\n" 
-				);
+		System.out.println("\nAvailable commands: " +
+				"connected " + 
+				"quit " + 
+				"users");
 	}
 }

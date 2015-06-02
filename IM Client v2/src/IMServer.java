@@ -31,14 +31,13 @@ public class IMServer implements Runnable {
 	private String recipientIP;
 	private Message message;
 	private Socket clientSocket;
-	private Socket recipientSocket;
 	private static ArrayList<String> userList = new ArrayList<String>(); //To be sent to client's userlists
 	private static ArrayList<String> connectedIPs = new ArrayList<String>();
 	private static Object o = new Object(); // Synchronizing
 	private LoginServer loginServer = new LoginServer("users/users.ser"); //Authentication
 	private boolean loopInput = true; // Controls looping IO for one connection
 	private static DebugListener debug = new DebugListener();
-	
+
 	public static TreeMap<String, Socket> openConnections = new TreeMap<String, Socket>();
 
 	/**
@@ -54,7 +53,7 @@ public class IMServer implements Runnable {
 		ServerSocket serverSocket = new ServerSocket(portNumber);
 		System.out.println("IM server is running.");
 		new Thread(debug).start();
-		
+
 		while (true) {  // loop forever
 			System.out.println("...");
 			//Waits for connection, saves the socket
@@ -82,11 +81,12 @@ public class IMServer implements Runnable {
 
 	public void run() {
 		while(loopInput) {
+			String rIP;
 			try {
 				//Receive message
-				if (receive()) {
+				if ((rIP = receive()) != null) {
 					//Send message
-					if (send()) {
+					if (send(rIP)) {
 						System.out.println("Sent message");
 					} else {
 						System.out.println("Did not send message.");
@@ -103,13 +103,13 @@ public class IMServer implements Runnable {
 	/**
 	 * Receives message from a client. Is the first method that runs, always
 	 * before send().
-	 * @return true if message is meant to be passed on, false otherwise.
+	 * @return the recipient IP of message if meant to be passed on, or null if not.
 	 * @throws IOException if the input is corrupted.
-	 * 
 	 */
-	public boolean receive() throws IOException {
+	public String receive() throws IOException {
 		ObjectInputStream reader = null;
 		Message rawInput = null;
+		String rIP = null;
 
 		//Opens input stream to read message
 		try {
@@ -144,19 +144,21 @@ public class IMServer implements Runnable {
 			 * logout notification. These all return false to break the loop.
 			 */
 			if (str.equals("$connected$")) {
-				return connected(rawInput, temp);
+				connected(rawInput, temp);
+				return null;
 			} else if (str.equals("$register$")) {
-				return register(rawInput, temp);
+				register(rawInput, temp);
+				return null;
 			} else if (str.equals("$logout$")) {
-				return logout(rawInput);
+				logout(rawInput);
+				return null;
 			}
 		} else {
 			message = rawInput;
-			identifiers(rawInput);
+			rIP = identifiers(rawInput);
 		}
 
-		//Successfully parsed a message, or not
-		return true;
+		return rIP;
 	}
 
 	/**
@@ -193,7 +195,7 @@ public class IMServer implements Runnable {
 		}
 
 		try {
-			recipientIP = clientSocket.getInetAddress().toString().substring(1);
+			String rip = clientSocket.getInetAddress().toString().substring(1);
 			//Register new user, returns the results to the client.
 			if (loginServer.newUser(((InternalMessage) rawInput).getUser().getCredentials())) {
 				message = new InternalMessage(temp.getUser(), "$true$");
@@ -203,14 +205,15 @@ public class IMServer implements Runnable {
 				System.err.println("Registration failed - duplicate user");
 				loopInput = false;
 			}
+
+			//sends response message
+			send(rip);
 		} catch (IOException e) { //Serialize failed
 			message = new InternalMessage(temp.getUser(), "$false$");
 			System.err.println("Registration failed - write error");
 			loopInput = false;
 		}
-		//sends response message
-		send();
-
+		
 		return false;
 	}
 
@@ -261,7 +264,7 @@ public class IMServer implements Runnable {
 			loopInput = false;
 		}
 
-		send();
+		send(clientSocket.getInetAddress().toString().substring(1)); //Send to self
 
 		return false; // Don't send message
 	}
@@ -272,9 +275,10 @@ public class IMServer implements Runnable {
 	 * @param rawInput
 	 * @throws IOException
 	 */
-	private void identifiers(Message rawInput) throws IOException {
+	private String identifiers(Message rawInput) throws IOException {
 		//Handle message
-
+		String toReturn = null;
+		
 		BufferedReader fileReader = new BufferedReader
 				(new FileReader("users/identifiers.txt"));
 
@@ -300,11 +304,11 @@ public class IMServer implements Runnable {
 					clientSocket.getInetAddress());
 
 		} else if (checker != null) {
-			recipientIP = clientSocket.getInetAddress().toString().substring(1); //Trims /
+			toReturn = clientSocket.getInetAddress().toString().substring(1); //Trims /
 		} else {
 			fileWriter.write("\n" + identifier + " " + 
 					clientSocket.getInetAddress());
-			recipientIP = clientSocket.getInetAddress().toString().substring(1); //Trims /
+			toReturn = clientSocket.getInetAddress().toString().substring(1); //Trims /
 
 			fileWriter.flush();
 			fileWriter.close();
@@ -316,29 +320,32 @@ public class IMServer implements Runnable {
 			line = line.replace("\n", ""); //trim away newlines
 			if (line.contains(" ") && line.substring(0, line.indexOf(" ")).
 					equals(rawInput.getRecipient())) {
-				recipientIP = line.substring
+				toReturn = line.substring
 						(line.indexOf(" ") + 2); //Saves IP
 				break;
 			}
 		}
 
 		fileReader.close();
+		
+		return toReturn;
 	}
 
 	/**
 	 *  Sends message to the intended client, after it received by receive().
+	 *  @param recipientIP - The IP to send this message to.
 	 *  @return true if message is sent, false otherwise.
 	 */
-	public boolean send() {
+	public boolean send(String recipientIP) {
 		ObjectOutputStream writer = null;
 
 		try {
 			System.out.println("Attempting to open connection 2");
-			recipientSocket = openConnections.get(recipientIP);
+			Socket recipientSocket = openConnections.get(recipientIP);
 			writer = new ObjectOutputStream(recipientSocket.getOutputStream());
 			System.out.println("Opened conection to recipient\n");
 		} catch (IOException e) {
-			System.err.println("IP Exception");
+			System.err.println("Error in send(): ");
 			loopInput = false; //kills thread
 			e.printStackTrace();
 		}
@@ -401,11 +408,11 @@ public class IMServer implements Runnable {
 		}
 
 		for (String s: connectedIPs) {
-			recipientIP = s.substring(s.indexOf("/") + 1);
+			String rip = s.substring(s.indexOf("/") + 1);
 			System.out.println(recipientIP);
 			message = new InternalMessage(null, usrListMessage);
 
-			send();
+			send(rip);
 		}
 	}
 
@@ -442,6 +449,9 @@ public class IMServer implements Runnable {
 		return true;
 	}
 
+	/**
+	 * Prints contents of connectedIPs object
+	 */
 	public static void printConnections() {
 		System.out.println("Connected IP list: ");
 
@@ -449,16 +459,17 @@ public class IMServer implements Runnable {
 		for (String s: connectedIPs) {
 			System.out.println(s + ", ");
 		}
-		
+
 		System.out.println("]");
 	}
-	
+
 	/**
 	 * Prints contents of users.ser
+	 * @param dir The location of users.ser
 	 */
-	public static void printUsers() {
+	public static void printUsers(String dir) {
 		try {
-			new LoginServer().authenticate(new Credentials("_list_users", new BloomFilter()));
+			new LoginServer(dir).authenticate(new Credentials("_list_users", new BloomFilter()));
 		} catch (NameTooLongException e) {
 			e.printStackTrace();
 		}
