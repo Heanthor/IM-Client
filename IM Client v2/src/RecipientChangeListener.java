@@ -29,6 +29,7 @@ public class RecipientChangeListener implements Runnable {
 					o.wait(); //Wait for name to change
 					
 					client.setRecipient(f.getSelectedValue());
+					client.setTextPane(client.getConversations().get(f.getSelectedValue()));
 					System.out.println("Recipient set to " + f.getSelectedValue());
 				} catch (InterruptedException e) {
 					e.printStackTrace();

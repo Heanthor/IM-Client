@@ -40,8 +40,7 @@ public class DebugListener implements Runnable {
 	 */
 	private void help() {
 		System.out.println("\nAvailable commands: " +
-				"connected " + 
-				"restart " +
+				"connected " +
 				"quit " + 
 				"users");
 	}

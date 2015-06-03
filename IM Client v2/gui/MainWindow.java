@@ -18,6 +18,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.util.HashMap;
 
 /**
  * The main UI window used to send and receive messages, and to display everything
@@ -46,6 +47,8 @@ public class MainWindow {
 	private static Object sendLock; //Credit to joseph3114 for this idea
 	private String username;
 
+	public HashMap<String, JTextPane> conversations = new HashMap<String, JTextPane>(); //Store separate conversations
+
 	public MainWindow(Object o, Object listUpdate, Object sendLock, String username) {
 		MainWindow.o = o;
 		MainWindow.listUpdate = listUpdate;
@@ -60,9 +63,9 @@ public class MainWindow {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				@SuppressWarnings("unused")
 				MainWindow t = new MainWindow(new Object(), new Object(),
 						new Object(), "test");
+				t.setVisible(true);
 			}
 		});
 	}
@@ -89,7 +92,7 @@ public class MainWindow {
 				synchronized(o) {
 					o.notifyAll();
 				}
-				
+
 				//Make sure message is done sending before closing the program
 				synchronized(sendLock) {
 					try {
@@ -115,6 +118,7 @@ public class MainWindow {
 		panel = new JPanel(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 
+		//Default text pane -- can change
 		textArea = new JTextPane();
 		textArea.setFont(new Font(textArea.getFont().getName(), Font.PLAIN, 15));
 		textArea.setBackground(new Color(153, 153, 153));
@@ -209,7 +213,7 @@ public class MainWindow {
 				synchronized(o) {
 					o.notifyAll();
 				}
-				
+
 				//Make sure message is done sending before closing the program
 				synchronized(sendLock) {
 					try {
@@ -219,7 +223,7 @@ public class MainWindow {
 						e1.printStackTrace();
 					}
 				}
-				
+
 				System.exit(0);
 			}
 		});
@@ -323,5 +327,13 @@ public class MainWindow {
 	 */
 	public JScrollPane getScrollPane() {
 		return scrollPane;
+	}
+
+	/**
+	 * Sets the displayed textPane to the parameter.
+	 * @param toSet The text pane to display.
+	 */
+	public void setTextPane(JTextPane toSet) {
+		textArea = toSet;
 	}
 }

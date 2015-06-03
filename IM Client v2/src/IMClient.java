@@ -15,9 +15,11 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Arrays;
+import java.util.HashMap;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
 import javax.swing.text.*;
 
@@ -39,7 +41,7 @@ public class IMClient implements Runnable {
 	//private String host = "162.203.101.47";  // refers to the server IP JOSEPH IP
 	//TODO obfuscate this IP
 	//private String host = "52.10.127.193";  // refers to the server IP AMAZON IP 
-	private String host = "52.11.220.192"; //Reed amazon IP
+	private String host = "52.26.104.91"; //Reed amazon IP
 	//private String host = "108.18.116.197"; //REED IP
 	private User identifier; //Your unique identifier
 	private String myUsername; //Username of this client
@@ -60,7 +62,7 @@ public class IMClient implements Runnable {
 	private InternalMessage currentInternalMessage; //Internal message to be evaluated
 	private MainWindow mainWindow; // associated MainWindow, for printing
 	private boolean register = false; //Registration request
-	
+
 	/**
 	 * @param username - What user is using this IMClient. Used for printing 
 	 * namestamp in chat, and for identification.
@@ -249,6 +251,14 @@ public class IMClient implements Runnable {
 	}
 
 	/**
+	 * Sets the displayed textPane to the parameter.
+	 * @param toSet The text pane to display.
+	 */
+	public void setTextPane(JTextPane toSet) {
+		mainWindow.setTextPane(toSet);
+	}
+
+	/**
 	 * Method responsible for sending messages. Connects to the server and sends
 	 * the message, including destination IP information.
 	 * @param messageOut - The message to be sent
@@ -307,10 +317,19 @@ public class IMClient implements Runnable {
 							//Populate user list
 							if (names.length == 1 && names[0].equals(myUsername)) {
 								mainWindow.getList().addToList("No users online");
+								//No user text box
+								if (mainWindow.conversations.get("$nouser") == null) {
+									mainWindow.conversations.put("$nouser", TextPaneFactory.createTextPane());
+								}
 							} else {
 								for(String s: names) {
 									if (!s.equals(myUsername)) {
 										mainWindow.getList().addToList(s);
+
+										//Add text boxes for clients
+										if (mainWindow.conversations.get(s) == null) {
+											mainWindow.conversations.put(s, TextPaneFactory.createTextPane());
+										}
 									}
 								}
 							}
@@ -336,7 +355,9 @@ public class IMClient implements Runnable {
 					System.out.println("Received message: " + response.getMessage());
 
 					//Mark up string to insert
-					Document doc = mainWindow.getTextPane().getDocument();
+					String conversationPartner = response.getSender();
+					//Document doc = mainWindow.getTextPane().getDocument();
+					Document doc = mainWindow.conversations.get(conversationPartner).getDocument();
 
 					//Set colors and styles
 					SimpleAttributeSet usernameStyle = new SimpleAttributeSet();
@@ -372,6 +393,10 @@ public class IMClient implements Runnable {
 	 */
 	public void setRecipient(String recipient) {
 		this.recipient = recipient;
+	}
+
+	public HashMap<String, JTextPane> getConversations() {
+		return mainWindow.conversations;
 	}
 
 	//this thread is the incoming message scanner.
