@@ -43,7 +43,7 @@ public class MainWindow {
 	private Message message;
 	private static Object o;
 	private static Object listUpdate;
-	private static Object sendLock;
+	private static Object sendLock; //Credit to joseph3114 for this idea
 	private String username;
 
 	public MainWindow(Object o, Object listUpdate, Object sendLock, String username) {
