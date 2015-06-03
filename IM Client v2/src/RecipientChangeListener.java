@@ -27,15 +27,18 @@ public class RecipientChangeListener implements Runnable {
 			synchronized(o) {
 				try {
 					o.wait(); //Wait for name to change
-					
+
 					client.setRecipient(f.getSelectedValue());
-					client.setTextPane(client.getConversations().get(f.getSelectedValue()));
+					//Switch the displayed document
+					if (f.getSelectedValue() != null) {
+						System.out.println("Document got: " + client.getConversations().get(f.getSelectedValue()).toString());
+						client.setDocument(client.getConversations().get(f.getSelectedValue()));
+					}
 					System.out.println("Recipient set to " + f.getSelectedValue());
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 			}
-
 		}
 	}
 }

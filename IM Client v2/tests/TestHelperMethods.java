@@ -5,6 +5,10 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.net.URISyntaxException;
 
+import javax.swing.JTextPane;
+import javax.swing.text.DefaultStyledDocument;
+import javax.swing.text.StyledDocument;
+
 import messages.InternalMessage;
 import messages.Message;
 
@@ -40,6 +44,7 @@ public class TestHelperMethods {
 		assertTrue(m instanceof InternalMessage);
 	}
 	
+	/*
 	@Test
 	public void testReplace() {
 		IMServer s = new IMServer(null);
@@ -48,7 +53,7 @@ public class TestHelperMethods {
 		
 		s.replace(oldStr, newStr);
 	}
-	
+	*/
 	@Test
 	public void testSplit() {
 		String in = "$list_update reed test ";
@@ -76,7 +81,10 @@ public class TestHelperMethods {
 	}
 	
 	@Test
-	public void testRestart() throws URISyntaxException {
-		final File currentJar = new File(IMServer.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+	public void testDocument() {
+		DefaultStyledDocument d = new DefaultStyledDocument();
+		JTextPane p = new JTextPane();
+		p.setDocument(d);
+		assertTrue(d instanceof StyledDocument);
 	}
 }

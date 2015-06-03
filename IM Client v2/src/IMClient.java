@@ -19,7 +19,6 @@ import java.util.HashMap;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
 import javax.swing.text.*;
 
@@ -254,8 +253,8 @@ public class IMClient implements Runnable {
 	 * Sets the displayed textPane to the parameter.
 	 * @param toSet The text pane to display.
 	 */
-	public void setTextPane(JTextPane toSet) {
-		mainWindow.setTextPane(toSet);
+	public void setDocument(StyledDocument doc) {
+		mainWindow.setDocument(doc);
 	}
 
 	/**
@@ -318,8 +317,10 @@ public class IMClient implements Runnable {
 							if (names.length == 1 && names[0].equals(myUsername)) {
 								mainWindow.getList().addToList("No users online");
 								//No user text box
-								if (mainWindow.conversations.get("$nouser") == null) {
-									mainWindow.conversations.put("$nouser", TextPaneFactory.createTextPane());
+								if (mainWindow.conversations.get("No users online") == null) {
+									mainWindow.conversations.put("No users online", (StyledDocument)new DefaultStyledDocument());
+									System.out.println("New document for No users online created.");
+									mainWindow.setDocument(mainWindow.conversations.get("No users online"));
 								}
 							} else {
 								for(String s: names) {
@@ -328,12 +329,19 @@ public class IMClient implements Runnable {
 
 										//Add text boxes for clients
 										if (mainWindow.conversations.get(s) == null) {
-											mainWindow.conversations.put(s, TextPaneFactory.createTextPane());
+											mainWindow.conversations.put(s, (StyledDocument)new DefaultStyledDocument());
+											System.out.println("New document for " + s + " created.");
 										}
 									}
 								}
 							}
-
+							
+							//One person online
+							if (mainWindow.getList().getLength() == 1 && mainWindow.getList().getSelectedValue() != null &&
+									!mainWindow.getList().getSelectedValue().equals("No users online")) {
+								mainWindow.setDocument(mainWindow.conversations.get(mainWindow.getList().getSelectedValue()));
+							}
+							
 							//Make sure you always have a selection
 							if (mainWindow.getList().getLength() == 1) {
 								mainWindow.getList().setSelectedIndex(0);
@@ -357,7 +365,7 @@ public class IMClient implements Runnable {
 					//Mark up string to insert
 					String conversationPartner = response.getSender();
 					//Document doc = mainWindow.getTextPane().getDocument();
-					Document doc = mainWindow.conversations.get(conversationPartner).getDocument();
+					Document doc = mainWindow.conversations.get(conversationPartner);
 
 					//Set colors and styles
 					SimpleAttributeSet usernameStyle = new SimpleAttributeSet();
@@ -395,10 +403,16 @@ public class IMClient implements Runnable {
 		this.recipient = recipient;
 	}
 
-	public HashMap<String, JTextPane> getConversations() {
+	/**
+	 * @return The conversation list associated with this client.
+	 */
+	public HashMap<String, StyledDocument> getConversations() {
 		return mainWindow.conversations;
 	}
 
+	public void revalidate() {
+		mainWindow.revalidate();
+	}
 	//this thread is the incoming message scanner.
 	public void run() {
 		try {

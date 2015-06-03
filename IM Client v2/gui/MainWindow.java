@@ -31,7 +31,7 @@ public class MainWindow {
 	private JFrame frmReedreadV;
 	private JPanel stretchyPanel;
 	private JPanel panel;
-	private JTextPane textArea; //TODO add html support
+	private JTextPane textPane; //TODO add html support
 	//http://stackoverflow.com/questions/14038703/how-can-i-add-hyperlinks-to-a-jtextpane-without-html
 	private JScrollPane scrollPane;
 	private FriendsList list;
@@ -47,7 +47,7 @@ public class MainWindow {
 	private static Object sendLock; //Credit to joseph3114 for this idea
 	private String username;
 
-	public HashMap<String, JTextPane> conversations = new HashMap<String, JTextPane>(); //Store separate conversations
+	public HashMap<String, StyledDocument> conversations = new HashMap<String, StyledDocument>(); //Store separate conversations
 
 	public MainWindow(Object o, Object listUpdate, Object sendLock, String username) {
 		MainWindow.o = o;
@@ -119,15 +119,15 @@ public class MainWindow {
 		GridBagConstraints c = new GridBagConstraints();
 
 		//Default text pane -- can change
-		textArea = new JTextPane();
-		textArea.setFont(new Font(textArea.getFont().getName(), Font.PLAIN, 15));
-		textArea.setBackground(new Color(153, 153, 153));
-		textArea.setBorder(new LineBorder(new Color(0, 0, 0)));
-		textArea.setMargin(new Insets(2, 5, 5, 2));
+		textPane = new JTextPane();
+		textPane.setFont(new Font(textPane.getFont().getName(), Font.PLAIN, 15));
+		textPane.setBackground(new Color(153, 153, 153));
+		textPane.setBorder(new LineBorder(new Color(0, 0, 0)));
+		textPane.setMargin(new Insets(2, 5, 5, 2));
 		//textArea.setLineWrap(true); /******************************************* broken/
-		textArea.setEditable(false); 
-
-		scrollPane = new JScrollPane(textArea);
+		textPane.setEditable(false); 
+		
+		scrollPane = new JScrollPane(textPane);
 		scrollPane.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
 		list = new FriendsList(listUpdate);
 		list.addToList("");
@@ -240,7 +240,7 @@ public class MainWindow {
 			//Sets message
 			message = new External(txtEnterMessage.getText());
 			//textArea.append(username + ": " + ((External)message).getMessage() + "\n");
-			StyledDocument doc = textArea.getStyledDocument();
+			StyledDocument doc = textPane.getStyledDocument();
 
 			//Set colors
 			SimpleAttributeSet usernameStyle = new SimpleAttributeSet();
@@ -318,7 +318,7 @@ public class MainWindow {
 	 * @return
 	 */
 	public JTextPane getTextPane() {
-		return textArea;
+		return textPane;
 	}
 
 	/**
@@ -333,7 +333,7 @@ public class MainWindow {
 	 * Sets the displayed textPane to the parameter.
 	 * @param toSet The text pane to display.
 	 */
-	public void setTextPane(JTextPane toSet) {
-		textArea = toSet;
+	public void setDocument(StyledDocument doc) {
+		textPane.setDocument(doc);
 	}
 }
