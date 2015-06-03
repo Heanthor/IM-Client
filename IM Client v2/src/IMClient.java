@@ -3,7 +3,7 @@ package src;
 // first, then run the client, that will connect to it.  Using localhost
 // means the client will connect to the server running on the same machine.
 
-import gui.FriendsList;
+
 import gui.LoginWindow;
 import gui.MainWindow;
 
@@ -51,14 +51,16 @@ public class IMClient implements Runnable {
 	private static Object o = new Object(); // synchronization
 	private static Object internal = new Object(); //Alert for internal messages
 	private static Object recipientChange = new Object(); //Recipient changes?
-	private static Object sendLock = new Object(); // make sure all messages send before closing program
+	/* 
+	 * make sure all messages send before closing program
+	 * This is only important with slow internet, when the logout message
+	 * cannot be sent in time before the program closes.
+	 */
+	private static Object sendLock = new Object();
 	private InternalMessage currentInternalMessage; //Internal message to be evaluated
 	private MainWindow mainWindow; // associated MainWindow, for printing
-	@SuppressWarnings("unused")
-	private FriendsList userList; //User list
 	private boolean register = false; //Registration request
 	
-
 	/**
 	 * @param username - What user is using this IMClient. Used for printing 
 	 * namestamp in chat, and for identification.
@@ -317,7 +319,10 @@ public class IMClient implements Runnable {
 							if (mainWindow.getList().getLength() == 1) {
 								mainWindow.getList().setSelectedIndex(0);
 								setRecipient(mainWindow.getList().getSelectedValue());
-							} 
+							} else if (mainWindow.getList().getSelectedValue() == null) {
+								mainWindow.getList().setSelectedIndex(0);
+								setRecipient(mainWindow.getList().getSelectedValue());
+							}
 						}
 					}
 					currentInternalMessage = tempIM;
