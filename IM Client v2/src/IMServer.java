@@ -180,6 +180,16 @@ public class IMServer implements Runnable {
 				clientSocket.getInetAddress().toString() + " disconnected.");
 
 		loopInput = false;
+
+		//Close the associated socket
+		try {
+			openConnections.get(clientSocket.getInetAddress().toString().substring(1)).close();
+			openConnections.remove(clientSocket.getInetAddress().toString().substring(1));
+		} catch (IOException e) {
+			System.err.println("Error closing socket in logout");
+			e.printStackTrace();
+		}
+
 		return false;
 	}
 
@@ -342,7 +352,7 @@ public class IMServer implements Runnable {
 		try {
 			System.out.println("Attempting to open connection 2");
 			Socket recipientSocket = openConnections.get(recipientIP);
-			
+
 			if (!recipientSocket.isClosed()) { //Hopefully reduce errors
 				writer = new ObjectOutputStream(recipientSocket.getOutputStream());
 				System.out.println("Opened conection to recipient\n");

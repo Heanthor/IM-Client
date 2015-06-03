@@ -43,11 +43,13 @@ public class MainWindow {
 	private Message message;
 	private static Object o;
 	private static Object listUpdate;
+	private static Object sendLock;
 	private String username;
 
-	public MainWindow(Object o, Object listUpdate, String username) {
+	public MainWindow(Object o, Object listUpdate, Object sendLock, String username) {
 		MainWindow.o = o;
 		MainWindow.listUpdate = listUpdate;
+		MainWindow.sendLock = sendLock;
 		this.username = username;
 		initialize();
 		//frmReedreadV.setVisible(true);
@@ -58,7 +60,8 @@ public class MainWindow {
 			@Override
 			public void run() {
 				@SuppressWarnings("unused")
-				MainWindow t = new MainWindow(new Object(), new Object(), "test");
+				MainWindow t = new MainWindow(new Object(), new Object(),
+						new Object(), "test");
 			}
 		});
 	}
@@ -85,7 +88,16 @@ public class MainWindow {
 				synchronized(o) {
 					o.notifyAll();
 				}
-
+				
+				//Make sure message is done sending before closing the program
+				synchronized(sendLock) {
+					try {
+						sendLock.wait(10000);
+						System.out.println("Message is done sending. Closing.");
+					} catch (InterruptedException e1) {
+						e1.printStackTrace();
+					}
+				}
 				System.out.println("Window closing");
 			}
 		});
@@ -109,7 +121,7 @@ public class MainWindow {
 		textArea.setMargin(new Insets(2, 5, 5, 2));
 		//textArea.setLineWrap(true); /******************************************* broken/
 		textArea.setEditable(false); 
-		
+
 		scrollPane = new JScrollPane(textArea);
 		scrollPane.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
 		list = new FriendsList(listUpdate);
@@ -164,7 +176,7 @@ public class MainWindow {
 				}
 			}
 		});
-		
+
 		panel_2.add(txtEnterMessage);
 		txtEnterMessage.setColumns(10);
 
@@ -196,9 +208,18 @@ public class MainWindow {
 				synchronized(o) {
 					o.notifyAll();
 				}
-
+				
+				//Make sure message is done sending before closing the program
+				synchronized(sendLock) {
+					try {
+						sendLock.wait(10000);
+						System.out.println("Message is done sending. Closing.");
+					} catch (InterruptedException e1) {
+						e1.printStackTrace();
+					}
+				}
+				
 				System.exit(0);
-
 			}
 		});
 		panel_1.add(btnNewButton_1);
@@ -215,24 +236,23 @@ public class MainWindow {
 			message = new External(txtEnterMessage.getText());
 			//textArea.append(username + ": " + ((External)message).getMessage() + "\n");
 			StyledDocument doc = textArea.getStyledDocument();
-			
+
 			//Set colors
 			SimpleAttributeSet usernameStyle = new SimpleAttributeSet();
 			StyleConstants.setForeground(usernameStyle, new Color(76, 76, 76));
 			StyleConstants.setBold(usernameStyle, true);
-			
+
 			SimpleAttributeSet messageStyle = new SimpleAttributeSet();
 			StyleConstants.setForeground(messageStyle, new Color(255, 255, 255));
-			
+
 			try {
 				doc.insertString(doc.getLength(), username + ":", usernameStyle);
 				doc.insertString(doc.getLength(), " " + ((External)message).
 						getMessage() + "\n", messageStyle);
-				
+
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			
 
 			//Scrolls to bottom
 			JScrollBar vertical = scrollPane.getVerticalScrollBar();
@@ -272,14 +292,14 @@ public class MainWindow {
 	public void setVisible(boolean b) {
 		frmReedreadV.setVisible(b);
 	}
-	
+
 	/**
 	 * Revalidates this window.
 	 */
 	public void revalidate() {
 		frmReedreadV.revalidate();
 	}
-	
+
 	/**
 	 * Message getter.
 	 * @return Current message
@@ -295,7 +315,7 @@ public class MainWindow {
 	public JTextPane getTextPane() {
 		return textArea;
 	}
-	
+
 	/**
 	 * Returns the scrollPane used to hold the textPane.
 	 * @return

@@ -40,7 +40,7 @@ public class IMClient implements Runnable {
 	//TODO obfuscate this IP
 	//private String host = "52.10.127.193";  // refers to the server IP AMAZON IP 
 	private String host = "52.11.220.192"; //Reed amazon IP
-	//private String host = "72.45.15.42"; //REED IP
+	//private String host = "108.18.116.197"; //REED IP
 	private User identifier; //Your unique identifier
 	private String myUsername; //Username of this client
 	private String recipient; //Recipient of current message
@@ -50,12 +50,14 @@ public class IMClient implements Runnable {
 	private InetAddress serverIP; // get IP
 	private static Object o = new Object(); // synchronization
 	private static Object internal = new Object(); //Alert for internal messages
-	private static Object recipientChange = new Object();
+	private static Object recipientChange = new Object(); //Recipient changes?
+	private static Object sendLock = new Object(); // make sure all messages send before closing program
 	private InternalMessage currentInternalMessage; //Internal message to be evaluated
 	private MainWindow mainWindow; // associated MainWindow, for printing
 	@SuppressWarnings("unused")
 	private FriendsList userList; //User list
 	private boolean register = false; //Registration request
+	
 
 	/**
 	 * @param username - What user is using this IMClient. Used for printing 
@@ -152,7 +154,8 @@ public class IMClient implements Runnable {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				mainWindow = new MainWindow(o, recipientChange, identifier.getCredentials().getUsername());
+				mainWindow = new MainWindow(o, recipientChange, sendLock,
+						identifier.getCredentials().getUsername());
 
 				synchronized(internal) {
 					try {
@@ -255,8 +258,12 @@ public class IMClient implements Runnable {
 
 		writer.writeObject(messageOut);
 		writer.flush();
-		//Don't close the ObjectOutputStream, it closes the socket in use!
 
+		//Notify that the client is done sending a message
+		synchronized(sendLock) {
+			sendLock.notifyAll();
+		}
+		//Don't close the ObjectOutputStream, it closes the socket in use!
 	}
 
 	/**

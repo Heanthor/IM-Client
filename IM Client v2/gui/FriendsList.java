@@ -86,7 +86,7 @@ public class FriendsList {
 			@Override
 			public void valueChanged(ListSelectionEvent arg0) {
 				if (arg0.getValueIsAdjusting() == false) {
-					
+					//TODO this fires when the list updates, in addition to when a new box is clicked
 					synchronized(listUpdate) { //Alert thread that it has changed
 						listUpdate.notifyAll();
 					}
