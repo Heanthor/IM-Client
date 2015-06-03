@@ -118,6 +118,7 @@ public class IMServer implements Runnable {
 					new ObjectInputStream(clientSocket.getInputStream()));
 		} catch (IOException e) {
 			System.err.println("ObjectInputStream exception");
+			//TODO alt-f4 still causes this error
 			loopInput = false; //kills thread
 			e.printStackTrace();
 		}

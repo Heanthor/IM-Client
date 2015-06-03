@@ -26,7 +26,7 @@ public class DebugListener implements Runnable {
 				IMServer.printUsers("users/users.ser");
 			} else if (line.equals("help")) {
 				help();
-			}
+			} 
 			else {
 				System.out.println("Invalid command. Use \"help\" for command list.");
 			}
@@ -41,6 +41,7 @@ public class DebugListener implements Runnable {
 	private void help() {
 		System.out.println("\nAvailable commands: " +
 				"connected " + 
+				"restart " +
 				"quit " + 
 				"users");
 	}

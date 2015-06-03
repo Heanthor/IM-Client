@@ -1,6 +1,10 @@
 package tests;
 
 import static org.junit.Assert.*;
+
+import java.io.File;
+import java.net.URISyntaxException;
+
 import messages.InternalMessage;
 import messages.Message;
 
@@ -69,5 +73,10 @@ public class TestHelperMethods {
 		in = "   d";
 		assertFalse(in.matches(regex));
 		
+	}
+	
+	@Test
+	public void testRestart() throws URISyntaxException {
+		final File currentJar = new File(IMServer.class.getProtectionDomain().getCodeSource().getLocation().toURI());
 	}
 }

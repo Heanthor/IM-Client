@@ -55,6 +55,7 @@ public class MainWindow {
 		//frmReedreadV.setVisible(true);
 	}
 
+	//TODO make this flash by opening 0x0 window on message
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
