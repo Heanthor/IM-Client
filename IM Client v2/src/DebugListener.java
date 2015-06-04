@@ -114,7 +114,8 @@ public class DebugListener implements Runnable {
 		int hours = minutes / 60;
 		
 		String h = hours == 1 ? " hour " : " hours ";
+		String m = actualMinutes == 1 ? " minute " : " minutes ";
 		String s = ((secondsRemainder == 1) ? " second." : " seconds.");
-		return h + " hours " + actualMinutes + " minutes " + secondsRemainder + s;
+		return hours + h + actualMinutes + m + secondsRemainder + s;
 	}
 }
