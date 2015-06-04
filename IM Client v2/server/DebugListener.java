@@ -1,4 +1,4 @@
-package src;
+package server;
 
 import java.text.NumberFormat;
 import java.util.Scanner;
@@ -10,7 +10,7 @@ import java.util.Scanner;
 public class DebugListener implements Runnable {
 	public boolean run = true;
 	private long startTime = System.currentTimeMillis();
-	
+
 	@Override
 	public void run() {
 		System.out.println("Debug thread started.\n");
@@ -66,7 +66,7 @@ public class DebugListener implements Runnable {
 				+ "Maximum memory: " + f.format(maxMemory) + " kb\n" 
 				+ "Total free memory: " + f.format(freeMemory + (maxMemory - allocatedMemory)) + " kb"
 				);
-		
+
 		System.out.println("\nUsage Graph (Allocated / total)");
 		System.out.println(bar(allocatedMemory, freeMemory + (maxMemory - allocatedMemory)) + "\n");
 		long uptime = (System.currentTimeMillis() - startTime) / 1000; //In seconds
@@ -85,23 +85,23 @@ public class DebugListener implements Runnable {
 		StringBuilder sb = new StringBuilder("[");
 
 		double fillProportion = (double)fill / 2;
-		
+
 		for (int i = 0; i < 50; i++) {
 			double currentProportion = (double)i;
-			
+
 			if (currentProportion < fillProportion) {
 				sb.append("|");
 			} else {
 				sb.append(".");
 			}
 		}
-		
+
 		sb.append("]");
 		sb.append(" " + fill + "%");
 
 		return sb.toString();
 	}
-	
+
 	/**
 	 * Prints server uptime in a friendly format.
 	 * @param seconds - Total number of seconds of uptime
@@ -112,7 +112,7 @@ public class DebugListener implements Runnable {
 		int minutes = (int)(seconds / 60);
 		int actualMinutes = minutes % 60;
 		int hours = minutes / 60;
-		
+
 		String h = hours == 1 ? " hour " : " hours ";
 		String m = actualMinutes == 1 ? " minute " : " minutes ";
 		String s = ((secondsRemainder == 1) ? " second." : " seconds.");

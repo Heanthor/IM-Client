@@ -16,7 +16,7 @@ import messages.Message;
 
 import org.junit.Test;
 
-import src.*;
+import server.*;
 
 public class TestHelperMethods {
 

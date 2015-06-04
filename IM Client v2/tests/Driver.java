@@ -7,7 +7,7 @@ import java.util.HashMap;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import src.IMClient;
+import client.IMClient;
 
 @Deprecated
 public class Driver {
