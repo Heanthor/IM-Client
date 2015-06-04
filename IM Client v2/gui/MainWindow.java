@@ -336,4 +336,14 @@ public class MainWindow {
 	public void setDocument(StyledDocument doc) {
 		textPane.setDocument(doc);
 	}
+	
+	//work in progress
+	private void makeClickableLink(String link, JTextPane textPane) {
+		StyledDocument doc = textPane.getStyledDocument();
+		
+		Style linkBlue = doc.addStyle("linkBlue",  StyleContext.getDefaultStyleContext().getStyle(StyleContext.DEFAULT_STYLE));
+		StyleConstants.setForeground(linkBlue, Color.BLUE);
+		StyleConstants.setUnderline(linkBlue, true);
+		
+	}
 }

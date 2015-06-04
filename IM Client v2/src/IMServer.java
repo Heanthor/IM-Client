@@ -29,7 +29,6 @@ import messages.Message;
  */
 //TODO two people cannot connect from the same IP
 public class IMServer implements Runnable {
-	private String recipientIP;
 	private Message message;
 	private Socket clientSocket;
 	private static ArrayList<String> userList = new ArrayList<String>(); //To be sent to client's userlists
@@ -425,7 +424,6 @@ public class IMServer implements Runnable {
 
 		for (String s: connectedIPs) {
 			String rip = s.substring(s.indexOf("/") + 1);
-			System.out.println(recipientIP);
 			message = new InternalMessage(null, usrListMessage);
 
 			send(rip);

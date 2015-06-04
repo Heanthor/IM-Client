@@ -335,13 +335,7 @@ public class IMClient implements Runnable {
 									}
 								}
 							}
-							
-							//One person online
-							if (mainWindow.getList().getLength() == 1 && mainWindow.getList().getSelectedValue() != null &&
-									!mainWindow.getList().getSelectedValue().equals("No users online")) {
-								mainWindow.setDocument(mainWindow.conversations.get(mainWindow.getList().getSelectedValue()));
-							}
-							
+
 							//Make sure you always have a selection
 							if (mainWindow.getList().getLength() == 1) {
 								mainWindow.getList().setSelectedIndex(0);
@@ -349,6 +343,13 @@ public class IMClient implements Runnable {
 							} else if (mainWindow.getList().getSelectedValue() == null) {
 								mainWindow.getList().setSelectedIndex(0);
 								setRecipient(mainWindow.getList().getSelectedValue());
+							}	
+
+							//One person online document selection
+							if (mainWindow.getList().getLength() == 1 && mainWindow.getList().getSelectedValue() != null &&
+									!mainWindow.getList().getSelectedValue().equals("No users online")) {
+								System.out.print("Corner case");
+								mainWindow.setDocument(mainWindow.conversations.get(mainWindow.getList().getSelectedValue()));
 							}
 						}
 					}

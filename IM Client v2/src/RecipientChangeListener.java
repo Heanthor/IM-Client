@@ -31,9 +31,10 @@ public class RecipientChangeListener implements Runnable {
 					client.setRecipient(f.getSelectedValue());
 					//Switch the displayed document
 					if (f.getSelectedValue() != null) {
-						System.out.println("Document got: " + client.getConversations().get(f.getSelectedValue()).toString());
+						System.out.println("Set new document");
 						client.setDocument(client.getConversations().get(f.getSelectedValue()));
 					}
+					
 					System.out.println("Recipient set to " + f.getSelectedValue());
 				} catch (InterruptedException e) {
 					e.printStackTrace();
