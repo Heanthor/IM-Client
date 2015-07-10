@@ -350,12 +350,12 @@ public class IMServer implements Runnable {
 		ObjectOutputStream writer = null;
 
 		try {
-			System.out.println("Attempting to open connection 2");
+			//System.out.println("Attempting to open connection 2");
 			Socket recipientSocket = openConnections.get(recipientIP);
 
 			if (!recipientSocket.isClosed()) { //Hopefully reduce errors
 				writer = new ObjectOutputStream(recipientSocket.getOutputStream());
-				System.out.println("Opened conection to recipient\n");
+				//System.out.println("Opened conection to recipient\n");
 			} else {
 				System.err.println("Socket closed too early!");
 			}

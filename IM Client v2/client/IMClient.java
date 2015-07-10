@@ -304,96 +304,109 @@ public class IMClient implements Runnable {
 					System.out.println("Internal message in: " + temp);
 
 					InternalMessage tempIM = (InternalMessage)temp;
-					if (mainWindow != null) {
-						if (tempIM.getMessage().contains("$list_update ")) {
-							mainWindow.getList().clearList(); //Empty list
-							//mainWindow.revalidate();
+					handleInternalMessage(tempIM);
+				} else { //External message
+					ExternalMessage response = (ExternalMessage)temp;
+					handleExternalMessage(response);
+				}
+			}
+		}
+	}
 
-							String tempx = tempIM.getMessage().substring(tempIM.getMessage().indexOf(" ") + 1);
-							String[] names = tempx.split(" ");
-							Arrays.sort(names); //Correct order
+	private void handleExternalMessage(ExternalMessage response) {
+		System.out.println("Received message: " + response.getMessage());
 
-							//Populate user list
-							if (names.length == 1 && names[0].equals(myUsername)) {
-								mainWindow.getList().addToList("No users online");
-								//No user text box
-								if (mainWindow.conversations.get("No users online") == null) {
-									mainWindow.conversations.put("No users online", (StyledDocument)new DefaultStyledDocument());
-									System.out.println("New document for No users online created.");
-									mainWindow.setDocument(mainWindow.conversations.get("No users online"));
-								}
-							} else {
-								for(String s: names) {
-									if (!s.equals(myUsername)) {
-										mainWindow.getList().addToList(s);
+		//Mark up string to insert
+		String conversationPartner = response.getSender();
+		//Document doc = mainWindow.getTextPane().getDocument();
+		Document doc = mainWindow.conversations.get(conversationPartner);
 
-										//Add text boxes for clients
-										if (mainWindow.conversations.get(s) == null) {
-											mainWindow.conversations.put(s, (StyledDocument)new DefaultStyledDocument());
-											System.out.println("New document for " + s + " created.");
-										}
-									}
-								}
-							}
+		//Set colors and styles
+		SimpleAttributeSet usernameStyle = new SimpleAttributeSet();
+		StyleConstants.setForeground(usernameStyle, new Color(52, 52, 52));
+		StyleConstants.setBold(usernameStyle, true);
 
-							//Make sure you always have a selection
-							if (mainWindow.getList().getLength() == 1) {
-								mainWindow.getList().setSelectedIndex(0);
-								setRecipient(mainWindow.getList().getSelectedValue());
-							} else if (mainWindow.getList().getSelectedValue() == null) {
-								mainWindow.getList().setSelectedIndex(0);
-								setRecipient(mainWindow.getList().getSelectedValue());
-							}	
+		SimpleAttributeSet messageStyle = new SimpleAttributeSet();
+		StyleConstants.setForeground(messageStyle, new Color(255, 255, 255));
 
-							//One person online document selection
-							if (mainWindow.getList().getLength() == 1 && mainWindow.getList().getSelectedValue() != null &&
-									!mainWindow.getList().getSelectedValue().equals("No users online")) {
-								System.out.print("Corner case");
-								mainWindow.setDocument(mainWindow.conversations.get(mainWindow.getList().getSelectedValue()));
+		try {
+			doc.insertString(doc.getLength(), response.getSender() +
+					":", usernameStyle);
+
+			doc.insertString(doc.getLength(), " " + response.getMessage() + 
+					"\n", messageStyle);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		//Scroll to bottom
+		//TODO this doesn't scroll properly if the message is very long
+		mainWindow.getScrollPane().getVerticalScrollBar().
+		setValue(mainWindow.getScrollPane().
+				getVerticalScrollBar().getMaximum());
+
+		//Alert new message in UI if tab is not currently selected
+		/*if (!mainWindow.getList().getSelectedValue().equals(conversationPartner)) {
+			mainWindow.rerenderCell(conversationPartner);
+		} */
+	}
+
+	private void handleInternalMessage(InternalMessage tempIM) {
+		if (mainWindow != null) {
+			if (tempIM.getMessage().contains("$list_update ")) {
+				mainWindow.getList().clearList(); //Empty list
+				//mainWindow.revalidate();
+
+				String tempx = tempIM.getMessage().substring(tempIM.getMessage().indexOf(" ") + 1);
+				String[] names = tempx.split(" ");
+				Arrays.sort(names); //Correct order
+
+				//Populate user list
+				if (names.length == 1 && names[0].equals(myUsername)) {
+					mainWindow.getList().addToList("No users online");
+					//No user text box
+					if (mainWindow.conversations.get("No users online") == null) {
+						mainWindow.conversations.put("No users online", (StyledDocument)new DefaultStyledDocument());
+						System.out.println("New document for No users online created.");
+						mainWindow.setDocument(mainWindow.conversations.get("No users online"));
+					}
+				} else {
+					for(String s: names) {
+						if (!s.equals(myUsername)) {
+							mainWindow.getList().addToList(s);
+
+							//Add text boxes for clients
+							if (mainWindow.conversations.get(s) == null) {
+								mainWindow.conversations.put(s, (StyledDocument)new DefaultStyledDocument());
+								System.out.println("New document for " + s + " created.");
 							}
 						}
 					}
-					currentInternalMessage = tempIM;
+				}
 
-					//Notify that an internal message is received
-					synchronized(internal) {
-						internal.notifyAll();
-					}
-				} else { //External message
-					ExternalMessage response = (ExternalMessage)temp;
-					System.out.println("Received message: " + response.getMessage());
+				//Make sure you always have a selection
+				if (mainWindow.getList().getLength() == 1) {
+					mainWindow.getList().setSelectedIndex(0);
+					setRecipient(mainWindow.getList().getSelectedValue());
+				} else if (mainWindow.getList().getSelectedValue() == null) {
+					mainWindow.getList().setSelectedIndex(0);
+					setRecipient(mainWindow.getList().getSelectedValue());
+				}	
 
-					//Mark up string to insert
-					String conversationPartner = response.getSender();
-					//Document doc = mainWindow.getTextPane().getDocument();
-					Document doc = mainWindow.conversations.get(conversationPartner);
-
-					//Set colors and styles
-					SimpleAttributeSet usernameStyle = new SimpleAttributeSet();
-					StyleConstants.setForeground(usernameStyle, new Color(52, 52, 52));
-					StyleConstants.setBold(usernameStyle, true);
-
-					SimpleAttributeSet messageStyle = new SimpleAttributeSet();
-					StyleConstants.setForeground(messageStyle, new Color(255, 255, 255));
-
-					try {
-						doc.insertString(doc.getLength(), response.getSender() +
-								":", usernameStyle);
-
-						doc.insertString(doc.getLength(), " " + response.getMessage() + 
-								"\n", messageStyle);
-
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-
-					//Scroll to bottom
-					//TODO this doesn't scroll properly if the message is very long
-					mainWindow.getScrollPane().getVerticalScrollBar().
-					setValue(mainWindow.getScrollPane().
-							getVerticalScrollBar().getMaximum());
+				//One person online document selection
+				if (mainWindow.getList().getLength() == 1 && mainWindow.getList().getSelectedValue() != null &&
+						!mainWindow.getList().getSelectedValue().equals("No users online")) {
+					System.out.print("Corner case");
+					mainWindow.setDocument(mainWindow.conversations.get(mainWindow.getList().getSelectedValue()));
 				}
 			}
+		}
+		currentInternalMessage = tempIM;
+
+		//Notify that an internal message is received
+		synchronized(internal) {
+			internal.notifyAll();
 		}
 	}
 

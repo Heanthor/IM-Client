@@ -346,4 +346,14 @@ public class MainWindow {
 		StyleConstants.setUnderline(linkBlue, true);
 		
 	}
+	
+	//Not currently using this
+	public void rerenderCell(String cellName) {
+		FriendsListRenderer r = (FriendsListRenderer)list.getRenderer();
+		int index = list.getIndexOfValue(cellName);
+		
+		r.setFlag(false); // Add alert icon
+		r.getListCellRendererComponent(list.list, cellName, index, false, false);
+		r.setFlag(true); //Reset icon adding
+	}
 }
