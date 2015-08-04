@@ -2,8 +2,6 @@ package tests;
 
 import static org.junit.Assert.*;
 
-import java.io.File;
-import java.net.URISyntaxException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -107,5 +105,11 @@ public class TestHelperMethods {
 			System.out.println(testString.substring(m.start(1), m.end()));
 		}
 
+	}
+	
+	@Test
+	public void testUrlIP() {
+		String name = ServerUtils.usernameIP("52.10.127.193");
+		assertEquals(name, "sdfsd");
 	}
 }

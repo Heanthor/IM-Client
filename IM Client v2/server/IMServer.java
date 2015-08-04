@@ -194,13 +194,17 @@ public class IMServer implements Runnable {
 	}
 
 	private boolean logout(String ip) {
+		if (ip == null) {
+			System.out.println("IP is null!");
+			return false;
+		}
 		try {
 			String name = ServerUtils.usernameIP(ip);
 			//bogus message with required information
 			InternalMessage m = new InternalMessage(new User(0, new Credentials(name, new BloomFilter())), ip);
 
 			return logout(m);
-		} catch (NameTooLongException | IOException e1) {
+		} catch (NameTooLongException e1) {
 			e1.printStackTrace();
 		}
 

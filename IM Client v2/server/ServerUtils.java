@@ -18,6 +18,8 @@ import login.NameTooLongException;
  *
  */
 public class ServerUtils {
+	protected ServerUtils(){}
+
 	/**
 	 * Returns the username associated with the given IP address, in the server's
 	 * username store.
@@ -25,29 +27,35 @@ public class ServerUtils {
 	 * @return The username associated with the IP, or null if not found.
 	 * @throws IOException
 	 */
-	public static String usernameIP(String ip) throws IOException {
+	public static String usernameIP(String ip) {
 		BufferedReader fileReader = null;
 		String line;
 
-		fileReader = new BufferedReader
-				(new FileReader("users/identifiers.txt"));
+		try {
+			fileReader = new BufferedReader
+					(new FileReader("users/identifiers.txt"));
 
-		while ((line = fileReader.readLine()) != null) {
-			if (line.contains(" ")) {
-				String temp = line.substring(line.indexOf("/") + 1, line.length());
-				String user = line.substring(0, line.indexOf(" "));
+			while ((line = fileReader.readLine()) != null) {
+				if (line.contains(" ")) {
+					String temp = line.substring(line.indexOf("/") + 1, line.length());
+					String user = line.substring(0, line.indexOf(" "));
 
-				if (temp.equals(ip)) {
-					fileReader.close();
-					return user;
+					if (temp.equals(ip)) {
+						fileReader.close();
+						return user;
+					}
 				}
 			}
+
+			fileReader.close();
+		} catch (IOException | NullPointerException e) {
+			System.out.println("Username IP Exception");
+			e.printStackTrace();
 		}
 
-		fileReader.close();
 		return null;
 	}
-	
+
 	/**
 	 * Helper method used to write to the identifiers.txt method
 	 * Will replace oldStr located in identifiers.txt with newStr.
@@ -80,7 +88,7 @@ public class ServerUtils {
 
 		return true;
 	}
-	
+
 	/**
 	 * Helper method for reading identifiers.txt file.
 	 * @param name The username being searched for
