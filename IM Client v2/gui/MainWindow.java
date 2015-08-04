@@ -249,8 +249,8 @@ public class MainWindow {
 					System.out.println("You chose to open this file: " +
 							chooser.getSelectedFile().getName());
 
-					message = new ImageMessage(username, username, chooser.getSelectedFile());
-					
+					message = new ImageMessage(null, null, chooser.getSelectedFile());
+
 					if (message != null) {
 						synchronized(o) {
 							o.notifyAll(); //Message is ready!

@@ -18,6 +18,11 @@ public class ImageMessage extends Message {
 		System.out.println();
 	}
 
+	public ImageMessage(String sender, String recipient, byte[] image) {
+		super(sender, recipient);
+		this.image = image;
+	}
+
 	/**
 	 * @return the image
 	 */

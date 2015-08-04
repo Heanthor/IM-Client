@@ -212,7 +212,7 @@ public class IMClient implements Runnable {
 							new Thread(new Sender(this, new InternalMessage
 									(identifier, ((Internal) message)
 											.getCode()))).start();
-						} else {
+						} else if (message instanceof External) {
 							if (myUsername != recipient && !recipient.equals("No users online")) {
 								//Starts send message thread
 								new Thread(new Sender(this, new ExternalMessage
@@ -221,6 +221,9 @@ public class IMClient implements Runnable {
 							} else if (recipient.equals("No users online")) {
 								printToUI();
 							}
+						} else { //Image message
+							new Thread(new Sender(this, new ImageMessage
+									(myUsername, recipient, ((ImageMessage)message).getImage()))).start();
 						}
 					}
 				} catch (InterruptedException e) {
