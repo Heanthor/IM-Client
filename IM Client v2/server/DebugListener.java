@@ -21,11 +21,11 @@ public class DebugListener implements Runnable {
 
 			//Command list
 			if (line.equals("connected")) {
-				IMServer.printConnections();
+				ServerUtils.printConnections(IMServer.getConnectedIPs());
 			} else if (line.equals("quit")) {
 				System.exit(0);
 			} else if (line.equals("users")) {
-				IMServer.printUsers("users/users.ser");
+				ServerUtils.printUsers("users/users.ser");
 			} else if (line.equals("help")) {
 				help();
 			} else if (line.equals("stats")) {

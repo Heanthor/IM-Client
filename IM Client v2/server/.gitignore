@@ -55,3 +55,6 @@
 /IMClient$2.class
 /TextPaneFactory.class
 /DocumentFactory.class
+/DebugListener.class
+/IMServer.class
+/ServerUtils.class

@@ -315,7 +315,7 @@ public class IMClient implements Runnable {
 
 	private void handleExternalMessage(ExternalMessage response) {
 		System.out.println("Received message: " + response.getMessage());
-
+		//MainWindow.pingTaskbar(mainWindow);
 		//Mark up string to insert
 		String conversationPartner = response.getSender();
 		//Document doc = mainWindow.getTextPane().getDocument();
@@ -344,7 +344,7 @@ public class IMClient implements Runnable {
 		//TODO this doesn't scroll properly if the message is very long
 		mainWindow.getScrollPane().getVerticalScrollBar().
 		setValue(mainWindow.getScrollPane().
-				getVerticalScrollBar().getMaximum());
+				getVerticalScrollBar().getMaximum() + 1);
 
 		//Alert new message in UI if tab is not currently selected
 		/*if (!mainWindow.getList().getSelectedValue().equals(conversationPartner)) {

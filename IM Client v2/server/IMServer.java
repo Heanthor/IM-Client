@@ -1,7 +1,6 @@
 package server;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -32,13 +31,13 @@ public class IMServer implements Runnable {
 	private Message message;
 	private Socket clientSocket;
 	private static ArrayList<String> userList = new ArrayList<String>(); //To be sent to client's userlists
-	private static ArrayList<String> connectedIPs = new ArrayList<String>();
+	public static ArrayList<String> connectedIPs = new ArrayList<String>();
 	private static Object o = new Object(); // Synchronizing
 	private LoginServer loginServer = new LoginServer("users/users.ser"); //Authentication
 	private boolean loopInput = true; // Controls looping IO for one connection
 	private static DebugListener debug = new DebugListener();
 
-	public static TreeMap<String, Socket> openConnections = new TreeMap<String, Socket>();
+	private static TreeMap<String, Socket> openConnections = new TreeMap<String, Socket>();
 
 	/**
 	 * @param clientSocket - The sender's socket connection.
@@ -119,6 +118,7 @@ public class IMServer implements Runnable {
 			System.err.println("ObjectInputStream exception");
 			//TODO alt-f4 still causes this error
 			loopInput = false; //kills thread
+			logout(clientSocket.getInetAddress().toString());
 			e.printStackTrace();
 		}
 
@@ -188,6 +188,20 @@ public class IMServer implements Runnable {
 		} catch (IOException e) {
 			System.err.println("Error closing socket in logout");
 			e.printStackTrace();
+		}
+
+		return false;
+	}
+
+	private boolean logout(String ip) {
+		try {
+			String name = ServerUtils.usernameIP(ip);
+			//bogus message with required information
+			InternalMessage m = new InternalMessage(new User(0, new Credentials(name, new BloomFilter())), ip);
+
+			return logout(m);
+		} catch (NameTooLongException | IOException e1) {
+			e1.printStackTrace();
 		}
 
 		return false;
@@ -305,12 +319,12 @@ public class IMServer implements Runnable {
 				BufferedWriter(new PrintWriter(new FileWriter("users/identifiers.txt", true)));
 
 		String checker;
-		if ((checker = contains(identifier)) != null &&
+		if ((checker = ServerUtils.contains(identifier)) != null &&
 				!checker.equals(identifier + " " + 
 						clientSocket.getInetAddress())) { //IP for a user changed
 			System.out.println("IP for \"" + identifier + "\" has changed.");
-			System.out.println("Difference: " + contains(identifier) + " : " + identifier + " " + clientSocket.getInetAddress() + "\n");
-			replace(identifier, identifier + " " + 
+			System.out.println("Difference: " + ServerUtils.contains(identifier) + " : " + identifier + " " + clientSocket.getInetAddress() + "\n");
+			ServerUtils.replace(identifier, identifier + " " + 
 					clientSocket.getInetAddress());
 
 		} else if (checker != null) {
@@ -382,36 +396,6 @@ public class IMServer implements Runnable {
 	}
 
 	/**
-	 * Helper method for reading identifiers.txt file.
-	 * @param name The username being searched for
-	 * @return the line containing the name if found, or null if not found.
-	 * @throws IOException
-	 */
-	public String contains(String name) throws IOException {
-		BufferedReader fileReader = null;
-
-		try {
-			fileReader = new BufferedReader
-					(new FileReader("users/identifiers.txt"));
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-
-		String line;
-		//Finds the first instance of the identifier in list, saves IP
-		while ((line = fileReader.readLine()) != null) {
-			if (line.contains(" ") && line.substring(0, line.indexOf(" ")).
-					equals(name)) {
-				fileReader.close();
-				return line;
-			}
-		}
-
-		fileReader.close();
-		return null;
-	}
-
-	/**
 	 * Sends new list of connected clients to every connected client.
 	 */
 	private void updateUserList() {
@@ -431,61 +415,9 @@ public class IMServer implements Runnable {
 	}
 
 	/**
-	 * Helper method used to write to the identifiers.txt method
-	 * Will replace oldStr located in identifiers.txt with newStr.
-	 * @param - oldStr String to replace
-	 * @param - newStr String to replace with
-	 * @return True if operation succeeds, false otherwise.
+	 * @return the connectedIPs
 	 */
-	public boolean replace(String oldStr, String newStr) {
-		try {
-			BufferedReader rd = new BufferedReader(new FileReader("users/identifiers.txt"));
-			String line;
-			String input = "";
-
-			while ((line = rd.readLine()) != null) {
-				line = line.replaceAll(oldStr + " .*", newStr);
-				input += line + "\n";
-			}
-
-			BufferedWriter wr = new BufferedWriter(new PrintWriter("users/identifiers.txt"));
-
-			wr.write(input);
-			wr.flush();
-			rd.close();
-			wr.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-
-			return false;
-		}
-
-		return true;
-	}
-
-	/**
-	 * Prints contents of connectedIPs object
-	 */
-	public static void printConnections() {
-		System.out.println("Connected IP list: ");
-
-		System.out.print("[");
-		for (String s: connectedIPs) {
-			System.out.println(s + ", ");
-		}
-
-		System.out.println("]");
-	}
-
-	/**
-	 * Prints contents of users.ser
-	 * @param dir The location of users.ser
-	 */
-	public static void printUsers(String dir) {
-		try {
-			new LoginServer(dir).authenticate(new Credentials("_list_users", new BloomFilter()));
-		} catch (NameTooLongException e) {
-			e.printStackTrace();
-		}
+	public static ArrayList<String> getConnectedIPs() {
+		return connectedIPs;
 	}
 }

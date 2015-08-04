@@ -356,4 +356,13 @@ public class MainWindow {
 		r.getListCellRendererComponent(list.list, cellName, index, false, false);
 		r.setFlag(true); //Reset icon adding
 	}
+	
+	public static void pingTaskbar(MainWindow focusCallback) {
+		JFrame ping = new JFrame();
+		ping.setUndecorated(true);
+		ping.setBounds(0, 0, 1, 1);
+		ping.setVisible(true);
+		ping.toFront();
+		ping.setVisible(false);
+	}
 }
