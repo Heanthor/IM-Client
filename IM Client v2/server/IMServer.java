@@ -119,7 +119,7 @@ public class IMServer implements Runnable {
 			//TODO alt-f4 still causes this error
 			loopInput = false; //kills thread
 			logout(clientSocket.getInetAddress().toString());
-			e.printStackTrace();
+			return null;
 		}
 
 		// read the client's request, interpret message
