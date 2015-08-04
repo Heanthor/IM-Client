@@ -115,7 +115,8 @@ public class IMServer implements Runnable {
 			reader = new ObjectInputStream(
 					new ObjectInputStream(clientSocket.getInputStream()));
 		} catch (IOException e) {
-			System.err.println("ObjectInputStream exception");
+			System.err.println("Client" + clientSocket.getInetAddress().toString()
+					+ " disconnected unexpectedly.");
 			//TODO alt-f4 still causes this error
 			loopInput = false; //kills thread
 			logout(clientSocket.getInetAddress().toString());
