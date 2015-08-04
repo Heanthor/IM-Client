@@ -325,6 +325,7 @@ public class IMClient implements Runnable {
 	}
 
 	private void handleImageMessage(ImageMessage response) {
+		//TODO drag images into frame to upload
 		BufferedImage bi = ClientUtils.decodeImage(response.getImage());
 		//Creates a quick frame to display received image
 		printMessage(response.getSender(), "sent an image.");
