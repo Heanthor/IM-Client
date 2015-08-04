@@ -8,6 +8,7 @@ import gui.LoginWindow;
 import gui.MainWindow;
 
 import java.awt.Color;
+import java.awt.image.BufferedImage;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -17,6 +18,7 @@ import java.net.Socket;
 import java.util.Arrays;
 import java.util.HashMap;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -321,7 +323,11 @@ public class IMClient implements Runnable {
 	}
 
 	private void handleImageMessage(ImageMessage response) {
-		System.out.println("Handled message");
+		BufferedImage bi = ClientUtils.decodeImage(response.getImage());
+		JFrame f = new JFrame();
+		f.getContentPane().add(new ImageLayer(bi));
+		f.pack();
+		f.setVisible(true);
 	}
 	
 	private void handleExternalMessage(ExternalMessage response) {
