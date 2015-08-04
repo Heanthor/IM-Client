@@ -20,7 +20,9 @@ import java.util.HashMap;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.text.*;
 
@@ -324,19 +326,32 @@ public class IMClient implements Runnable {
 
 	private void handleImageMessage(ImageMessage response) {
 		BufferedImage bi = ClientUtils.decodeImage(response.getImage());
+		//Creates a quick frame to display received image
+		printMessage(response.getSender(), "sent an image.");
 		JFrame f = new JFrame();
+		f.setLocation(200, 200);
+		f.setBackground(new Color(173, 173, 173));
+		f.setTitle("Image from " + response.getSender());
 		f.getContentPane().add(new ImageLayer(bi));
 		f.pack();
 		f.setVisible(true);
 	}
-	
+
 	private void handleExternalMessage(ExternalMessage response) {
 		System.out.println("Received message: " + response.getMessage());
 		//MainWindow.pingTaskbar(mainWindow);
 		//Mark up string to insert
-		String conversationPartner = response.getSender();
+		printMessage(response.getSender(), response.getMessage());
+
+		//Alert new message in UI if tab is not currently selected
+		/*if (!mainWindow.getList().getSelectedValue().equals(conversationPartner)) {
+			mainWindow.rerenderCell(conversationPartner);
+		} */
+	}
+
+	private void printMessage(String sender, String message) {
 		//Document doc = mainWindow.getTextPane().getDocument();
-		Document doc = mainWindow.conversations.get(conversationPartner);
+		Document doc = mainWindow.conversations.get(sender);
 
 		//Set colors and styles
 		SimpleAttributeSet usernameStyle = new SimpleAttributeSet();
@@ -347,10 +362,10 @@ public class IMClient implements Runnable {
 		StyleConstants.setForeground(messageStyle, new Color(255, 255, 255));
 
 		try {
-			doc.insertString(doc.getLength(), response.getSender() +
+			doc.insertString(doc.getLength(), sender +
 					":", usernameStyle);
 
-			doc.insertString(doc.getLength(), " " + response.getMessage() + 
+			doc.insertString(doc.getLength(), " " + message + 
 					"\n", messageStyle);
 
 		} catch (Exception e) {
@@ -362,11 +377,6 @@ public class IMClient implements Runnable {
 		mainWindow.getScrollPane().getVerticalScrollBar().
 		setValue(mainWindow.getScrollPane().
 				getVerticalScrollBar().getMaximum() + 1);
-
-		//Alert new message in UI if tab is not currently selected
-		/*if (!mainWindow.getList().getSelectedValue().equals(conversationPartner)) {
-			mainWindow.rerenderCell(conversationPartner);
-		} */
 	}
 
 	private void handleInternalMessage(InternalMessage tempIM) {
@@ -414,7 +424,6 @@ public class IMClient implements Runnable {
 				//One person online document selection
 				if (mainWindow.getList().getLength() == 1 && mainWindow.getList().getSelectedValue() != null &&
 						!mainWindow.getList().getSelectedValue().equals("No users online")) {
-					System.out.print("Corner case");
 					mainWindow.setDocument(mainWindow.conversations.get(mainWindow.getList().getSelectedValue()));
 				}
 			}

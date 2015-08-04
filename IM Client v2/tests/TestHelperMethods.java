@@ -144,7 +144,7 @@ public class TestHelperMethods {
 		//decode
 		BufferedImage decodedImage = ClientUtils.decodeImage(encodedImage);
 		
-		assertEquals(1377, decodedImage.getHeight());
-		assertEquals(942, decodedImage.getWidth());
+		assertEquals(591, decodedImage.getHeight());
+		assertEquals(375, decodedImage.getWidth());
 	}
 }
