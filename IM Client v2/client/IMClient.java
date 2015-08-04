@@ -25,6 +25,7 @@ import javax.swing.text.*;
 import login.*;
 import messages.External;
 import messages.ExternalMessage;
+import messages.ImageMessage;
 import messages.Internal;
 import messages.InternalMessage;
 import messages.Message;
@@ -305,14 +306,21 @@ public class IMClient implements Runnable {
 
 					InternalMessage tempIM = (InternalMessage)temp;
 					handleInternalMessage(tempIM);
-				} else { //External message
+				} else if (temp instanceof ExternalMessage) { 
 					ExternalMessage response = (ExternalMessage)temp;
 					handleExternalMessage(response);
+				} else { //ImageMessage
+					ImageMessage response = (ImageMessage)temp;
+					handleImageMessage(response);
 				}
 			}
 		}
 	}
 
+	private void handleImageMessage(ImageMessage response) {
+		System.out.println("Handled message");
+	}
+	
 	private void handleExternalMessage(ExternalMessage response) {
 		System.out.println("Received message: " + response.getMessage());
 		//MainWindow.pingTaskbar(mainWindow);

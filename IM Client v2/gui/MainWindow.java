@@ -4,9 +4,11 @@ import java.awt.*;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.*;
 
 import messages.External;
+import messages.ImageMessage;
 import messages.Internal;
 import messages.Message;
 
@@ -48,6 +50,7 @@ public class MainWindow {
 	private String username;
 
 	public HashMap<String, StyledDocument> conversations = new HashMap<String, StyledDocument>(); //Store separate conversations
+	private JButton btnSendImage;
 
 	public MainWindow(Object o, Object listUpdate, Object sendLock, String username) {
 		MainWindow.o = o;
@@ -126,7 +129,7 @@ public class MainWindow {
 		textPane.setMargin(new Insets(2, 5, 5, 2));
 		//textArea.setLineWrap(true); /******************************************* broken/
 		textPane.setEditable(false); 
-		
+
 		scrollPane = new JScrollPane(textPane);
 		scrollPane.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
 		list = new FriendsList(listUpdate);
@@ -228,6 +231,36 @@ public class MainWindow {
 			}
 		});
 		panel_1.add(btnNewButton_1);
+
+		btnSendImage = new JButton("Send Image");
+		btnSendImage.setBackground(new Color(173, 173, 173));
+		btnSendImage.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				//Send image
+				JFileChooser chooser = new JFileChooser();
+				FileNameExtensionFilter filter = new FileNameExtensionFilter(
+						"Images", "jpg", "jpeg", "gif", "png");
+				chooser.setFileFilter(filter);
+
+				int returnVal = chooser.showOpenDialog(null);
+
+				if (returnVal == JFileChooser.APPROVE_OPTION) {
+					System.out.println("You chose to open this file: " +
+							chooser.getSelectedFile().getName());
+
+					message = new ImageMessage(username, username, chooser.getSelectedFile());
+					
+					if (message != null) {
+						synchronized(o) {
+							o.notifyAll(); //Message is ready!
+						}
+					}
+				}
+			}
+		});
+
+		panel_1.add(btnSendImage);
 
 		txtEnterMessage.requestFocus();
 	}
@@ -336,27 +369,27 @@ public class MainWindow {
 	public void setDocument(StyledDocument doc) {
 		textPane.setDocument(doc);
 	}
-	
+
 	//work in progress
 	private void makeClickableLink(String link, JTextPane textPane) {
 		StyledDocument doc = textPane.getStyledDocument();
-		
+
 		Style linkBlue = doc.addStyle("linkBlue",  StyleContext.getDefaultStyleContext().getStyle(StyleContext.DEFAULT_STYLE));
 		StyleConstants.setForeground(linkBlue, Color.BLUE);
 		StyleConstants.setUnderline(linkBlue, true);
-		
+
 	}
-	
+
 	//Not currently using this
 	public void rerenderCell(String cellName) {
 		FriendsListRenderer r = (FriendsListRenderer)list.getRenderer();
 		int index = list.getIndexOfValue(cellName);
-		
+
 		r.setFlag(false); // Add alert icon
 		r.getListCellRendererComponent(list.list, cellName, index, false, false);
 		r.setFlag(true); //Reset icon adding
 	}
-	
+
 	public static void pingTaskbar(MainWindow focusCallback) {
 		JFrame ping = new JFrame();
 		ping.setUndecorated(true);
