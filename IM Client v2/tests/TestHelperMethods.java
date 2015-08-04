@@ -109,7 +109,7 @@ public class TestHelperMethods {
 	
 	@Test
 	public void testUrlIP() {
-		String name = ServerUtils.usernameIP("52.10.127.193");
+		String name = ServerUtils.usernameIP("/52.10.127.193");
 		assertEquals(name, "sdfsd");
 	}
 }

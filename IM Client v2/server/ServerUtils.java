@@ -37,7 +37,7 @@ public class ServerUtils {
 
 			while ((line = fileReader.readLine()) != null) {
 				if (line.contains(" ")) {
-					String temp = line.substring(line.indexOf("/") + 1, line.length());
+					String temp = line.substring(line.indexOf("/"), line.length());
 					String user = line.substring(0, line.indexOf(" "));
 
 					if (temp.equals(ip)) {
