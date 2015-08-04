@@ -39,9 +39,9 @@ import messages.Message;
 public class IMClient implements Runnable {
 	//TODO obfuscate this IP
 	//private String host = "52.10.127.193";  // refers to the server IP joseph AMAZON IP 
-	//private String host = "52.26.104.91"; //Reed amazon IP
+	private String host = "52.26.104.91"; //Reed amazon IP
 	//private String host = "108.18.116.197"; //REED IP
-	private String host = "162.203.100.133"; //new Joseph IP
+	//private String host = "162.203.100.133"; //new Joseph IP
 	private User identifier; //Your unique identifier
 	private String myUsername; //Username of this client
 	private String recipient; //Recipient of current message

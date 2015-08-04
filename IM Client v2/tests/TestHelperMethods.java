@@ -2,9 +2,12 @@ package tests;
 
 import static org.junit.Assert.*;
 
+import java.awt.image.BufferedImage;
+import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.swing.ImageIcon;
 import javax.swing.JTextPane;
 import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.StyledDocument;
@@ -14,6 +17,7 @@ import messages.Message;
 
 import org.junit.Test;
 
+import client.ClientUtils;
 import server.*;
 
 public class TestHelperMethods {
@@ -106,10 +110,41 @@ public class TestHelperMethods {
 		}
 
 	}
-	
+
 	@Test
 	public void testUrlIP() {
 		String name = ServerUtils.usernameIP("/52.10.127.193");
 		assertEquals(name, "sdfsd");
+	}
+
+	@Test
+	public void testEncoding() {
+		String filename = "sadie.jpg";
+		String extension = filename.substring(filename.indexOf(".") + 1);
+		System.out.println(extension);
+		URL imageURL = TestHelperMethods.class.getResource(filename);
+
+		ImageIcon i = new ImageIcon(imageURL);
+
+		ClientUtils.encodeImage(i, extension);
+	}
+
+	@Test
+	public void testDecoding() {
+		String filename = "sadie.jpg";
+		String extension = filename.substring(filename.indexOf(".") + 1);
+		System.out.println(extension);
+		URL imageURL = TestHelperMethods.class.getResource(filename);
+
+		ImageIcon i = new ImageIcon(imageURL);
+		
+		//encode
+		byte[] encodedImage = ClientUtils.encodeImage(i, extension);
+		//******************************************//
+		//decode
+		BufferedImage decodedImage = ClientUtils.decodeImage(encodedImage);
+		
+		assertEquals(1377, decodedImage.getHeight());
+		assertEquals(942, decodedImage.getWidth());
 	}
 }
