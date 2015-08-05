@@ -4,7 +4,7 @@ My IM client and server. The server is run on a separate connection on an Amazon
 
 Correctly authenticates users, turning them away if the username or password is wrong, and correctly registers users as long as their desired screen name is not already being used. Has basic tabbed messages, so that your conversations are kept separate between any online users. A group chat mode is coming soon.
 
-Uses my 'Bloom Filter' and 'Login PoC' projects.
+Uses my 'Bloom Filter' and 'Login PoC' projects, as well as the imgscalr library (http://www.thebuzzmedia.com/software/imgscalr-java-image-scaling-library/).
 
 ## Server Commands
 
