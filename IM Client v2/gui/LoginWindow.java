@@ -68,6 +68,7 @@ public class LoginWindow {
 		LoginWindow.o = o;
 		d.setTitle("Quillchat v2.0 Login");
 		d.setBounds(100, 100, 333, 155);
+		d.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 		d.getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		d.getContentPane().add(contentPanel, BorderLayout.CENTER);
@@ -236,7 +237,6 @@ public class LoginWindow {
 			d.getContentPane().add(panel, BorderLayout.NORTH);
 		}
 
-		d.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		d.setVisible(true);
 
 		/*

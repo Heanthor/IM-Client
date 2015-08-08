@@ -5,6 +5,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/Login PoC"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Bloom Filter"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="lib" path="G:/Downloads/Jars/imgscalr-lib-4.2.jar"/>
+	<classpathentry kind="lib" path="E:/Files/Jars/imgscalr-lib-4.2.jar"/>
 	<classpathentry kind="output" path=""/>
 </classpath>
