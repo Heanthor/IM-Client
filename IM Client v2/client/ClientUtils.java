@@ -17,6 +17,9 @@ import java.util.Base64.Encoder;
  *
  */
 public class ClientUtils {
+
+	private ClientUtils() {}
+
 	//Returns a bufferedImage from image, from some github page
 	public static BufferedImage toBufferedImage(Image img) {
 		if (img instanceof BufferedImage) {
