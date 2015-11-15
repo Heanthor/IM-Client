@@ -1,25 +1,16 @@
 package gui;
 
-import java.awt.*;
-
-import javax.swing.*;
-import javax.swing.border.LineBorder;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.text.*;
-
 import messages.External;
 import messages.ImageMessage;
 import messages.Internal;
 import messages.Message;
 
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import javax.swing.*;
+import javax.swing.border.LineBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.text.*;
+import java.awt.*;
+import java.awt.event.*;
 import java.util.HashMap;
 
 /**
@@ -31,17 +22,12 @@ import java.util.HashMap;
  */
 public class MainWindow {
 	private JFrame frmReedreadV;
-	private JPanel stretchyPanel;
-	private JPanel panel;
 	private JTextPane textPane; //TODO add html support
 	//http://stackoverflow.com/questions/14038703/how-can-i-add-hyperlinks-to-a-jtextpane-without-html
 	private JScrollPane scrollPane;
 	private FriendsList list;
-	private JPanel panel_2;
 	private JTextField txtEnterMessage;
-	private JPanel panel_1;
 	private JButton btnNewButton;
-	private JButton btnNewButton_1;
 
 	private Message message;
 	private static Object o;
@@ -50,7 +36,6 @@ public class MainWindow {
 	private String username;
 
 	public HashMap<String, StyledDocument> conversations = new HashMap<String, StyledDocument>(); //Store separate conversations
-	private JButton btnSendImage;
 
 	public MainWindow(Object o, Object listUpdate, Object sendLock, String username) {
 		MainWindow.o = o;
@@ -109,16 +94,16 @@ public class MainWindow {
 			}
 		});
 		frmReedreadV.getContentPane().setLayout((new BoxLayout(frmReedreadV.getContentPane(), BoxLayout.Y_AXIS)));
-		frmReedreadV.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frmReedreadV.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		frmReedreadV.setBounds(100, 100, 550, 600);
 		frmReedreadV.getContentPane().setBackground(new Color(173, 173, 173));
 
-		stretchyPanel = new JPanel();
+		JPanel stretchyPanel = new JPanel();
 		stretchyPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		frmReedreadV.getContentPane().add(stretchyPanel);
 		stretchyPanel.setLayout(new CardLayout(0, 0));
 
-		panel = new JPanel(new GridBagLayout());
+		JPanel panel = new JPanel(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 
 		//Default text pane -- can change
@@ -144,7 +129,7 @@ public class MainWindow {
 
 		stretchyPanel.add(panel);
 
-		panel_2 = new JPanel();
+		JPanel panel_2 = new JPanel();
 		frmReedreadV.getContentPane().add(panel_2);
 		panel_2.setLayout(new GridLayout(0, 1, 0, 0));
 
@@ -188,7 +173,7 @@ public class MainWindow {
 		panel_2.add(txtEnterMessage);
 		txtEnterMessage.setColumns(10);
 
-		panel_1 = new JPanel();
+		JPanel panel_1 = new JPanel();
 		panel_1.setBackground(new Color(173, 173, 173));
 		frmReedreadV.getContentPane().add(panel_1);
 
@@ -205,7 +190,7 @@ public class MainWindow {
 		});
 		panel_1.add(btnNewButton);
 
-		btnNewButton_1 = new JButton("Logout");
+		JButton btnNewButton_1 = new JButton("Logout");
 		btnNewButton_1.setBackground(new Color(173, 173, 173));
 		btnNewButton_1.addActionListener(new ActionListener() {
 			//Logout
@@ -213,12 +198,12 @@ public class MainWindow {
 				//Notifies the server that this client is logging out.
 				message = new Internal("$logout$");
 
-				synchronized(o) {
+				synchronized (o) {
 					o.notifyAll();
 				}
 
 				//Make sure message is done sending before closing the program
-				synchronized(sendLock) {
+				synchronized (sendLock) {
 					try {
 						sendLock.wait(10000);
 						System.out.println("Message is done sending. Closing.");
@@ -232,7 +217,7 @@ public class MainWindow {
 		});
 		panel_1.add(btnNewButton_1);
 
-		btnSendImage = new JButton("Send Image");
+		JButton btnSendImage = new JButton("Send Image");
 		btnSendImage.setBackground(new Color(173, 173, 173));
 		btnSendImage.addActionListener(new ActionListener() {
 			@Override
@@ -251,11 +236,9 @@ public class MainWindow {
 
 					message = new ImageMessage(null, null, chooser.getSelectedFile());
 
-					if (message != null) {
-						synchronized(o) {
-							o.notifyAll(); //Message is ready!
-						}
-					}
+					synchronized (o) {
+                        o.notifyAll(); //Message is ready!
+                    }
 				}
 			}
 		});
@@ -364,7 +347,7 @@ public class MainWindow {
 
 	/**
 	 * Sets the displayed textPane to the parameter.
-	 * @param toSet The text pane to display.
+	 * @param doc The text pane to display.
 	 */
 	public void setDocument(StyledDocument doc) {
 		textPane.setDocument(doc);

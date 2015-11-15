@@ -4,10 +4,18 @@ package client;
 // means the client will connect to the server running on the same machine.
 
 //
+
 import gui.LoginWindow;
 import gui.MainWindow;
+import login.Credentials;
+import login.NameTooLongException;
+import login.PermissionLevel;
+import login.User;
+import messages.*;
 
-import java.awt.Color;
+import javax.swing.*;
+import javax.swing.text.*;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.EOFException;
 import java.io.IOException;
@@ -17,19 +25,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Arrays;
 import java.util.HashMap;
-
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
-import javax.swing.text.*;
-
-import login.*;
-import messages.External;
-import messages.ExternalMessage;
-import messages.ImageMessage;
-import messages.Internal;
-import messages.InternalMessage;
-import messages.Message;
+import java.util.Objects;
 
 /**
  * The IMClient is the client portion of the chat program.
@@ -65,7 +61,7 @@ public class IMClient implements Runnable {
 	private boolean register = false; //Registration request
 
 	/**
-	 * @param username - What user is using this IMClient. Used for printing 
+	 * @param u - What user is using this IMClient. Used for printing
 	 * namestamp in chat, and for identification.
 	 */
 	public IMClient(User u) {
@@ -214,7 +210,7 @@ public class IMClient implements Runnable {
 									(identifier, ((Internal) message)
 											.getCode()))).start();
 						} else if (message instanceof External) {
-							if (myUsername != recipient && !recipient.equals("No users online")) {
+							if (!Objects.equals(myUsername, recipient) && !recipient.equals("No users online")) {
 								//Starts send message thread
 								new Thread(new Sender(this, new ExternalMessage
 										(myUsername, recipient, ((External) message).
@@ -256,7 +252,7 @@ public class IMClient implements Runnable {
 
 	/**
 	 * Sets the displayed textPane to the parameter.
-	 * @param toSet The text pane to display.
+	 * @param doc The text pane to display.
 	 */
 	public void setDocument(StyledDocument doc) {
 		mainWindow.setDocument(doc);

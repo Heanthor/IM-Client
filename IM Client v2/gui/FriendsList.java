@@ -1,26 +1,10 @@
 package gui;
 
-import java.awt.CardLayout;
-import java.awt.Dimension;
-import java.awt.EventQueue;
-
-import javax.swing.JList;
+import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-
-import java.awt.Color;
-
-import javax.swing.DefaultListModel;
-import javax.swing.JPanel;
-import javax.swing.ListCellRenderer;
-import javax.swing.ListSelectionModel;
-import javax.swing.JScrollPane;
-import javax.swing.DropMode;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-
-import java.awt.Font;
+import java.awt.*;
 
 /**
  * The user list located to the right of the chat text area.
@@ -85,7 +69,7 @@ public class FriendsList {
 
 			@Override
 			public void valueChanged(ListSelectionEvent arg0) {
-				if (arg0.getValueIsAdjusting() == false) {
+				if (!arg0.getValueIsAdjusting()) {
 					//TODO this fires when the list updates, in addition to when a new box is clicked
 					synchronized(listUpdate) { //Alert thread that it has changed
 						listUpdate.notifyAll();

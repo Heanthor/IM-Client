@@ -1,21 +1,15 @@
 package server;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.ArrayList;
-import java.util.TreeMap;
 
 import filter.BloomFilter;
 import login.*;
 import messages.InternalMessage;
 import messages.Message;
+
+import java.io.*;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.TreeMap;
 
 /**
  * The IMServer is the server portion of the chat program.
@@ -106,7 +100,7 @@ public class IMServer implements Runnable {
 	 * @throws IOException if the input is corrupted.
 	 */
 	public String receive() throws IOException {
-		ObjectInputStream reader = null;
+		ObjectInputStream reader;
 		Message rawInput = null;
 		String rIP = null;
 
@@ -145,15 +139,16 @@ public class IMServer implements Runnable {
 			 * connected notification, registration notification,
 			 * logout notification. These all return false to break the loop.
 			 */
-			if (str.equals("$connected$")) {
-				connected(rawInput, temp);
-				return null;
-			} else if (str.equals("$register$")) {
-				register(rawInput, temp);
-				return null;
-			} else if (str.equals("$logout$")) {
-				logout(rawInput);
-				return null;
+			switch (str) {
+				case "$connected$":
+					connected(rawInput, temp);
+					return null;
+				case "$register$":
+					register(rawInput, temp);
+					return null;
+				case "$logout$":
+					logout(rawInput);
+					return null;
 			}
 		} else {
 			message = rawInput;
@@ -394,11 +389,7 @@ public class IMServer implements Runnable {
 			e.printStackTrace();
 		}
 
-		if (message != null) {
-			return true;
-		} else {
-			return false;
-		}
+		return message != null;
 	}
 
 	/**

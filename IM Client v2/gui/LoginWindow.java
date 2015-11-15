@@ -1,28 +1,9 @@
 package gui;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.FlowLayout;
-
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.awt.GridLayout;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.*;
+import java.awt.event.*;
 
 /**
  * Window that appears first when running program, handles login information,
@@ -31,7 +12,6 @@ import java.awt.event.KeyEvent;
  *
  */
 public class LoginWindow {
-	private final JPanel contentPanel = new JPanel();
 	private JTextField txtEnterUsername;
 	private String username;
 	private String password;
@@ -70,6 +50,7 @@ public class LoginWindow {
 		d.setBounds(100, 100, 333, 155);
 		d.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 		d.getContentPane().setLayout(new BorderLayout());
+		JPanel contentPanel = new JPanel();
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		d.getContentPane().add(contentPanel, BorderLayout.CENTER);
 

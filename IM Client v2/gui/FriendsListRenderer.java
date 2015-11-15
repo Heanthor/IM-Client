@@ -1,14 +1,7 @@
 package gui;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Image;
-import java.awt.Toolkit;
-
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.JList;
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * Custom cell renderer for the JList used in FriendsList.
@@ -29,7 +22,7 @@ public class FriendsListRenderer extends DefaultListCellRenderer {
 	}
 
 	@Override
-	public Component getListCellRendererComponent(JList<? extends Object> list,
+	public Component getListCellRendererComponent(JList<?> list,
 			Object value, int index, boolean isSelected, boolean cellHasFocus) {
 		JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 
@@ -39,7 +32,7 @@ public class FriendsListRenderer extends DefaultListCellRenderer {
 		}
 		label.setHorizontalTextPosition(JLabel.RIGHT);
 
-		Image i = null;
+		Image i;
 		if (flag) {
 			i = Toolkit.getDefaultToolkit()
 					.getImage(FriendsListRenderer.class.getResource("logos/quill_50.png"));	

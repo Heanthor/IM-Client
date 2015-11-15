@@ -20,19 +20,24 @@ public class DebugListener implements Runnable {
 			String line = sc.nextLine();
 
 			//Command list
-			if (line.equals("connected")) {
-				ServerUtils.printConnections(IMServer.getConnectedIPs());
-			} else if (line.equals("quit")) {
-				System.exit(0);
-			} else if (line.equals("users")) {
-				ServerUtils.printUsers("users/users.ser");
-			} else if (line.equals("help")) {
-				help();
-			} else if (line.equals("stats")) {
-				stats();
-			}
-			else {
-				System.out.println("Invalid command. Use \"help\" for command list.");
+			switch (line) {
+				case "connected":
+					ServerUtils.printConnections(IMServer.getConnectedIPs());
+					break;
+				case "quit":
+					System.exit(0);
+				case "users":
+					ServerUtils.printUsers("users/users.ser");
+					break;
+				case "help":
+					help();
+					break;
+				case "stats":
+					stats();
+					break;
+				default:
+					System.out.println("Invalid command. Use \"help\" for command list.");
+					break;
 			}
 		}
 

@@ -1,7 +1,8 @@
 package client;
 
-import java.awt.Graphics2D;
-import java.awt.Image;
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -9,9 +10,6 @@ import java.io.IOException;
 import java.util.Base64;
 import java.util.Base64.Decoder;
 import java.util.Base64.Encoder;
-
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 
 /**
  * Utilities for an IMClient, mainly for handling image IO.
@@ -66,9 +64,8 @@ public class ClientUtils {
 	public static BufferedImage decodeImage(byte[] encodedImage) {
 		Decoder d = Base64.getDecoder();
 		try {
-			BufferedImage incoming = ImageIO.read(new ByteArrayInputStream(d.decode(encodedImage)));
 
-			return incoming;
+			return ImageIO.read(new ByteArrayInputStream(d.decode(encodedImage)));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
