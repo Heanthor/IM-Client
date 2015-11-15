@@ -5,6 +5,8 @@ package client;
 
 //
 
+import crypt.KeyAlreadySetException;
+import crypt.MessageCrypt;
 import gui.LoginWindow;
 import gui.MainWindow;
 import login.Credentials;
@@ -23,6 +25,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.security.KeyException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Objects;
@@ -120,6 +123,18 @@ public class IMClient implements Runnable {
 	private void init() {
 		//Starts incoming message scanner
 		new Thread(this).start();
+
+		//Initialize encryption
+		//TODO await encryption bit from server on login
+		MessageCrypt m = MessageCrypt.getInstance();
+
+		if (!m.isInitialized()) {
+			try {
+				m.init("Secret Key");
+			} catch (KeyAlreadySetException e) {
+				e.printStackTrace();
+			}
+		}
 
 		//If the first part of the username contains the register code
 		if (register) {
@@ -332,10 +347,16 @@ public class IMClient implements Runnable {
 	}
 
 	private void handleExternalMessage(ExternalMessage response) {
-		System.out.println("Received message: " + response.getMessage());
-		//MainWindow.pingTaskbar(mainWindow);
-		//Mark up string to insert
-		printMessage(response.getSender(), response.getMessage());
+		try {
+			String decryptedMessage = response.getDecryptedMessage();
+
+			System.out.println("Received message: " + decryptedMessage);
+			//MainWindow.pingTaskbar(mainWindow);
+			//Mark up string to insert
+			printMessage(response.getSender(), decryptedMessage);
+		} catch (KeyException e) {
+			e.printStackTrace();
+		}
 
 		//Alert new message in UI if tab is not currently selected
 		/*if (!mainWindow.getList().getSelectedValue().equals(conversationPartner)) {

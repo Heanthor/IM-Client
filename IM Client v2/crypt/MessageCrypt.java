@@ -7,7 +7,6 @@ import java.math.BigInteger;
 import java.security.InvalidKeyException;
 import java.security.KeyException;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.util.Random;
@@ -102,7 +101,8 @@ public class MessageCrypt {
         } else {
             try {
                 SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
-                Random r = new SecureRandom();
+                //Same salt for every client
+                Random r = new Random(128);
                 byte[] salt = new byte[32];
                 r.nextBytes(salt);
                 KeySpec spec = new PBEKeySpec(keyIn.toCharArray(), salt, 65536, 128);
@@ -115,5 +115,12 @@ public class MessageCrypt {
                 throw new UnsupportedOperationException();
             }
         }
+    }
+
+    /**
+     * @return True if secret key has already been initialized, false otherwise.
+     */
+    public boolean isInitialized() {
+        return key != null;
     }
 }
