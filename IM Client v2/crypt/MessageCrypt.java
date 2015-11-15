@@ -15,6 +15,7 @@ import java.util.Random;
 /**
  * Class responsible for encrypting an decrypting all messages being sent between clients.
  * Key can only be set once per run of the program.
+ * Uses 128 bit AES encryption for all messages.
  * @author Reed
  */
 public class MessageCrypt {

@@ -1,0 +1,12 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="TestCrypt:jar">
+    <output-path>C:/production/artifacts/TestCrypt_jar</output-path>
+    <root id="archive" name="IM-Client.jar">
+      <element id="module-output" name="IM-Client" />
+      <element id="module-output" name="LoginClient" />
+      <element id="module-output" name="Bloom Filter" />
+      <element id="extracted-dir" path="E:/Files/Jars/imgscalr-lib-4.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../junit-4.7.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
