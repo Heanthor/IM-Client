@@ -18,4 +18,4 @@ Uses my 'Bloom Filter' and 'Login PoC' projects, as well as the imgscalr library
 
 * Connecting with the same username as someone already logged in breaks the server. Don't share your password?
 * Rare/strange Swing bugs, mostly dealing with the user list.
-* Server doesn't know how to handle force-quitting of clients, will desync the user list and cause problems for everyone once one person disconnects unnaturally.
+* Potential crypto errors.
