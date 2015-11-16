@@ -124,18 +124,6 @@ public class IMClient implements Runnable {
 		//Starts incoming message scanner
 		new Thread(this).start();
 
-		//Initialize encryption
-		//TODO await encryption bit from server on login
-		MessageCrypt m = MessageCrypt.getInstance();
-
-		if (!m.isInitialized()) {
-			try {
-				m.init("Secret Key");
-			} catch (KeyAlreadySetException e) {
-				e.printStackTrace();
-			}
-		}
-
 		//If the first part of the username contains the register code
 		if (register) {
 			System.out.println("Registering new user.");
@@ -153,17 +141,23 @@ public class IMClient implements Runnable {
 			}
 
 			//Check registration response
-			if (currentInternalMessage.getMessage().equals("$true$")) {
-				System.out.println("Registration successful, welcome " + 
-						identifier.getCredentials().getUsername());
-			} else if (currentInternalMessage.getMessage().equals("$duplicate$")) {
-				JOptionPane.showMessageDialog(new JFrame(), "User already has account",
-						"Registration Error", JOptionPane.ERROR_MESSAGE);
-				IMClient.main(null); // Restart program
-			} else {
-				JOptionPane.showMessageDialog(new JFrame(), "Registration write error",
-						"Registration Error", JOptionPane.ERROR_MESSAGE);
-				IMClient.main(null); // Restart program
+			switch (currentInternalMessage.getMessage()) {
+				case "$true$":
+					System.out.println("Registration successful, welcome " +
+							identifier.getCredentials().getUsername());
+					break;
+				case "$duplicate$":
+					JOptionPane.showMessageDialog(new JFrame(), "User already has account",
+							"Registration Error", JOptionPane.ERROR_MESSAGE);
+					IMClient.main(null); // Restart program
+
+					break;
+				default:
+					JOptionPane.showMessageDialog(new JFrame(), "Registration write error",
+							"Registration Error", JOptionPane.ERROR_MESSAGE);
+					IMClient.main(null); // Restart program
+
+					break;
 			}
 		}
 
@@ -440,6 +434,23 @@ public class IMClient implements Runnable {
 				if (mainWindow.getList().getLength() == 1 && mainWindow.getList().getSelectedValue() != null &&
 						!mainWindow.getList().getSelectedValue().equals("No users online")) {
 					mainWindow.setDocument(mainWindow.conversations.get(mainWindow.getList().getSelectedValue()));
+				}
+			} else if (tempIM.getMessage().contains("key:")) {
+				String messageText = tempIM.getMessage();
+				//Get secret key from part of authentication message
+				if (messageText.contains("$authenticated$")) {
+					String secretKey = messageText.substring(messageText.indexOf(":") + 1);
+
+					//Initialize encryption
+					MessageCrypt m = MessageCrypt.getInstance();
+
+					if (!m.isInitialized()) {
+						try {
+							m.init(secretKey);
+						} catch (KeyAlreadySetException e) {
+							e.printStackTrace();
+						}
+					}
 				}
 			}
 		}

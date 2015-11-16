@@ -24,14 +24,14 @@ import java.util.TreeMap;
 public class IMServer implements Runnable {
 	private Message message;
 	private Socket clientSocket;
-	private static ArrayList<String> userList = new ArrayList<String>(); //To be sent to client's userlists
-	public static ArrayList<String> connectedIPs = new ArrayList<String>();
+	private static ArrayList<String> userList = new ArrayList<>(); //To be sent to client's userlists
+	public static ArrayList<String> connectedIPs = new ArrayList<>();
 	private static Object o = new Object(); // Synchronizing
 	private LoginServer loginServer = new LoginServer("users/users.ser"); //Authentication
 	private boolean loopInput = true; // Controls looping IO for one connection
 	private static DebugListener debug = new DebugListener();
 
-	private static TreeMap<String, Socket> openConnections = new TreeMap<String, Socket>();
+	private static TreeMap<String, Socket> openConnections = new TreeMap<>();
 
 	/**
 	 * @param clientSocket - The sender's socket connection.
@@ -275,7 +275,8 @@ public class IMServer implements Runnable {
 			userList.add(username);
 			updateUserList();
 
-			message = new InternalMessage(temp.getUser(), "$authenticated$");
+			//Provide key to all clients
+			message = new InternalMessage(temp.getUser(), "$authenticated$key:" + ServerUtils.createKey());
 			System.out.println("Authenticated " + clientSocket.getInetAddress().toString());
 		} else if (r.reponseCode == AuthenticateResponse.RESPONSE_WRONG_PASSWORD) {
 

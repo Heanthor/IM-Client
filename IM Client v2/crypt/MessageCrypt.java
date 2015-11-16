@@ -98,8 +98,11 @@ public class MessageCrypt {
     public void init(String keyIn) throws KeyAlreadySetException {
         if (key != null) {
             throw new KeyAlreadySetException();
+        } else if (keyIn == null) {
+            throw new NullPointerException();
         } else {
             try {
+                System.out.println("Key string: " + keyIn);
                 SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
                 //Same salt for every client
                 Random r = new Random(128);

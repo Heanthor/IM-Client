@@ -1,16 +1,12 @@
 package server;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.PrintWriter;
-
 import filter.BloomFilter;
 import login.Credentials;
 import login.LoginServer;
 import login.NameTooLongException;
+
+import java.io.*;
+import java.util.Date;
 
 /**
  * Utilities for an IMServer, such as reading and scanning files.
@@ -18,7 +14,13 @@ import login.NameTooLongException;
  *
  */
 public class ServerUtils {
-	protected ServerUtils(){}
+
+	/**
+	 * The time at which the server was started. Used to generate keys for all clients.
+	 */
+	private static final Date timeAtInitialization = new Date();
+
+	private ServerUtils() {}
 
 	/**
 	 * Returns the username associated with the given IP address, in the server's
@@ -28,7 +30,7 @@ public class ServerUtils {
 	 * @throws IOException
 	 */
 	public static String usernameIP(String ip) {
-		BufferedReader fileReader = null;
+		BufferedReader fileReader;
 		String line;
 
 		try {
@@ -118,6 +120,7 @@ public class ServerUtils {
 		fileReader.close();
 		return null;
 	}
+
 	/**
 	 * Prints contents of connectedIPs parameter
 	 * @param connectedIPs an iterable list of strings
@@ -143,5 +146,14 @@ public class ServerUtils {
 		} catch (NameTooLongException e) {
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * Create a key to be given to a client, for encryption.
+	 * Uses the server's start time as a seed.
+	 * @return The standard key.
+	 */
+	public static String createKey() {
+		return String.valueOf(timeAtInitialization.getTime() >> 5);
 	}
 }

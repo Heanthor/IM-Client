@@ -1,24 +1,20 @@
 package tests;
 
-import static org.junit.Assert.*;
+import client.ClientUtils;
+import messages.InternalMessage;
+import messages.Message;
+import org.junit.Test;
+import server.ServerUtils;
 
+import javax.swing.*;
+import javax.swing.text.DefaultStyledDocument;
+import javax.swing.text.StyledDocument;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.swing.ImageIcon;
-import javax.swing.JTextPane;
-import javax.swing.text.DefaultStyledDocument;
-import javax.swing.text.StyledDocument;
-
-import messages.InternalMessage;
-import messages.Message;
-
-import org.junit.Test;
-
-import client.ClientUtils;
-import server.*;
+import static org.junit.Assert.*;
 
 public class TestHelperMethods {
 
@@ -111,11 +107,11 @@ public class TestHelperMethods {
 
 	}
 
-	@Test
-	public void testUrlIP() {
-		String name = ServerUtils.usernameIP("/52.10.127.193");
-		assertEquals(name, "sdfsd");
-	}
+//	@Test
+//	public void testUrlIP() {
+//		String name = ServerUtils.usernameIP("/52.10.127.193");
+//		assertEquals(name, "sdfsd");
+//	}
 
 	@Test
 	public void testEncoding() {
@@ -146,5 +142,12 @@ public class TestHelperMethods {
 		
 		assertEquals(591, decodedImage.getHeight());
 		assertEquals(375, decodedImage.getWidth());
+	}
+
+	@Test
+	public void testStaticInstantiaion() {
+		String key1 = ServerUtils.createKey();
+
+		assertEquals(key1, ServerUtils.createKey());
 	}
 }
