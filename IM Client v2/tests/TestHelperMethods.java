@@ -150,4 +150,13 @@ public class TestHelperMethods {
 
 		assertEquals(key1, ServerUtils.createKey());
 	}
+
+	@Test
+	public void testBWT() {
+		String toTransform = "GCGTGCCTGGTCA";
+
+		assertEquals("1A1C1T2G1C1T1\u00001T1G1C2G1C", ClientUtils.compressString(toTransform));
+
+		assertEquals(toTransform, ClientUtils.decompressString("1A1C1T2G1C1T1\u00001T1G1C2G1C"));
+	}
 }

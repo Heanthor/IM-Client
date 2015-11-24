@@ -2,14 +2,16 @@ package client;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Base64;
+import java.util.*;
 import java.util.Base64.Decoder;
 import java.util.Base64.Encoder;
+import java.util.List;
 
 /**
  * Utilities for an IMClient, mainly for handling image IO.
@@ -73,6 +75,105 @@ public class ClientUtils {
 			e.printStackTrace();
 		}
 
+		return null;
+	}
+
+	/**
+	 * Compress a string using Burrows-Wheeler Transform and run-length encoding.
+	 * Should only be used on sufficiently large strings.
+	 * Uses null character for internal termination.
+	 * @param in The String to compress
+	 * @return the compressed string
+	 */
+	public static String compressString(String in) {
+		// Calculate cyclic rotations
+		ArrayList<String> rotations = new ArrayList<>();
+
+		// Add terminating character
+		in += '\0';
+
+		for (int i = 0; i < in.length(); i++) {
+			rotations.add(in.substring(in.length() - i) + in.substring(0, in.length() - i));
+		}
+
+		// Sort rotations
+		String[] rotations_sorted = new String[rotations.size()];
+		rotations.toArray(rotations_sorted);
+		Arrays.sort(rotations_sorted);
+
+		// Get the BWT
+		StringBuilder bwt = new StringBuilder();
+		for (String s: rotations_sorted) {
+			bwt.append(s.charAt(s.length() - 1));
+		}
+
+
+		// Run-length encoding
+		String bwtString = bwt.toString();
+		StringBuilder rle = new StringBuilder();
+
+		int counter = 1;
+		char nextChar;
+		for (int i = 0; i < bwtString.length(); i++) {
+			char chAt = bwtString.charAt(i);
+			nextChar = i + 1 < bwtString.length() ? bwtString.charAt(i + 1) : '\0';
+
+			if (chAt == nextChar) {
+				counter++;
+			} else {
+				rle.append(counter);
+				rle.append(bwtString.charAt(i));
+				counter = 1;
+			}
+		}
+
+		return rle.toString();
+	}
+
+	/**
+	 * Decompresses and decodes a string compressed with Burrows-Wheeler Transform
+	 * and run-length encoding.
+	 * @param encodedMessage The encoded string
+	 * @return The decompressed string
+	 */
+	public static String decompressString(String encodedMessage) {
+		// Reverse run-length encoding
+		StringBuilder rev = new StringBuilder();
+
+		for (int i = 0; i < encodedMessage.length(); i += 2) {
+			for (int j = Character.getNumericValue(encodedMessage.charAt(i)); j > 0; j--) {
+				rev.append(encodedMessage.charAt(i + 1));
+			}
+		}
+		// encodedMessage is the last column of the BWT
+		encodedMessage = rev.toString();
+
+		// Initialize table
+		String[] building = new String[encodedMessage.length()];
+		for (int i = 0; i < building.length; i++) {
+			building[i] = "";
+		}
+
+		char[] lastCol = encodedMessage.toCharArray();
+
+		// Sort and add to build table
+		for (int x = 0; x < encodedMessage.length(); x++) {
+			for (int i = 0; i < lastCol.length; i++) {
+				building[i] = lastCol[i] + building[i];
+			}
+
+			Arrays.sort(building);
+		}
+
+		// Find string that ends with terminating character, this is the original string
+		for (String s: building) {
+			if (s.charAt(s.length() - 1) == '\0') {
+				// Remove temporary terminating character
+				s = s.replace("\0", "");
+				return s;
+			}
+		}
+		// Failure
 		return null;
 	}
 }
