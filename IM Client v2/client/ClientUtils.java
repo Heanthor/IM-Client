@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.util.*;
 import java.util.Base64.Decoder;
 import java.util.Base64.Encoder;
-import java.util.List;
 
 /**
  * Utilities for an IMClient, mainly for handling image IO.
@@ -86,12 +85,12 @@ public class ClientUtils {
 	 * @return the compressed string
 	 */
 	public static String compressString(String in) {
-		// Calculate cyclic rotations
-		ArrayList<String> rotations = new ArrayList<>();
-
 		// Add terminating character
 		in += '\0';
 
+		ArrayList<String> rotations = new ArrayList<>();
+
+		// Calculate cyclic rotations
 		for (int i = 0; i < in.length(); i++) {
 			rotations.add(in.substring(in.length() - i) + in.substring(0, in.length() - i));
 		}
@@ -107,8 +106,8 @@ public class ClientUtils {
 			bwt.append(s.charAt(s.length() - 1));
 		}
 
-
-		// Run-length encoding
+		/* Run-length encoding
+		   Format: <number><character> */
 		String bwtString = bwt.toString();
 		StringBuilder rle = new StringBuilder();
 
@@ -145,6 +144,7 @@ public class ClientUtils {
 				rev.append(encodedMessage.charAt(i + 1));
 			}
 		}
+
 		// encodedMessage is the last column of the BWT
 		encodedMessage = rev.toString();
 
@@ -161,7 +161,6 @@ public class ClientUtils {
 			for (int i = 0; i < lastCol.length; i++) {
 				building[i] = lastCol[i] + building[i];
 			}
-
 			Arrays.sort(building);
 		}
 
@@ -173,7 +172,8 @@ public class ClientUtils {
 				return s;
 			}
 		}
-		// Failure
+
+		// Invalid message type
 		return null;
 	}
 }
