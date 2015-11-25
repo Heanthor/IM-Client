@@ -1,6 +1,7 @@
 package tests;
 
 import client.ClientUtils;
+import messages.External;
 import messages.InternalMessage;
 import messages.Message;
 import org.junit.Test;
@@ -149,5 +150,18 @@ public class TestHelperMethods {
 		String key1 = ServerUtils.createKey();
 
 		assertEquals(key1, ServerUtils.createKey());
+	}
+
+	@Test
+	public void testFields() {
+		Message m = new External(null);
+		External m2 = new External(null);
+		Object m3 = m2;
+
+		External casted = (External)m3;
+
+		assertNotNull(m.getTimestamp());
+		assertNotNull(m2.getTimestamp());
+		assertNotNull(casted.getTimestamp());
 	}
 }

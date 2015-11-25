@@ -1,6 +1,7 @@
 package messages;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Parent class of data sent between client and server.
@@ -12,15 +13,19 @@ public abstract class Message implements Serializable {
 	private static final long serialVersionUID = -7316250263820535794L;
 	private String senderUsername;
 	private String recipientUsername;
+	private final Date timestamp;
 	
 	public Message() {
 		senderUsername = null;
 		recipientUsername = null;
+		//On creation of a message, save the timestamp
+		timestamp = new Date();
 	}
 	
 	public Message(String sender, String recipient) {
 		this.senderUsername = sender;
 		this.recipientUsername = recipient;
+		timestamp = new Date();
 	}
 
 	/**
@@ -35,5 +40,12 @@ public abstract class Message implements Serializable {
 	 */
 	public String getRecipient() {
 		return recipientUsername;
+	}
+
+	/**
+	 * @return the timestamp of when this message was created
+	 */
+	public Date getTimestamp() {
+		return timestamp;
 	}
 }

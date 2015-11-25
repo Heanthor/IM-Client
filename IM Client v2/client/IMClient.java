@@ -26,7 +26,9 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.security.KeyException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -347,7 +349,7 @@ public class IMClient implements Runnable {
 			System.out.println("Received message: " + decryptedMessage);
 			//MainWindow.pingTaskbar(mainWindow);
 			//Mark up string to insert
-			printMessage(response.getSender(), decryptedMessage);
+			printMessage(response.getSender(), decryptedMessage, response.getTimestamp());
 		} catch (KeyException e) {
 			e.printStackTrace();
 		}
@@ -358,7 +360,7 @@ public class IMClient implements Runnable {
 		} */
 	}
 
-	private void printMessage(String sender, String message) {
+	private void printMessage(String sender, String message, Date timestamp) {
 		//Document doc = mainWindow.getTextPane().getDocument();
 		Document doc = mainWindow.conversations.get(sender);
 
@@ -371,10 +373,21 @@ public class IMClient implements Runnable {
 		StyleConstants.setForeground(messageStyle, new Color(255, 255, 255));
 
 		try {
+			//Handle timestamp
+			if (timestamp != null) {
+				SimpleAttributeSet timestampStyle = new SimpleAttributeSet();
+				StyleConstants.setForeground(timestampStyle, new Color(0, 0, 0));
+
+				SimpleDateFormat fmt = new SimpleDateFormat("h:mm:ss a");
+
+				doc.insertString(doc.getLength(), "[" + fmt.format(timestamp) + "]", timestampStyle);
+
+			}
+
 			doc.insertString(doc.getLength(), sender +
 					":", usernameStyle);
 
-			doc.insertString(doc.getLength(), " " + message + 
+			doc.insertString(doc.getLength(), " " + message +
 					"\n", messageStyle);
 
 		} catch (Exception e) {
@@ -384,8 +397,12 @@ public class IMClient implements Runnable {
 		//Scroll to bottom
 		//TODO this doesn't scroll properly if the message is very long
 		mainWindow.getScrollPane().getVerticalScrollBar().
-		setValue(mainWindow.getScrollPane().
-				getVerticalScrollBar().getMaximum() + 1);
+				setValue(mainWindow.getScrollPane().
+						getVerticalScrollBar().getMaximum() + 1);
+	}
+
+	private void printMessage(String sender, String message) {
+		printMessage(sender, message, null);
 	}
 
 	private void handleInternalMessage(InternalMessage tempIM) {
