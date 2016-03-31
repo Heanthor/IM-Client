@@ -173,4 +173,25 @@ public class TestHelperMethods {
 
 		assertEquals(toTransform, ClientUtils.decompressString("1A1C1T2G1C1T1\u00001T1G1C2G1C"));
 	}
+
+	@Test
+    public void testCompression() {
+        String loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec pellentesque quam nunc, ut blandit odio sollicitudin non. Vivamus malesuada enim massa. Aliquam erat volutpat. Suspendisse vehicula pretium diam id facilisis. Maecenas metus ante, bibendum mattis metus a, varius elementum nisl. Ut in lobortis libero. Morbi egestas lectus vel sapien tincidunt, sed eleifend nunc ultricies. Integer eu orci dignissim, malesuada odio ut, scelerisque neque. In congue magna nec fermentum porttitor. Aliquam feugiat dapibus arcu id rhoncus. Sed vel mauris a lorem pharetra efficitur. Phasellus ut lobortis dui.\n" +
+                "\n" +
+                "Nulla eget consequat justo, eget luctus urna. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Sed nec massa ac augue convallis varius. Integer tincidunt ligula at tortor pharetra iaculis vel vitae tortor. Sed maximus enim eu arcu ultrices, ac pulvinar magna commodo. Cras condimentum vel dui sit amet porta. Etiam placerat, tellus a eleifend imperdiet, magna libero placerat orci, sit amet tincidunt metus sapien eu nisi. Pellentesque varius orci ut turpis fringilla, vitae vehicula risus pellentesque. Nam quis dui varius, semper quam id, ultricies odio.\n" +
+                "\n" +
+                "Duis imperdiet mollis metus, in lobortis est molestie ut. Mauris ullamcorper nec nibh eget finibus. Nunc eleifend interdum metus. Quisque facilisis vel velit at vestibulum. Integer dignissim tincidunt tempor. Nullam pulvinar gravida neque, et luctus quam iaculis id. Mauris eget nisi imperdiet, mollis dolor eu, ornare augue. Nullam sollicitudin dui mi, in ullamcorper ipsum sollicitudin a. Nullam ut dui lorem. Sed lobortis massa vel tellus suscipit tempor. Vestibulum nec imperdiet nunc. Morbi et orci eget dolor cursus dignissim. Donec et ex nunc.\n" +
+                "\n" +
+                "Integer auctor dolor in diam placerat ultricies. Nulla maximus magna eu elit semper, ac accumsan metus laoreet. Vestibulum at malesuada arcu. Nam in nulla consequat, ornare tellus eget, consectetur odio. Duis vulputate egestas diam placerat interdum. Quisque id sem pulvinar mi eleifend hendrerit. Aliquam et maximus lectus. Aenean eget dapibus lorem. Suspendisse tempus metus in dolor interdum, in gravida lorem tempor. Quisque vel arcu massa. Duis id congue nunc.\n" +
+                "\n" +
+                "Nullam metus urna, porttitor vitae mauris a, pulvinar dapibus dui. Vivamus enim dolor, commodo non ligula eu, tempor iaculis purus. Vestibulum ut ultricies diam, ac consequat dui. In vestibulum, nunc sed imperdiet ornare, quam est tristique metus, non imperdiet velit ligula et velit. Maecenas rhoncus nec libero eu facilisis. Nullam aliquam fermentum felis, et dignissim nunc pharetra eu. Morbi non leo rhoncus, mollis nunc non, semper nibh. In facilisis, metus sed mollis mattis, sem lacus posuere neque, fringilla vulputate metus urna egestas ante. Aliquam a nisl auctor, accumsan tortor eu, malesuada augue. Donec interdum purus ullamcorper, tristique lacus et, auctor nibh. Etiam non vulputate quam.";
+
+        String compressedLoremIpsum = ClientUtils.compressString(loremIpsum);
+        System.out.println("Original length: " + loremIpsum.length());
+        System.out.println("Compressed length: " + compressedLoremIpsum.length());
+//        assertTrue(compressedLoremIpsum.length() < loremIpsum.length());
+
+        String decodedLorenIpsum = ClientUtils.decompressString(compressedLoremIpsum);
+        assertEquals(loremIpsum, decodedLorenIpsum);
+    }
 }

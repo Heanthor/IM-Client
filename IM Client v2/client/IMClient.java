@@ -42,7 +42,7 @@ import java.util.Objects;
 public class IMClient implements Runnable {
 	//TODO obfuscate this IP
 	//private String host = "52.10.127.193";  // refers to the server IP joseph AMAZON IP 
-	private String host = "52.26.104.91"; //Reed amazon IP
+	private static String host = "173.66.241.163"; //Reed home IP
 	//private String host = "108.18.116.197"; //REED IP
 	//private String host = "162.203.100.133"; //new Joseph IP
 	private User identifier; //Your unique identifier
@@ -52,15 +52,15 @@ public class IMClient implements Runnable {
 	private ObjectInputStream reader;  // stream used to read the server's response
 	private Socket serverSocket; // connection to the server
 	private InetAddress serverIP; // get IP
-	private static Object o = new Object(); // synchronization
-	private static Object internal = new Object(); //Alert for internal messages
-	private static Object recipientChange = new Object(); //Recipient changes?
+	private static final Object o = new Object(); // synchronization
+	private static final Object internal = new Object(); //Alert for internal messages
+	private static final Object recipientChange = new Object(); //Recipient changes?
 	/* 
 	 * make sure all messages send before closing program
 	 * This is only important with slow internet, when the logout message
 	 * cannot be sent in time before the program closes.
 	 */
-	private static Object sendLock = new Object();
+	private static final Object sendLock = new Object();
 	private InternalMessage currentInternalMessage; //Internal message to be evaluated
 	private MainWindow mainWindow; // associated MainWindow, for printing
 	private boolean register = false; //Registration request
@@ -102,6 +102,10 @@ public class IMClient implements Runnable {
 	public static void main(String args[])  {
 		//LoginWindow blocks until the "OK" button is pressed with a correct username
 		LoginWindow w = new LoginWindow(o);
+
+		if (args.length > 0) {
+			host = args[0];
+		}
 
 		//Create authentication bit
 		User u = null;

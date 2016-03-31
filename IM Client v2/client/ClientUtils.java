@@ -2,13 +2,14 @@ package client;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Base64;
 import java.util.Base64.Decoder;
 import java.util.Base64.Encoder;
 
@@ -139,7 +140,7 @@ public class ClientUtils {
 		// Reverse run-length encoding
 		StringBuilder rev = new StringBuilder();
 
-		for (int i = 0; i < encodedMessage.length(); i += 2) {
+		for (int i = 0; i < encodedMessage.length() - 1; i += 2) {
 			for (int j = Character.getNumericValue(encodedMessage.charAt(i)); j > 0; j--) {
 				rev.append(encodedMessage.charAt(i + 1));
 			}
