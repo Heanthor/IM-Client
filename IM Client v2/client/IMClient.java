@@ -42,7 +42,7 @@ import java.util.Objects;
 public class IMClient implements Runnable {
 	//TODO obfuscate this IP
 	//private String host = "52.10.127.193";  // refers to the server IP joseph AMAZON IP 
-	private static String host = "173.66.241.163"; //Reed home IP
+	private static String host = "73.135.190.36"; //Reed home IP
 	//private String host = "108.18.116.197"; //REED IP
 	//private String host = "162.203.100.133"; //new Joseph IP
 	private User identifier; //Your unique identifier
@@ -103,7 +103,7 @@ public class IMClient implements Runnable {
 		//LoginWindow blocks until the "OK" button is pressed with a correct username
 		LoginWindow w = new LoginWindow(o);
 
-		if (args.length > 0) {
+		if (args != null && args.length > 0) {
 			host = args[0];
 		}
 
@@ -170,9 +170,6 @@ public class IMClient implements Runnable {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				mainWindow = new MainWindow(o, recipientChange, sendLock,
-						identifier.getCredentials().getUsername());
-
 				synchronized(internal) {
 					try {
 						internal.wait();
@@ -182,6 +179,9 @@ public class IMClient implements Runnable {
 				}
 			}
 		});
+
+		mainWindow = new MainWindow(o, recipientChange, sendLock,
+				identifier.getCredentials().getUsername());
 
 		//Lets server know client is "connected"
 		new Thread(new Sender(this, new InternalMessage
