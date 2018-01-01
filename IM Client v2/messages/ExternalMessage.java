@@ -2,6 +2,7 @@ package messages;
 
 import crypt.MessageCrypt;
 
+import javax.crypto.IllegalBlockSizeException;
 import java.security.KeyException;
 
 /**
@@ -48,7 +49,7 @@ public class ExternalMessage extends Message {
 	 * @return The decrypted message
 	 * @throws KeyException If they key is not initialized, or another problem occurs
 	 */
-	public String getDecryptedMessage() throws KeyException {
+	public String getDecryptedMessage() throws KeyException, IllegalBlockSizeException {
 		MessageCrypt m = MessageCrypt.getInstance();
 
 		return m.decrypt(message);

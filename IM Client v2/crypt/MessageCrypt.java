@@ -61,7 +61,7 @@ public class MessageCrypt {
      * @throws KeyException if the key has not been set yet.
      * @throws UnsupportedOperationException if an error occurs in decrypting.
      */
-    public String decrypt(final String hexEncodedMessage) throws KeyException {
+    public String decrypt(final String hexEncodedMessage) throws KeyException, IllegalBlockSizeException {
         if (key == null) {
             throw new KeyException("Secret key not set");
         }
@@ -74,7 +74,6 @@ public class MessageCrypt {
         } catch (NoSuchAlgorithmException |
                 InvalidKeyException |
                 BadPaddingException |
-                IllegalBlockSizeException |
                 NoSuchPaddingException e) {
             e.printStackTrace();
             throw new UnsupportedOperationException();

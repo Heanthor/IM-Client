@@ -15,6 +15,7 @@ import login.PermissionLevel;
 import login.User;
 import messages.*;
 
+import javax.crypto.IllegalBlockSizeException;
 import javax.swing.*;
 import javax.swing.text.*;
 import java.awt.*;
@@ -42,7 +43,7 @@ import java.util.Objects;
 public class IMClient implements Runnable {
 	//TODO obfuscate this IP
 	//private String host = "52.10.127.193";  // refers to the server IP joseph AMAZON IP 
-	private static String host = "73.135.190.36"; //Reed home IP
+	private static String host = "server.quillchat.com"; //Reed home IP
 	//private String host = "108.18.116.197"; //REED IP
 	//private String host = "162.203.100.133"; //new Joseph IP
 	private User identifier; //Your unique identifier
@@ -354,7 +355,7 @@ public class IMClient implements Runnable {
 			//MainWindow.pingTaskbar(mainWindow);
 			//Mark up string to insert
 			printMessage(response.getSender(), decryptedMessage, response.getTimestamp());
-		} catch (KeyException e) {
+		} catch (KeyException |IllegalBlockSizeException e) {
 			e.printStackTrace();
 		}
 

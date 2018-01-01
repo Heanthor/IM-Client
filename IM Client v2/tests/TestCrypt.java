@@ -3,15 +3,36 @@ package tests;
 import crypt.KeyAlreadySetException;
 import crypt.MessageCrypt;
 
+import javax.crypto.IllegalBlockSizeException;
 import java.security.KeyException;
+import java.util.Locale;
 import java.util.Random;
 
 /**
  * Test encrypting and decrypting library.
  */
 public class TestCrypt {
+    private static final String upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+    private static final String lower = upper.toLowerCase(Locale.ROOT);
+
+    private static final String digits = "0123456789";
+
+    private static final String alphanum = upper + lower + digits;
+
+    private static final String key = "47336799122";
+
+    private static final String badString = "OLJnGOJv0ZHTx045O8U3H8jsYy";
+
 
     public static void main(String[] args) {
+        //testBasicFunctionality();
+        findBadString();
+//        testSpecificBadString(badString);
+//        testSpecificBadString("hello?");
+    }
+
+    private static void testBasicFunctionality() {
         MessageCrypt m = MessageCrypt.getInstance();
 
         Random r = new Random(12);
@@ -32,6 +53,78 @@ public class TestCrypt {
             String decryptedMessage = m.decrypt(encryptedMessage);
 
             System.out.println("Decrypted: " + decryptedMessage);
+        } catch (KeyException | IllegalBlockSizeException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void findBadString() {
+        MessageCrypt m = MessageCrypt.getInstance();
+
+        try {
+            m.init(key);
+        } catch (KeyAlreadySetException e) {
+            e.printStackTrace();
+        }
+
+        int iterations = 10_000_000;
+        int maxLength = 40;
+
+        for (int i = 0; i < iterations; i++) {
+            StringBuilder sb = new StringBuilder();
+            Random r = new Random();
+            int length = r.nextInt(maxLength - 1) + 1;
+
+            for (int j = 0; j < length; j++) {
+                int maxChar = alphanum.length();
+                Random r2 = new Random();
+
+                sb.append(alphanum.charAt(r2.nextInt(maxChar)));
+            }
+
+            String toTest = sb.toString();
+            try {
+                String encryptedMessage = m.encrypt(toTest);
+                System.out.println("Testing '" + toTest + "' -- encrypted length " + encryptedMessage.length());
+
+
+                String decryptedMessage = m.decrypt(encryptedMessage);
+
+                if (!toTest.equals(decryptedMessage)) {
+                    System.out.println("String '" + decryptedMessage + "' not equal to '" + toTest + "'");
+                    return;
+                }
+
+            } catch (javax.crypto.IllegalBlockSizeException e) {
+                e.printStackTrace();
+                System.out.println("Found bad string: " + toTest);
+                return;
+            } catch (KeyException e) {
+                e.printStackTrace();
+            }
+        }
+
+        System.out.println("No error found");
+    }
+
+    private static void testSpecificBadString(String s) {
+        MessageCrypt m = MessageCrypt.getInstance();
+
+        try {
+            m.init(key);
+        } catch (KeyAlreadySetException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            String encryptedMessage = m.encrypt(s);
+
+            System.out.println(encryptedMessage);
+            System.out.println(encryptedMessage.length());
+            String decryptedMessage = m.decrypt(encryptedMessage);
+
+        } catch (IllegalBlockSizeException e) {
+            System.err.println("String triggered IllegalBlockSizeException");
         } catch (KeyException e) {
             e.printStackTrace();
         }
