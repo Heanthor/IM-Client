@@ -3,7 +3,6 @@ package crypt;
 import javax.crypto.*;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
-import java.math.BigInteger;
 import java.security.InvalidKeyException;
 import java.security.KeyException;
 import java.security.NoSuchAlgorithmException;
@@ -28,11 +27,11 @@ public class MessageCrypt {
     /**
      * Encrypts string using AES encryption, and the supplied secret key.
      * @param message The message to be encrypted
-     * @return The encrypted message, as a hexadecimal number string.
+     * @return The encrypted message as a byte array.
      * @throws KeyException if the key has not been set yet.
      * @throws UnsupportedOperationException if an error occurs in encrypting.
      */
-    public String encrypt(final String message) throws KeyException {
+    public byte[] encrypt(final String message) throws KeyException {
         if (key == null) {
             throw new KeyException("Secret key not set");
         }
@@ -40,9 +39,8 @@ public class MessageCrypt {
         try {
             final Cipher cipher = Cipher.getInstance("AES");
             cipher.init(Cipher.ENCRYPT_MODE, key);
-            byte[] encryptedMessage = cipher.doFinal(message.getBytes());
 
-            return new BigInteger(encryptedMessage).toString(16);
+            return cipher.doFinal(message.getBytes());
         } catch (NoSuchAlgorithmException |
                 NoSuchPaddingException |
                 InvalidKeyException |
@@ -56,12 +54,12 @@ public class MessageCrypt {
     /**
      * Decrypts a hexadecimal string encoded message, using the provided secret key.
      * The secret key must match the one used in encrypting the message.
-     * @param hexEncodedMessage The message to decode, in hexadecimal string format.
+     * @param hexEncodedMessage The message to decode
      * @return The decrypted message.
      * @throws KeyException if the key has not been set yet.
      * @throws UnsupportedOperationException if an error occurs in decrypting.
      */
-    public String decrypt(final String hexEncodedMessage) throws KeyException, IllegalBlockSizeException {
+    public String decrypt(final byte[] hexEncodedMessage) throws KeyException, IllegalBlockSizeException {
         if (key == null) {
             throw new KeyException("Secret key not set");
         }
@@ -70,7 +68,7 @@ public class MessageCrypt {
             final Cipher cipher = Cipher.getInstance("AES");
             cipher.init(Cipher.DECRYPT_MODE, key);
 
-            return new String(cipher.doFinal(new BigInteger(hexEncodedMessage, 16).toByteArray()));
+            return new String(cipher.doFinal(hexEncodedMessage));
         } catch (NoSuchAlgorithmException |
                 InvalidKeyException |
                 BadPaddingException |

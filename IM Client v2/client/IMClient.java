@@ -47,7 +47,7 @@ public class IMClient implements Runnable {
 	//private String host = "108.18.116.197"; //REED IP
 	//private String host = "162.203.100.133"; //new Joseph IP
 	private User identifier; //Your unique identifier
-	private String myUsername; //Username of this client
+	private String myUsername; //Username of this clientturn
 	private String recipient; //Recipient of current message
 	private int portNumber = 6969;	//Port the program runs on
 	private ObjectInputStream reader;  // stream used to read the server's response

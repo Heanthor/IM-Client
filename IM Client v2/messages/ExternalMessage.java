@@ -12,7 +12,7 @@ import java.security.KeyException;
  */
 public class ExternalMessage extends Message {
 	private static final long serialVersionUID = 1338880583237113936L;
-	private String message;
+	private byte[] message;
 
 	/**
 	 * Create a new message to be sent to a recipient.
@@ -24,7 +24,7 @@ public class ExternalMessage extends Message {
 	 */
 	public ExternalMessage(String sender, String recipient, String externalMessage) {
 		super(sender, recipient);
-		
+
 		//Add length restriction
 		if (externalMessage.length() > 10000) {
 			externalMessage = externalMessage.substring(0, 10000) + "...";
@@ -40,7 +40,7 @@ public class ExternalMessage extends Message {
 	/**
 	 * @return the message
 	 */
-	public String getMessage() {
+	public byte[] getMessage() {
 		return message;
 	}
 
@@ -63,7 +63,7 @@ public class ExternalMessage extends Message {
 		return "ExternalMessage [message=" + message + "]";
 	}
 
-	private String encryptMessage(String message) throws KeyException {
+	private byte[] encryptMessage(String message) throws KeyException {
 		MessageCrypt m = MessageCrypt.getInstance();
 
 		return m.encrypt(message);
